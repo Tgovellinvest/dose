@@ -43,7 +43,7 @@ window.V_conta=function(){ const u=C.user(); const last=S.cloud&&S.cloud.ultimoS
     <label>E-mail</label><input id="acEmail" type="email" autocomplete="email" placeholder="voce@exemplo.com"><label>Senha (mín. 8)</label><input id="acSenha" type="password" autocomplete="current-password" minlength="8">
     <div class="grid2" style="margin-top:10px"><button class="btn em" onclick="contaEntrar()">Entrar</button><button class="btn sec" onclick="contaCriar()">Criar conta</button></div>
     <button class="btn sm ghost" style="margin-top:8px" onclick="contaRecuperar()">Esqueci a senha</button>
-    <p class="tiny" style="margin-top:10px">Guardamos só o que o app já guarda no aparelho (perfil, treinos, check-ins, diário). Nada é vendido nem compartilhado. Você apaga tudo quando quiser, aqui mesmo.</p></div>`;
+    <p class="tiny" style="margin-top:10px">Guardamos só o que o app já guarda no aparelho (perfil, treinos, check-ins, diário). Nada é vendido nem compartilhado. Você apaga tudo quando quiser, aqui mesmo.</p><p class="tiny">Ao criar conta ou entrar, você concorda com os <a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</p></div>`;
   return `<div class="card"><b>${esc(u.email)}</b><p class="small">Sincronização automática ligada. Último envio: ${last?last.toLocaleString('pt-BR'):"ainda não"}.</p>
     <div class="grid2" style="margin-top:10px"><button class="btn sec" onclick="contaSync('push')">Enviar agora</button><button class="btn sec" onclick="contaSync('pull')">Baixar da conta</button></div>
     <button class="btn ghost" style="margin-top:8px" onclick="contaSair()">Sair (os dados ficam no aparelho)</button></div>

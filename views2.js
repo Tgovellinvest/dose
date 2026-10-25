@@ -107,7 +107,8 @@ V.tutorial=(p)=>{ setTitle("Tutorial"); return `<button class="btn sm ghost" onc
   <button class="btn sec" onclick="S.onboarded=false;save();go('hoje')">Rever a introdução</button>`; };
 V.onboard=()=>{ const i=+(R.p.i||0); const s=STEPS[i]; const last=i===STEPS.length-1; return `<div style="min-height:70dvh;display:flex;flex-direction:column;justify-content:center"><div class="eyebrow">${i+1} de ${STEPS.length}</div><div style="font-size:56px;margin:12px 0">${s.i}</div><h1 style="font-size:40px">${esc(s.t)}</h1><p class="serif" style="margin-top:8px">${esc(s.d)}</p>
   <div class="row" style="margin-top:30px">${i>0?`<button class="btn ghost" style="width:auto" onclick="go('onboard',{i:${i-1}})">‹</button>`:'<span></span>'}<button class="btn em" style="flex:1" onclick="${last?"S.onboarded=true;save();go('mais',{t:'perfil'})":`go('onboard',{i:${i+1}})`}">${last?"Começar pelo perfil":"Próximo"}</button></div>
-  <button class="btn ghost" style="margin-top:10px" onclick="S.onboarded=true;save();go('hoje')">Pular</button></div>`; };
+  <button class="btn ghost" style="margin-top:10px" onclick="S.onboarded=true;save();go('hoje')">Pular</button>
+  <p class="tiny" style="text-align:center;margin-top:14px">Conteúdo educativo; não substitui médico, nutricionista ou profissional de educação física. Ao usar, você aceita os <a href="termos.html" target="_blank" rel="noopener">Termos</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Privacidade</a>.</p></div>`; };
 // gate: primeira abertura
 const _route=window.route; window.route=function(){ if(!S.onboarded && !location.hash.startsWith('#onboard')){ location.hash='onboard'; return; } _route(); };
 window.removeEventListener('hashchange',_route); window.addEventListener('hashchange',window.route);
