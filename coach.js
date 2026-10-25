@@ -38,6 +38,8 @@ window.leituraSemana=function(){
   // 10. deload por calendário (Bell 2023, consenso Delphi)
   const semComTreino=[0,1,2,3,4,5,6,7].filter(k=>S.logs.some(l=>inSem(l.data,k))).length; const ultimoDeload=S.checkins.slice(-8).some(c=>c.deload);
   if(semComTreino>=6&&!ultimoDeload&&!quedas.length) out.push({n:"info",t:"Seis ou mais semanas sem deload",d:"Consenso de especialistas: uma semana leve a cada 4–8 semanas, ~50% das séries, carga mantida ou −10–20% (Bell 2023). Marque 'deload' no check-in para registrar."});
+  // 11. platô por exercício (Ladder/RP: rep em vez de peso, variar)
+  const pl=window.platos?window.platos():[]; if(pl.length) out.push({n:"watch",t:`Platô em ${pl.length===1?pl[0].nome:pl.length+" exercícios"}`,d:`${pl.slice(0,3).map(x=>`${x.nome} parado em ~${x.e1} kg (e1RM) há ${x.sessoes} sessões`).join("; ")}. Regra: adicione 1 rep por série antes de subir carga; se travar de novo, troque a variação do mesmo padrão por 4 semanas (Grgic 2017: o estímulo novo organiza, não multiplica).`});
   // 8. constância
   if(!logs0.length&&!bjj0.length&&!card0.length&&new Date().getDay()>=4) out.push({n:"info",t:"Semana em branco",d:"Ainda dá tempo. Uma sessão curta vale mais que uma semana perfeita que não aconteceu."});
   if(!out.length) out.push({n:"ok",t:"Dentro da dose",d:"Nada para ajustar. Progride uma rep ou uma carga e repete."});
