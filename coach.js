@@ -30,7 +30,14 @@ window.leituraSemana=function(){
   if(last&&prev&&last.peso&&prev.peso){ const d=last.peso-prev.peso, pct=d/prev.peso*100; if(pct<-1.2) out.push({n:"watch",t:"Perdendo rápido",d:`${Math.round(pct*10)/10}% na semana. Acima de 1% aumenta a perda de massa magra (Helms 2014). Se foi água, ok; se repetir, suba 100–150 kcal.`}); if(pct>0.5&&(S.perfil.objetivo||"").startsWith("cut")) out.push({n:"info",t:"Peso subiu",d:"Uma semana não é tendência. Confira sal, sono e intestino antes de cortar comida. Duas semanas travadas com aderência confirmada → revisar ingestão ou gasto."}); }
   if(last&&prev&&last.cintura&&prev.cintura&&last.cintura<prev.cintura&&last.peso>=prev.peso) out.push({n:"ok",t:"Cintura caiu com peso estável",d:"Sinal de recomposição: gordura saindo, músculo ficando. Mantém a dose."});
   // 7. sono
-  if(last&&last.sono&&last.sono<6.5) out.push({n:"watch",t:"Sono curto",d:`${last.sono} h. Abaixo de 7 h cai a performance em compostos. Regra: duas noites ruins seguidas → reduzir acessórios por uma semana.`});
+  if(last&&last.sono&&last.sono<6.5) out.push({n:"watch",t:"Sono curto",d:`${last.sono} h. Perda aguda de sono custa ~7,6% de desempenho (Craven 2022); força máxima resiste melhor que técnica e endurance. Regra: mantenha a carga, corte volume e não marque prova nesse dia.`});
+  // 9. salto de carga semanal (Gabbett 2016; só aviso — Impellizzeri 2020)
+  const tonel=k=>S.logs.filter(l=>inSem(l.data,k)).reduce((a,l)=>a+l.sets.filter(x=>x.done).reduce((b,x)=>b+(x.peso||0)*(x.reps||0),0),0);
+  const t0=tonel(0), tPrev=[1,2,3,4].map(tonel).filter(x=>x>0); const tMed=tPrev.length>=2?tPrev.reduce((a,b)=>a+b,0)/tPrev.length:0;
+  if(tMed>0&&t0>tMed*1.5&&new Date().getDay()>=3) out.push({n:"watch",t:"Semana subiu rápido",d:`Tonelagem ${Math.round(t0/tMed*100)}% da média das últimas ${tPrev.length} semanas. Picos acima de ~1,5× elevam risco de lesão (Gabbett 2016). Não é diagnóstico, é sinal: segure o aumento em 10–15% por semana.`});
+  // 10. deload por calendário (Bell 2023, consenso Delphi)
+  const semComTreino=[0,1,2,3,4,5,6,7].filter(k=>S.logs.some(l=>inSem(l.data,k))).length; const ultimoDeload=S.checkins.slice(-8).some(c=>c.deload);
+  if(semComTreino>=6&&!ultimoDeload&&!quedas.length) out.push({n:"info",t:"Seis ou mais semanas sem deload",d:"Consenso de especialistas: uma semana leve a cada 4–8 semanas, ~50% das séries, carga mantida ou −10–20% (Bell 2023). Marque 'deload' no check-in para registrar."});
   // 8. constância
   if(!logs0.length&&!bjj0.length&&!card0.length&&new Date().getDay()>=4) out.push({n:"info",t:"Semana em branco",d:"Ainda dá tempo. Uma sessão curta vale mais que uma semana perfeita que não aconteceu."});
   if(!out.length) out.push({n:"ok",t:"Dentro da dose",d:"Nada para ajustar. Progride uma rep ou uma carga e repete."});
