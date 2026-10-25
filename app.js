@@ -25,7 +25,7 @@ function esc(s){ return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&l
 function num(v){ const n=parseFloat(String(v).replace(',','.')); return isFinite(n)?n:null; }
 
 // ---------- Modo de equipamento: resolve o exercício certo ----------
-const MODOS = {completa:"Academia completa", predio:"Prédio (Smith + 1 polia)", livre:"Só pesos livres", semequip:"Sem equipamento"};
+const MODOS = {completa:"Academia completa", predio:"Academia de prédio (Smith + polia)", box:"Box / CrossFit (barra, kettlebell, anilhas)", home:"Home gym (halteres ajustáveis, banco, elásticos)", livre:"Só pesos livres (barra e halteres)", kettle:"Kettlebell e elásticos", hotel:"Hotel (halteres leves, esteira)", semequip:"Sem equipamento (peso do corpo)"};
 function resolveEx(id){
   const e = EX[id]; if(!e) return null;
   const modo = S.perfil.modo;

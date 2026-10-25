@@ -216,9 +216,9 @@ window.SCIENCE = [
 
 // ---------- Nutrição (regras da calculadora) ----------
 window.NUTRI = {
-  atividade:[{k:"sed",n:"Sedentário (trabalho sentado, sem treino)",f:1.2,fc:1.15},{k:"leve",n:"Leve (treina 1–3×/sem)",f:1.375,fc:1.3},{k:"mod",n:"Moderado (3–5 treinos/sem)",f:1.55,fc:1.45},{k:"alto",n:"Alto (BJJ 4× + musculação 3×)",f:1.725,fc:1.6},{k:"muito",n:"Muito alto (2 treinos/dia)",f:1.9,fc:1.7}],
+  atividade:[{k:"sed",n:"Sedentário · trabalho sentado, sem treino",f:1.2,fc:1.15},{k:"leve",n:"Leve · 1–2 treinos por semana",f:1.375,fc:1.3},{k:"mod",n:"Moderado · 3–4 treinos por semana",f:1.55,fc:1.45},{k:"alto",n:"Alto · 5–7 treinos por semana (musculação + esporte)",f:1.725,fc:1.6},{k:"muito",n:"Muito alto · 2 treinos por dia ou trabalho físico",f:1.9,fc:1.7}],
   nota:"Conservador = menor TMB entre as equações × fator de atividade reduzido (fc). Relógios inflam gasto de treino de força em 20–35%; por isso o app não soma 'calorias ativas' do relógio.",
-  objetivos:[{k:"cut",n:"Perder gordura",d:-0.2},{k:"cutLeve",n:"Perder gordura devagar",d:-0.12},{k:"manter",n:"Manter",d:0},{k:"bulk",n:"Ganhar massa",d:0.08}],
+  objetivos:[{k:"cut",n:"Perder gordura (déficit 20%)",d:-0.2},{k:"cutLeve",n:"Perder gordura devagar (déficit 12%)",d:-0.12},{k:"recomp",n:"Recomposição (déficit leve, proteína alta)",d:-0.06},{k:"manter",n:"Manter peso e performance",d:0},{k:"bulkLeve",n:"Ganhar massa devagar (superávit 5%)",d:0.05},{k:"bulk",n:"Ganhar massa (superávit 10%)",d:0.10},{k:"performance",n:"Performance esportiva (manutenção + carbo no treino)",d:0.02}],
   regras:["Déficit de 10–25% (nunca abaixo da TMB); meta de 0,5–1% do peso por semana (Helms 2014).","Proteína: 1,6–2,2 g/kg de peso; em déficit, 2,3–3,1 g/kg de massa magra quando % de gordura for conhecido (ISSN 2017; Helms 2014).","Gordura: 0,6–1,0 g/kg, no mínimo 20% das calorias.","Carboidrato: o que sobrar, concentrado em torno de treino e BJJ.","Água: ~35 ml/kg/dia + 500 ml por hora de treino (referência prática).","Fibra 25–38 g/dia.","Uma refeição fora não vira três dias fora; próxima refeição normal."],
   precedencia:"Se existe um protocolo formal de coach/nutricionista vigente, ele prevalece sobre esta calculadora. Use a calculadora para entender a lógica e conferir se o protocolo está dentro das faixas de consenso."
 };
