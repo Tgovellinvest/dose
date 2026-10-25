@@ -18,8 +18,8 @@ body{display:flex;flex-direction:column;min-height:100dvh;font-size:16px;line-he
 .brand{display:flex;align-items:center;gap:8px;font-weight:900;font-size:18px;letter-spacing:-.06em;text-transform:uppercase}
 .brand .mark{width:22px;height:22px}
 .brand .dotp{color:var(--ember)}
-.brand #topTitle{font-weight:800;letter-spacing:-.03em;font-size:17px;text-transform:none;color:var(--tx2);margin-left:4px}
-.badge{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2);border:1px solid var(--line);padding:5px 10px;border-radius:999px;background:var(--s1);font-weight:600}
+.brand #topTitle{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw;font-weight:800;letter-spacing:-.03em;font-size:17px;text-transform:none;color:var(--tx2);margin-left:4px}
+.badge{white-space:nowrap;max-width:46vw;overflow:hidden;text-overflow:ellipsis;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx2);border:1px solid var(--line);padding:5px 10px;border-radius:999px;background:var(--s1);font-weight:600}
 .view{flex:1;padding:4px 16px calc(var(--tab) + env(safe-area-inset-bottom) + 24px);max-width:720px;width:100%;margin:0 auto;animation:enter var(--base) var(--ease)}
 @keyframes enter{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
 .tabbar{position:fixed;bottom:0;left:0;right:0;height:calc(var(--tab) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);display:flex;background:color-mix(in srgb,var(--s1) 96%,transparent);backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:6}
@@ -124,3 +124,9 @@ a{color:var(--ember)}
 .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);font-weight:700}
 @media (min-width:720px){.grid3{grid-template-columns:repeat(4,1fr)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal{background:var(--s1);border:1px solid var(--line);border-radius:10px;min-height:58px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px}
+.cal b{font-family:var(--num);font-size:13px}.cal.today{outline:2px solid var(--ember)}.cal.fut{opacity:.6}
+.cal .dots{display:flex;gap:3px;height:6px}.cal .dots i{width:6px;height:6px;border-radius:50%;display:block}
+.cal .tiny{font-size:9px;letter-spacing:.04em;text-transform:uppercase;font-weight:700}
