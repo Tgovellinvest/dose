@@ -63,7 +63,7 @@ window.gerarPrograma=function(p){
    (p.diasBjj||[]).length>=4?"4+ BJJ na semana: se a fadiga subir, corte acessórios antes dos compostos.":"",
    p.experiencia==="nunca"?"Primeiras 2 semanas: só 2 séries por exercício, RIR 3, foco em aprender o movimento. Dor muscular leve é normal; dor articular não.":"",
    "Progressão: topo da faixa nas working sets → sobe carga. Deload a cada 4–6 semanas."].filter(Boolean);
-  return Object.assign({id:"gerado",nome,origem:"Gerado pelo Método DOSE em "+new Date().toISOString().slice(0,10),principios,semana,regras:["O programa é contínuo: o próximo da rotação é o próximo, não depende do dia.","Semana pesada de esporte: acessórios saem, compostos ficam.","Dor subindo em duas sessões: deload antecipado."],volumeAlvo:{"Peitoral":"9–11","Latíssimo/dorsal":"11–15","Deltoide lateral":"8–10","Deltoide posterior":"6–9","Bíceps":"7–10","Tríceps":"8–11","Quadríceps":"9–12","Posteriores":"7–10","Glúteos":"7–10","Panturrilhas":"5–8"}},g);
+  return Object.assign({id:"gerado",nome,origem:"Gerado pelo Método DOSE em "+new Date().ymd(),principios,semana,regras:["O programa é contínuo: o próximo da rotação é o próximo, não depende do dia.","Semana pesada de esporte: acessórios saem, compostos ficam.","Dor subindo em duas sessões: deload antecipado."],volumeAlvo:{"Peitoral":"9–11","Latíssimo/dorsal":"11–15","Deltoide lateral":"8–10","Deltoide posterior":"6–9","Bíceps":"7–10","Tríceps":"8–11","Quadríceps":"9–12","Posteriores":"7–10","Glúteos":"7–10","Panturrilhas":"5–8"}},g);
 };
 
 // Programas prontos (atalhos do perfil): são o gerador com presets

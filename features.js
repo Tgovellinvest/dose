@@ -21,6 +21,14 @@ window.V_mapa=function(){
 };
 
 // --- Dose de hoje: um número com contribuintes (Oura/WHOOP, mas sem caixa-preta) ---
+// Carga de uma atividade (sRPE = minutos × RPE, Foster 2001). Sem RPE: 7 (moderado-alto) para esporte, 5 para cardio.
+window.cargaAtiv=function(x,tipo){ if(tipo==='musc'){ const sets=(x.sets||[]).filter(s=>s.done).length; const min=x.dur||Math.max(20,sets*3); const rpe=x.esforco?({1:5,2:7,3:9})[x.esforco]:7; return Math.round(min*rpe); }
+  const min=x.min||(tipo==='esp'?60:30); const rpe=x.rpe||(tipo==='esp'?7:5); return Math.round(min*rpe); };
+window.atividadesDe=function(d){ const out=[]; S.logs.filter(l=>l.data===d).forEach(l=>out.push({tipo:'musc',nome:l.nome||"Musculação",min:l.dur||null,rpe:l.esforco?({1:5,2:7,3:9})[l.esforco]:null,carga:cargaAtiv(l,'musc')}));
+  S.bjj.filter(b=>b.data===d).forEach(b=>out.push({tipo:'esp',nome:b.tipo||nomeEsp(b.esporte),min:b.min||null,rpe:b.rpe||null,carga:cargaAtiv(b,'esp')}));
+  S.cardio.filter(c=>c.data===d).forEach(c=>out.push({tipo:'cardio',nome:c.tipo?String(c.tipo).charAt(0).toUpperCase()+String(c.tipo).slice(1):"Cardio",min:c.min||null,rpe:c.rpe||null,carga:cargaAtiv(c,'cardio')})); return out; };
+const nomeEsp=k=>((window.SPORTS||[]).find(x=>x.id===k)||{}).nome||"Esporte";
+// --- Dose de hoje: prontidão (sono, fadiga, dor, ontem) menos o que você já gastou hoje ---
 window.doseHoje=function(){
   const why=[]; let score=100;
   const ck=S.checkins[S.checkins.length-1];
@@ -28,15 +36,23 @@ window.doseHoje=function(){
   if(ck&&ck.fadiga!=null&&diasDesde(ck.data)<=7){ if(ck.fadiga>=7){score-=20;why.push({t:`Fadiga ${ck.fadiga}/10`,d:"−20 · check-in"});} else if(ck.fadiga>=5){score-=8;why.push({t:`Fadiga ${ck.fadiga}/10`,d:"−8"});} }
   const sem=S.logs.filter(l=>l.data>=semanaIni()); const dor=Math.max(0,...sem.map(l=>Math.max(l.dorCot||0,l.dorJo||0)),...S.bjj.filter(b=>b.data>=semanaIni()).map(b=>Math.max(b.dorCot||0,b.dorJo||0)));
   if(dor>=6){score-=30;why.push({t:`Dor ${dor}/10`,d:"−30 · não atravessar dor aguda"});} else if(dor>=4){score-=12;why.push({t:`Dor ${dor}/10`,d:"−12"});}
-  const ontem=new Date(); ontem.setDate(ontem.getDate()-1); const o=ontem.toISOString().slice(0,10);
-  const tr=[...S.logs,...S.bjj,...S.cardio].filter(x=>x.data===o||x.data===today()).length;
-  if(tr>=2){score-=10;why.push({t:"Dois estímulos em 24–48 h",d:"−10"});}
+  const ontem=new Date(); ontem.setDate(ontem.getDate()-1); const o=ontem.ymd();
+  const atO=atividadesDe(o); const cargaO=atO.reduce((a,x)=>a+x.carga,0);
+  if(atO.length>=2){score-=10;why.push({t:"Dois estímulos ontem",d:"−10"});} else if(cargaO>=600){score-=8;why.push({t:"Carga alta ontem",d:`−8 · ${cargaO} (min × RPE)`});}
   const esf=sem.map(l=>l.esforco).filter(x=>x!=null); if(esf.length>=2&&esf.slice(-2).every(x=>x>=3)){score-=10;why.push({t:"Esforço alto nas últimas sessões",d:"−10 · check-in pós-sessão"});}
-  score=Math.max(20,Math.min(100,score));
+  const base=Math.max(20,Math.min(100,score));
+  // o que já foi feito hoje consome dose: 1 ponto a cada 12 de carga (60 min × RPE 7 ≈ 35), mínimo 5 por atividade
+  const feitos=atividadesDe(today()); let consumo=0;
+  feitos.forEach(f=>{ const pts=Math.max(5,Math.round(f.carga/12)); consumo+=pts; why.unshift({t:`${f.nome} hoje${f.min?` · ${f.min} min`:""}${f.rpe?` · RPE ${f.rpe}`:""}`,d:`−${pts} · carga da sessão (min × RPE, Foster 2001)${f.rpe?"":"; sem RPE, contei 7"}`}); });
+  consumo=Math.min(consumo,80);
+  score=Math.max(10,base-consumo);
   const nivel=score>=85?"cheia":score>=65?"normal":score>=45?"reduzida":"leve";
-  const acao={cheia:"Dia de progredir: +1 rep ou +2,5 kg no composto principal. Se houver prova marcada, é hoje.",normal:"Dose planejada. Progride onde a última sessão fechou a faixa.",reduzida:"Mantenha a carga, corte 1 série por exercício. Sem prova hoje.",leve:"Sessão curta ou descanso ativo. Nada de falha, nada de prova."}[nivel];
+  const fezMusc=feitos.some(f=>f.tipo==='musc');
+  let acao={cheia:"Dia de progredir: +1 rep ou +2,5 kg no composto principal. Se houver prova marcada, é hoje.",normal:"Dose planejada. Progride onde a última sessão fechou a faixa.",reduzida:"Mantenha a carga, corte 1 série por exercício. Sem prova hoje.",leve:"Sessão curta ou descanso ativo. Nada de falha, nada de prova."}[nivel];
+  if(consumo>0&&!fezMusc) acao={cheia:"Ainda cabe a musculação planejada inteira.",normal:"Ainda cabe a musculação planejada. Sem buscar recorde hoje.",reduzida:"Se for malhar: mantenha a carga e corte 1 série por exercício.",leve:"Se for malhar: só os compostos, 2 séries, longe da falha. Ou deixe para amanhã."}[nivel];
+  if(fezMusc) acao="Treino do dia feito. Agora é comida, água e sono.";
   if(!why.length) why.push({t:"Sem sinais de alerta",d:"check-in, dor e carga dentro do esperado"});
-  return {score,nivel,acao,why};
+  return {score,base,consumo,feitos,nivel,acao,why};
 };
 window.V_dose=function(){ const d=window.doseHoje(); const cor=d.score>=85?"var(--ok)":d.score>=65?"var(--tx)":d.score>=45?"var(--warn)":"var(--stop)";
   return `<div class="card"><div class="row" style="align-items:center"><div><div class="eyebrow" style="color:var(--tx2)">Dose de hoje</div><div style="font-family:var(--display);font-size:40px;font-weight:900;line-height:1;color:${cor}">${d.score}<span class="small muted" style="font-weight:600"> · ${d.nivel}</span></div></div></div><p class="small" style="margin-top:6px">${esc(d.acao)}</p><div class="tiny" style="margin-top:6px">${d.why.map(w=>`<div>• <b>${esc(w.t)}</b> ${esc(w.d)}</div>`).join("")}</div></div>`; };

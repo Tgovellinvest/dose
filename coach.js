@@ -1,7 +1,7 @@
 // Coach DOSE — leitura automática da semana, autorregulação, aquecimento, feeder sets, alertas
 // Fontes: ACSM 2026; Pelland 2026; Robinson 2024; Singer 2024; Helms 2014; Schumann 2022; OMS 2020; regras do Projeto (08 - Progressão e Check-in)
 (function(){
-const semIni=(off=0)=>{ const x=new Date(); x.setDate(x.getDate()-((x.getDay()+6)%7)-7*off); return x.toISOString().slice(0,10); };
+const semIni=(off=0)=>{ const x=new Date(); x.setDate(x.getDate()-((x.getDay()+6)%7)-7*off); return x.ymd(); };
 const semFim=(off=0)=>{ const x=new Date(semIni(off)+"T12:00:00"); x.setDate(x.getDate()+7); return x.toISOString().slice(0,10); };
 function inSem(d,off){ return d>=semIni(off)&&d<semFim(off); }
 
@@ -41,7 +41,7 @@ window.leituraSemana=function(){
   // 11. platô por exercício (Ladder/RP: rep em vez de peso, variar)
   const pl=window.platos?window.platos():[]; if(pl.length) out.push({n:"watch",t:`Platô em ${pl.length===1?pl[0].nome:pl.length+" exercícios"}`,d:`${pl.slice(0,3).map(x=>`${x.nome} parado em ~${x.e1} kg (e1RM) há ${x.sessoes} sessões`).join("; ")}. Regra: adicione 1 rep por série antes de subir carga; se travar de novo, troque a variação do mesmo padrão por 4 semanas (Grgic 2017: o estímulo novo organiza, não multiplica).`});
   // 12. esporte duro ontem → pernas mais leves hoje (Robineau 2016; regra transversal da preparação por esporte)
-  const ontemD=new Date(); ontemD.setDate(ontemD.getDate()-1); const ontem=ontemD.toISOString().slice(0,10);
+  const ontemD=new Date(); ontemD.setDate(ontemD.getDate()-1); const ontem=ontemD.ymd();
   const duroOntem=[...S.bjj,...S.cardio].filter(x=>x.data===ontem&&(x.min||x.dur||0)>=60).length>0; const plano=planoHoje();
   if(duroOntem&&plano.sessao&&/leg|lower|full|pern|inferior/i.test(plano.sessao.nome)) out.push({n:"watch",t:"Esporte duro ontem",d:`Hoje é ${plano.sessao.nome}: corte ~30% das séries de pernas, RIR +1, sem excêntrico novo (Nordic, Copenhagen). Regra da preparação por esporte; base em Robineau 2016 e Schumann 2022.`});
   // 8. constância

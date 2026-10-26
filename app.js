@@ -17,7 +17,8 @@ let S = load();
 function load(){ try{ const j=JSON.parse(localStorage.getItem(DB_KEY)); if(j) return Object.assign({},DEFAULT,j,{perfil:Object.assign({},DEFAULT.perfil,j.perfil||{})}); }catch(e){} return JSON.parse(JSON.stringify(DEFAULT)); }
 function save(){ try{ localStorage.setItem(DB_KEY, JSON.stringify(S)); }catch(e){ toast("Não consegui salvar (armazenamento bloqueado)"); } }
 function uid(){ return Math.random().toString(36).slice(2,9)+Date.now().toString(36); }
-function today(){ const d=new Date(); return d.toISOString().slice(0,10); }
+Date.prototype.ymd=function(){ const p=n=>String(n).padStart(2,'0'); return this.getFullYear()+'-'+p(this.getMonth()+1)+'-'+p(this.getDate()); }; // data LOCAL (o toISOString é UTC: no Brasil, depois das 21h virava o dia seguinte)
+function today(){ return new Date().ymd(); }
 function fmtD(s){ if(!s) return "—"; const [y,m,d]=s.split("-"); return `${d}/${m}`; }
 function fmtDL(s){ if(!s) return "—"; const [y,m,d]=s.split("-"); return `${d}/${m}/${y}`; }
 function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.remove('hidden'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.add('hidden'),2200); }
@@ -77,7 +78,7 @@ function sugestaoCarga(exId, repsFaixa){
 // ---------- Volume semanal por grupo (séries diretas + 0,5 indiretas) ----------
 const INDIRETAS = {"Peitoral":{"Tríceps":0.5,"Ombro":0.3},"Dorsal":{"Bíceps":0.5,"Ombro":0.3,"Trapézio":0.3},"Quadríceps":{"Glúteo":0.5},"Posterior":{"Glúteo":0.5},"Glúteo":{},"Ombro":{"Tríceps":0.3}};
 function volumeSemana(ref=new Date()){
-  const ini=new Date(ref); ini.setDate(ini.getDate()-((ini.getDay()+6)%7)); const iniS=ini.toISOString().slice(0,10);
+  const ini=new Date(ref); ini.setDate(ini.getDate()-((ini.getDay()+6)%7)); const iniS=ini.ymd();
   const vol={};
   S.logs.filter(l=>l.data>=iniS).forEach(l=>{
     const porEx={}; l.sets.filter(s=>s.done).forEach(s=>{porEx[s.ex]=(porEx[s.ex]||0)+1;});
@@ -119,10 +120,10 @@ function calcNutri(p){
 // ---------- Medalhas ----------
 function streakSemanas(){ // semanas consecutivas com ≥3 sessões (musc+bjj+cardio)
   const datas=[...S.logs.map(l=>l.data),...S.bjj.map(b=>b.data),...S.cardio.map(c=>c.data)]; if(!datas.length) return 0;
-  const sem=d=>{const x=new Date(d); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x.toISOString().slice(0,10);};
+  const sem=d=>{const x=new Date(d+'T12:00:00'); x.setDate(x.getDate()-((x.getDay()+6)%7)); return x.ymd();};
   const cnt={}; datas.forEach(d=>{cnt[sem(d)]=(cnt[sem(d)]||0)+1;});
   let s=0; let w=new Date(); w.setDate(w.getDate()-((w.getDay()+6)%7));
-  for(let i=0;i<104;i++){ const k=w.toISOString().slice(0,10); if((cnt[k]||0)>=3) s++; else if(i>0) break; w.setDate(w.getDate()-7); }
+  for(let i=0;i<104;i++){ const k=w.ymd(); if((cnt[k]||0)>=3) s++; else if(i>0) break; w.setDate(w.getDate()-7); }
   return s;
 }
 function medalhas(){
