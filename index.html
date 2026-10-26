@@ -20,7 +20,7 @@
 </head>
 <body>
 <header class="top">
-  <div class="brand"><svg class="mark" viewBox="0 0 160 120"><path d="M14 104 C 40 100, 56 40, 92 28 C 116 20, 134 20, 150 22" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round"/><circle cx="92" cy="28" r="13" fill="#E4572E"/></svg><span>Dose<span class="dotp">.</span></span><span id="topTitle">Hoje</span></div>
+  <div class="brand"><span>Dose<span class="dotp">.</span></span><span id="topTitle">Hoje</span></div>
   <div class="top-right"><span id="modeBadge" class="badge"></span></div>
 </header>
 <main id="view" class="view"></main>
@@ -43,6 +43,7 @@
 <script src="views.js"></script>
 <script src="views2.js"></script>
 <script src="cloud.js"></script>
+<script src="ads.js"></script>
 <script>
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 </script>
