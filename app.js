@@ -3,9 +3,9 @@
 const EX = Object.fromEntries(window.EXERCISES.map(e=>[e.id,e]));
 const DB_KEY = 'guia-treino-v1';
 const DEFAULT = {
-  perfil:{nome:"", sexo:"m", idade:null, altura:null, peso:null, bf:null, atividade:"mod", objetivo:"manter", programa:"ul_4", modo:"completa", esporteFoco:"", cotovelo:false, joelho:false, experiencia:"intermediario", pesoAlvo:null, bfAlvo:null, metaEsporte:"", esportes:{}, diasMusc:[], protocoloCoach:{kcal:null,p:null,c:null,g:null,fonte:""}},
+  perfil:{nome:"", sexo:"m", idade:null, altura:null, peso:null, bf:null, atividade:"mod", objetivo:"manter", programa:"ul_4", modo:"completa", esporteFoco:"", cotovelo:false, joelho:false, experiencia:"intermediario", pesoAlvo:null, bfAlvo:null, metaEsporte:"", esportes:{}, diasMusc:[], enfaseEsporte:true, prioridades:[], protocoloCoach:{kcal:null,p:null,c:null,g:null,fonte:""}},
   rotacao:{ppl2:0, predio:0},
-  logs:[],        // {id,data,programa,sessao,nome,sets:[{ex,set,peso,reps,rir,done}],dur,bjj,dorCot,dorJo,notas}
+  logs:[],        // {id,data,programa,sessao,nome,sets:[{ex,set,peso,reps,rir,done}],dur,bjj,dorCot,dorJo,dores:{local:0-10},notas}
   cardio:[],      // {data,tipo,min,fc,dist,rpe,fonte}
   bjj:[],         // {data,tipo:'gi'|'nogi',min,rpe}
   checkins:[],    // {data,peso,cintura,peito,braco,coxa,sono,fadiga,passos,energia,notas}
@@ -26,11 +26,14 @@ function num(v){ const n=parseFloat(String(v).replace(',','.')); return isFinite
 
 // ---------- Modo de equipamento: resolve o exercício certo ----------
 const MODOS = {completa:"Academia completa", predio:"Academia de prédio (Smith + polia)", box:"Box / CrossFit (barra, kettlebell, anilhas)", home:"Home gym (halteres ajustáveis, banco, elásticos)", livre:"Só pesos livres (barra e halteres)", kettle:"Kettlebell e elásticos", hotel:"Hotel (halteres leves, esteira)", semequip:"Sem equipamento (peso do corpo)"};
+if(window.MODOS_V3) Object.assign(MODOS,window.MODOS_V3);
 function resolveEx(id){
   const e = EX[id]; if(!e) return null;
   const modo = S.perfil.modo;
   const alt = e.modo && e.modo[modo];
   if(alt && EX[alt]) return EX[alt];
+  // Modo sem substituto declarado: procura no mesmo padrão de movimento um exercício que o equipamento permite
+  const allowed=(window.EQUIP||{})[modo]; const main=(e.equip||[]).filter(q=>q!=='banco'); if(allowed&&main.length&&!main.some(q=>allowed.includes(q))&&window.POOL){ const pat=Object.keys(window.POOL).find(k=>window.POOL[k].includes(id)); if(pat){ for(const cand of window.POOL[pat]){ const c=EX[cand]; const cm=(c?c.equip:[]).filter(q=>q!=='banco'); if(c&&cm.length&&cm.some(q=>allowed.includes(q))) return c; } } }
   return e;
 }
 function flagsAtivas(e){
@@ -171,7 +174,7 @@ let R={r:"hoje",p:{}};
 function go(r,p={}){ R={r,p}; location.hash=r+(Object.keys(p).length?"?"+new URLSearchParams(p):""); }
 function applyTheme(){ document.documentElement.dataset.theme=S.perfil.tema||S.tema||"dark"; }
 function route(){ applyTheme(); const [r,q]=location.hash.replace('#','').split('?'); R={r:r||"hoje",p:Object.fromEntries(new URLSearchParams(q||""))};
-  const maisRoutes=['esportes','calendario','gerador','tutorial','mais','grupos']; document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.r===R.r || R.r.startsWith(b.dataset.r) || (b.dataset.r==='mais'&&maisRoutes.includes(R.r)) || (b.dataset.r==='treino'&&(R.r==='sessao'||R.r==='exercicio'))));
+  const maisRoutes=['esportes','calendario','gerador','tutorial','mais','grupos']; document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.r===R.r || R.r.startsWith(b.dataset.r) || (b.dataset.r==='mais'&&maisRoutes.includes(R.r)) || (b.dataset.r==='treino'&&(R.r==='sessao'||R.r==='exercicio'||R.r==='ficha'))));
   document.getElementById('modeBadge').textContent=({completa:"Academia",predio:"Prédio",box:"Box",home:"Home gym",livre:"Pesos livres",kettle:"Kettlebell",hotel:"Hotel",semequip:"Sem equip."})[S.perfil.modo]||"";
   const v=window.VIEWS[R.r]||window.VIEWS.hoje; const html=v(R.p); const el=document.getElementById('view'); el.innerHTML=html; window.scrollTo(0,0);
   if(window.AFTER[R.r]) window.AFTER[R.r](R.p);

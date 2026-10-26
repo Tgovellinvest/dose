@@ -3,7 +3,7 @@
 window.PROGRAMS = {
   // ---------- PPL 2.0 (vigente desde 2026-10-11) ----------
   ppl2: {
-    id:"ppl2", nome:"PPL 2.0 — Hipertrofia + Força + BJJ", origem:"Vault · 01 - Treino Atual - PPL 2.0 (2026-10-13)", rotacao:["push","pull","legs"],
+    id:"ppl2", nome:"PPL 2.0 — Hipertrofia + força (6×)", origem:"Ficha clássica push/pull/legs em rotação contínua", rotacao:["push","pull","legs"],
     principios:["Prioridade estética V-shape: deltoide lateral/posterior, latíssimo, peito superior, cintura.","Compostos RIR 1–3, isoladores RIR 0–2; falha técnica seletiva, não obrigatória.","Descanso: compostos 2–3 min, isoladores 90–150 s, isometrias 60–120 s.","Progredir primeiro em repetições dentro da faixa, depois em carga (double progression).","BJJ gera fadiga: cortar acessórios antes dos compostos quando a semana pesar.","Deload a cada 4–6 semanas: volume −40–50%, carga −10–15%, RIR 3–4."],
     sessoes:{
       push:{nome:"PUSH", cor:"#8a3b31", slots:[
@@ -34,12 +34,12 @@ window.PROGRAMS = {
       ], isometria:[{ex:"split_squat_hold", sets:2, tempo:"20–30 s/perna"},{ex:"aducao_isometrica", sets:2, tempo:"20–30 s"}], cardio:"15–20 min Z2 antes ou depois"}
     },
     semana:{seg:{bjj:true,musc:null}, ter:{bjj:true,musc:"push"}, qua:{bjj:"opcional",musc:"legs"}, qui:{bjj:true,musc:null}, sex:{bjj:true,musc:"pull"}, sab:{bjj:"opcional",musc:"rotação"}, dom:{bjj:false,musc:null}},
-    regras:["O PPL é contínuo: o sábado não é sempre Push, é o próximo da rotação.","BJJ forte na quarta → não fazer Legs pesado normal.","BJJ no sábado → o quarto treino de musculação vira opcional.","5–6 BJJ na semana → aceitar menos volume de musculação.","Domingo: recuperação real."],
+    regras:["O PPL é contínuo: o sábado não é sempre Push, é o próximo da rotação.","Esporte forte no dia anterior → não fazer Legs pesado normal.","BJJ no sábado → o quarto treino de musculação vira opcional.","5–6 BJJ na semana → aceitar menos volume de musculação.","Domingo: recuperação real."],
     volumeAlvo:{"Peitoral":"9–11","Latíssimo/dorsal":"11–15","Deltoide lateral":"8–10","Deltoide posterior":"6–9","Bíceps":"7–10","Tríceps":"8–11","Quadríceps":"9–12","Posteriores":"7–10","Glúteos":"7–10","Panturrilhas":"5–8"}
   },
   // ---------- Programa Definitivo — Prédio (biblioteca A/B) ----------
   predio: {
-    id:"predio", nome:"Programa Definitivo — Prédio (A/B)", origem:"Vault · Treino prédio .txt (mai–jun/2026)", rotacao:["pushA","pullA","legsA","pushB","pullB","legsB"],
+    id:"predio", nome:"Academia de prédio A/B (6×)", origem:"Ficha para Smith + polia, duas variações por padrão", rotacao:["pushA","pullA","legsA","pushB","pullB","legsB"],
     principios:["Barra do Smith pesa 22 kg.","Feeder sets nos compostos; 2 working sets.","Só uma polia: tudo unilateral.","Halteres até 12 kg: priorizar Smith e polia."],
     sessoes:{
       pushA:{nome:"PUSH A — tensão", cor:"#8a3b31", slots:[
@@ -106,16 +106,16 @@ window.CARDIO = {
 
 // ---------- Esportes ----------
 window.SPORTS = [
- {id:"bjj", nome:"Jiu-Jitsu", emoji:"bjj", status:"vigente",
+ {id:"bjj", nome:"Jiu-Jitsu", emoji:"bjj", status:"luta",
   resumo:"Esporte intermitente: esforços de alta intensidade de 5–30 s intercalados com pausas, por 5–10 min. Sucesso associa-se a força máxima, força isométrica (pegada, controle) e endurance muscular; VO₂max (42–52 ml/kg/min) não discrimina nível competitivo.",
   fonte:"Andreato et al. 2017, Sports Med Open (revisão sistemática de 58 estudos)",
   demandas:[{q:"Força máxima",onde:"queda, body lock, pressão, sair de posição ruim",treino:"Compostos pesados do PPL 2.0 (supino, agachamento, puxada, remada)"},{q:"Força isométrica",onde:"pegada, underhook, over-under, 100 kg, montada",treino:"Bloco de isometrias (remada isométrica, Pallof, adução, split-squat hold)"},{q:"Anti-rotação",onde:"impedir raspagem, manter base, body lock",treino:"Pallof press hold"},{q:"Adução de quadril",onde:"guarda, meia, controle de pernas, ashi",treino:"Adução isométrica, adutor magno no agachamento"},{q:"Resistência muscular",onde:"manter pressão sem morrer em 40 s",treino:"Séries de 12–20 em isoladores, bloco Hyrox leve"},{q:"Capacidade de repetir esforços",onde:"rola de 6 min, torneio com várias lutas",treino:"Intervalado 1–2 min + Z2 base"}],
-  semana:"BJJ seg/ter/qui/sex (quarta e sábado opcionais). Lower pesado longe das sessões mais duras de queda. Reduzir acessórios antes dos compostos quando acumular 5–6 BJJ.",
+  semana:"Perna pesada longe das sessões mais duras de queda (≥24 h). Com 5–6 treinos de tatame na semana, reduzir acessórios antes de mexer nos compostos.",
   regras:["Academia não pode roubar o jiu-jitsu: musculação é ferramenta, não outro campeonato.","Cotovelo sintomático: sem pegada em toalha, sem rosca martelo, sem dead hang, sem farmer carry pesado; kimura e guilhotina forçadas fora do rola.","Antes de BJJ duro: não caçar falha na musculação.","Dor bilateral recorrente no cotovelo merece ortopedista do esporte ou fisioterapeuta."],
   blocos:[{nome:"Isometrias para performance (2 por sessão, 30–50% da força, sem prender a respiração)", itens:["Remada isométrica 2×15–30 s (cotovelo 70–100°)","Split-squat hold 2×20–30 s por perna","Pallof press hold 2×20–30 s por lado","Adução isométrica 2×20–30 s","Pegada em toalha/Gi 2×20–30 s — suspensa enquanto o cotovelo doer"], progressao:"1) tolerância à posição → 2) duração → 3) resistência."}],
   aquecimento:["5 min de corrida leve ou pular corda","Mobilidade de quadril (90/90, cossack) 2 min","Ponte de glúteo e rotação externa de ombro com elástico 2×12","Rolamentos, quedas e shrimp 3 min"], prevencao:["Pescoço: isometria 4 direções 2×10 s","Cotovelo: evitar pegadas máximas com tendão sintomático; descarregar após campeonatos","Joelho: adução e abdução com elástico 2×15","Dedos: abrir e fechar com elástico 2×20"],
-  link:"O jogo técnico (guardas, passagens, finalizações, vídeos) vive no BJJ Lab e em 04 - Hobbies/02 - BJJ do vault."},
- {id:"hyrox", nome:"Hyrox", emoji:"hyrox", status:"novo (out/2026)",
+  link:"O jogo técnico (guardas, passagens, finalizações) é com o seu professor; aqui fica a preparação física."},
+ {id:"hyrox", nome:"Hyrox", emoji:"hyrox", status:"prova híbrida",
   resumo:"Prova padronizada: 8 × 1 km de corrida intercalados com 8 estações, sempre na mesma ordem. A corrida é quase metade do tempo final, por isso ritmo e capacidade aeróbica decidem mais que força bruta. Primeira prova típica: 90–120 min.",
   fonte:"Formato oficial Hyrox (hyrox.com); Brandt et al. 2025 (primeiro estudo revisado por pares, mediana 86,5 min em prova simulada)",
   estacoes:[{n:1,nome:"SkiErg",dose:"1.000 m",open:"—"},{n:2,nome:"Sled push",dose:"50 m",open:"152 kg (M Open, inclui sled)"},{n:3,nome:"Sled pull",dose:"50 m",open:"103 kg (M Open)"},{n:4,nome:"Burpee broad jump",dose:"80 m",open:"—"},{n:5,nome:"Remo",dose:"1.000 m",open:"—"},{n:6,nome:"Farmer carry",dose:"200 m",open:"2 × 24 kg"},{n:7,nome:"Sandbag lunges",dose:"100 m",open:"20 kg"},{n:8,nome:"Wall balls",dose:"100 reps",open:"6 kg, alvo 3 m"}],
@@ -127,8 +127,8 @@ window.SPORTS = [
   ]},
   aquecimento:["5 min caminhada rápida → trote","Agachamento corporal 10, afundo 6/perna, ponte 10","Pull-apart 15 e rotação de ombro 10","2 × 200 m progressivos"], prevencao:["Panturrilha e sóleo 2×15 (impacto)","Nordic curl 2×4","Prancha lateral 2×30 s","Volume de corrida sobe no máximo 10% por semana"],
   regras:["Hyrox fica separado da musculação: não vira terceiro treino de perna no mesmo dia do Legs.","Com cotovelo sintomático: sem burpee com flexão, sem farmer carry pesado, sem sled pull.","Primeiro volume, depois velocidade.","Peso corporal alto → progressão de corrida conservadora; se doer joelho, esteira inclinada (fora de casa) ou bike substituem corridas."]},
- {id:"corrida", nome:"Corrida", emoji:"run", status:"base",
-  resumo:"Objetivo atual: condicionamento aeróbico e preparação para Hyrox sem comprometer musculação e BJJ. Com peso elevado, a progressão é de caminhada/trote para corrida contínua, volume antes de velocidade, aumento de ~10% por semana como teto prático (regra de bolso, evidência fraca, mas conservadora).",
+ {id:"corrida", nome:"Corrida", emoji:"run", status:"planos 5k a 42k",
+  resumo:"Base aeróbica e economia de corrida sem roubar a musculação. Para quem começa (ou carrega mais peso), a progressão é caminhada/trote → corrida contínua: volume antes de velocidade, aumento de ~10% por semana como teto prático (regra de bolso, evidência fraca, mas conservadora). Treine por zonas de frequência cardíaca; a velocidade é só referência.",
   fonte:"OMS 2020 (150–300 min/sem moderado); Schumann 2022 e Lundberg 2022 (interferência menor com bike que corrida)",
   demandas:[{q:"Base aeróbica",onde:"tudo",treino:"Z2 3×/sem 30–45 min"},{q:"Economia de corrida",onde:"ritmo sustentado",treino:"Cadência 170–180, passada curta, trote regular"},{q:"Tolerância ao impacto",onde:"joelho, panturrilha, canela",treino:"Progressão lenta, panturrilha e sóleo no Legs"}],
   programa:{nome:"Do trote aos 5 km (8 semanas, 2–3×/sem)", fases:[
@@ -139,8 +139,8 @@ window.SPORTS = [
    {fase:"Depois", obj:"Corrida contínua 20–30 min Z2; 1 sessão/sem de 400–800 m em Z3–Z4 para o Hyrox", sessao:["Esteira moderado/forte (aba Cardio)"]}
   ]},
   aquecimento:["5 min caminhada rápida","Elevação de joelho, calcanhar no glúteo, skipping 20 m cada","Panturrilha no degrau 15","2 × 100 m progressivos"], prevencao:["Nordic curl 2×4–6 (van Dyk 2019)","Panturrilha unilateral 2×15","Ponte de glúteo unilateral 2×12","Tênis adequado ao peso; trocar a cada ~600–800 km"],
-  regras:["Progressão é condicional: dor, recuperação ruim ou sequência pesada de BJJ → repete a semana ou troca por Z2 contínuo.","Sem sprint como rotina.","Separar da musculação de perna por ≥3 h, ou colocar depois."]},
- {id:"boxe", nome:"Boxe", emoji:"box", status:"modo",
+  regras:["Progressão é condicional: dor, recuperação ruim ou sequência pesada de esporte → repete a semana ou troca por Z2 contínuo.","Sem sprint como rotina.","Separar da musculação de perna por ≥3 h, ou colocar depois."]},
+ {id:"boxe", nome:"Boxe", emoji:"box", status:"preparação física",
   resumo:"A força de impacto do soco vem do chão: força máxima e explosiva de membros inferiores diferenciam quem soca forte; força máxima de membros superiores não. Rounds de 3 min com 1 min de pausa exigem capacidade aeróbica alta e repetição de esforços.",
   fonte:"Beattie & Ruddock 2022, JSCR (revisão); Uthoff & Lenetsky 2023, SCJ; Hernandez-Martinez 2024 (scoping review)",
   demandas:[{q:"Força máxima de pernas",onde:"base do soco",treino:"Agachamento/hack 3×3–6 (RIR 2) 1–2×/sem"},{q:"Força explosiva",onde:"soco, esquiva",treino:"Saltos (CMJ, box jump) 3×5; arremesso de medball rotacional 3×6/lado; carga 30–70% 1RM com intenção máxima (ACSM 2026 para potência)"},{q:"Rotação / anti-rotação",onde:"transferência quadril→punho",treino:"Pallof press, chop e lift na polia"},{q:"Resistência de ombro",onde:"guarda alta por 3 min",treino:"Elevação lateral 15–20, isometria de guarda 30–45 s"},{q:"Condicionamento",onde:"rounds",treino:"Intervalados 3 min forte / 1 min leve × 4–6 (esteira, bike ou saco)"}],
@@ -150,7 +150,7 @@ window.SPORTS = [
   ]},
   aquecimento:["Pular corda 5 min","Rotação de tronco e ombro com elástico 2×12","Sombra 2 rounds de 2 min progressivos"], prevencao:["Manguito rotador com elástico 2×15","Punho: flexão e extensão com halter leve 2×15; bandagem sempre","Pescoço: isometria 2×10 s por direção"],
   regras:["Soco não é braço: priorize pernas e tronco.","Com cotovelo sintomático, evite socar saco pesado com cotovelo estendido ao máximo; luvas e bandagem sempre."]},
- {id:"futebol", nome:"Futebol", emoji:"football", status:"modo",
+ {id:"futebol", nome:"Futebol", emoji:"football", status:"preparação física",
   resumo:"Jogo de 90 min: ~10 km a intensidade média perto do limiar anaeróbico (80–90% FCmáx), com sprints, saltos, mudanças de direção e contato. Capacidade aeróbica alta, força/potência de pernas e prevenção de lesão de posterior (nordic) são o que a ciência sustenta.",
   fonte:"Stølen et al. 2005, Sports Med (revisão de 181 estudos); Hoff & Helgerud 2004 (intervalado 4×4 min a 90–95% FCmáx)",
   demandas:[{q:"Capacidade aeróbica",onde:"manter intensidade nos 90 min",treino:"4×4 min a 90–95% FCmáx com 3 min leves, 1–2×/sem"},{q:"Força máxima e potência",onde:"sprint, salto, disputa",treino:"Agachamento 3×4–6; saltos 3×5"},{q:"Mudança de direção",onde:"drible, marcação",treino:"Shuttle 5–10 m, afundo lateral"},{q:"Prevenção de lesão",onde:"posterior, virilha, tornozelo",treino:"Nordic curl 2×4–6, adução isométrica/Copenhagen, panturrilha unilateral"}],
@@ -160,8 +160,8 @@ window.SPORTS = [
   ]},
   aquecimento:["FIFA 11+ reduzido: corrida leve 3 min, mudanças de direção, saltos, nordic 1×3, prancha 20 s (10–12 min)"], prevencao:["Nordic curl 2×4–6 (−51% lesão de posterior)","Copenhagen/adução isométrica 2×20 s (virilha)","Equilíbrio unipodal 2×30 s (tornozelo)","Agachamento e RDL no dia de força"],
   regras:["Jogar com 130 kg é carga articular alta: campo society com tênis adequado, aquecimento com corrida progressiva e mobilidade de quadril.","Dia seguinte ao jogo = recuperação (Z1 ou off), não Legs pesado."]},
- {id:"natacao", nome:"Natação", emoji:"swim", status:"modo",
-  resumo:"A força em terra transfere pouco e indiretamente para a água. O que a revisão sistemática sustenta: força máxima em terra (2–4 sessões/sem por 6–12 semanas) e pliometria melhoram saídas e viradas; para o nado, treino específico com resistência na água (elásticos, paraquedas) transfere melhor. Baixo impacto: ótimo cardio para peso elevado e joelho sensível.",
+ {id:"natacao", nome:"Natação", emoji:"swim", status:"preparação física",
+  resumo:"A força em terra transfere pouco e indiretamente para a água. O que a revisão sistemática sustenta: força máxima em terra (2–4 sessões/sem por 6–12 semanas) e pliometria melhoram saídas e viradas; para o nado, treino específico com resistência na água (elásticos, paraquedas) transfere melhor. Baixo impacto: ótimo cardio para quem carrega mais peso ou tem joelho sensível.",
   fonte:"Amaro et al. 2018/2019, Science & Sports (revisão sistemática); Fone & van den Tillaar 2022, Sports Med Open (27 estudos); Crowley 2017",
   demandas:[{q:"Puxada (latíssimo, tríceps)",onde:"braçada",treino:"Puxada, pullover, tríceps — já no PPL"},{q:"Força de pernas e pliometria",onde:"saída e virada",treino:"Agachamento + saltos 3×5"},{q:"Core",onde:"posição do corpo",treino:"Pallof, prancha lateral"},{q:"Aeróbico",onde:"distância",treino:"Séries de 50–100 m com pausas curtas; nado contínuo Z2"}],
   programa:{nome:"Modo natação (2–3 sessões/sem na piscina + PPL)", fases:[
@@ -184,7 +184,7 @@ window.FEMININO = {
    {t:"Progressão", d:"Mesma double progression: bateu o teto de reps em todas as séries com técnica → sobe carga."}
   ],
   programas:[
-   {id:"stef_ul", nome:"Upper/Lower A-B (4×/semana) — Stefânia", origem:"ChatGPT, 2026-03-26, desenhado pelo Tiago com o coach virtual", semana:"Seg Upper A · Ter Lower A · Qui Upper B · Sex Lower B",
+   {id:"stef_ul", nome:"Upper/Lower A-B (4×/semana) — ênfase glúteo", origem:"Ficha de referência, desenhado pelo Tiago com o coach virtual", semana:"Seg Upper A · Ter Lower A · Qui Upper B · Sex Lower B",
     sessoes:[
      {nome:"UPPER A", normal:[["Supino máquina ou halteres","3×8–10"],["Puxada na frente","3×8–12"],["Remada baixa","3×8–12"],["Desenvolvimento máquina","2×8–10"],["Elevação lateral","2×12–15"],["Tríceps corda","2×10–15"],["Rosca direta","2×10–12"]], rapida:[["Supino máquina","3×8–10"],["Puxada na frente","3×8–12"],["Remada baixa","2×10–12"],["Elevação lateral","2×12–15"],["Tríceps corda + rosca","2×10–12 cada"]]},
      {nome:"LOWER A", normal:[["Leg press","3×10–12"],["Stiff com halteres","3×8–10"],["Cadeira extensora","2×12–15"],["Mesa/cadeira flexora","3×10–12"],["Afundo ou passada","2×10/perna"],["Panturrilha","3×12–15"],["Abdômen máquina ou crunch","2×12–15"]], rapida:[["Leg press","3×10–12"],["Stiff","3×8–10"],["Flexora","2×10–12"],["Extensora","2×12–15"],["Panturrilha","2×12–15"]]},
@@ -192,7 +192,7 @@ window.FEMININO = {
      {nome:"LOWER B", normal:[["Agachamento Smith, hack ou goblet","3×8–10"],["Cadeira flexora","3×10–12"],["Hip thrust","3×8–12"],["Cadeira abdutora","2×12–20"],["Búlgaro","2×8–10/perna"],["Panturrilha","3×12–15"],["Prancha ou abdominal infra","2–3 séries"]], rapida:[["Agachamento Smith/hack","3×8–10"],["Hip thrust","3×8–12"],["Flexora","2×10–12"],["Abdutora","2×15–20"],["Panturrilha","2×12–15"]]}
     ],
     regras:["RIR 1–3 na maioria das séries (nota 8–9 numa escala em que 10 é impossível fazer mais).","Descanso: grandes 90–150 s, pequenos 45–75 s.","Academia cheia: tirar acessório tudo bem, tirar o básico não."]},
-   {id:"lower_gluteo_predio", nome:"Lower ênfase glúteo — prédio (1–2×/semana)", origem:"ChatGPT, 2026-05-02 (treino feito para amigas no prédio)", semana:"Encaixa com funcional/musculação da academia",
+   {id:"lower_gluteo_predio", nome:"Lower ênfase glúteo — prédio (1–2×/semana)", origem:"Ficha de referência para academia de prédio", semana:"Encaixa com funcional/musculação da academia",
     sessoes:[{nome:"LOWER GLÚTEO", normal:[["Hip thrust no Smith","3×10–12"],["Agachamento no Smith (pés à frente)","2×8–10"],["Cadeira flexora","2–3×10–12"],["Kickback na polia","2×15–20"],["Abdução na polia","3×15–20"],["Cadeira extensora","2–3×12–15"],["Panturrilha em pé no Smith","3×12–15"]], rapida:[["Hip thrust","3×10–12"],["Agachamento Smith","2×8–10"],["Flexora","2×10–12"],["Abdução polia","2×15–20"]]}],
     regras:["Grandes: termina sentindo que faria mais 1–2 reps. Isoladores: até quase falha com técnica limpa.","Vídeos de execução: biblioteca (hip thrust, agachamento Smith, flexora, kickback, abdução, extensora, panturrilha)."]}
   ]

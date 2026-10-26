@@ -173,3 +173,8 @@ a{color:var(--ember)}
 
 @media (min-width:720px){.grid3{grid-template-columns:repeat(4,1fr)}.view{padding-left:24px;padding-right:24px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* v3 */
+.item.next{border-color:color-mix(in srgb,var(--ember) 45%,var(--line));background:linear-gradient(135deg,var(--ember-soft),var(--s1) 70%)}
+.switch{position:relative;display:inline-block;width:46px;height:28px;flex:none}.switch input{opacity:0;width:0;height:0}.switch i{position:absolute;inset:0;background:var(--s3);border-radius:999px;transition:background var(--fast)}.switch i:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:var(--tx);border-radius:50%;transition:transform var(--fast) var(--spring)}.switch input:checked+i{background:var(--ember)}.switch input:checked+i:before{transform:translateX(18px)}
+.chips .chip.warn.on{background:color-mix(in srgb,var(--stop) 28%,var(--s1));color:var(--stop)}
