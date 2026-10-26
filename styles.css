@@ -111,8 +111,8 @@ label.row{display:flex;align-items:center;gap:10px;text-transform:none;letter-sp
 .timer{font-size:56px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:-.03em;font-family:var(--num);line-height:1;transition:color var(--base)}
 .timer.up{color:var(--ember);animation:pulse 1s var(--ease) 3}
 @keyframes pulse{50%{transform:scale(1.04)}}
-.seg{display:flex;background:var(--s2);border-radius:var(--r2);padding:4px;margin:10px 0;gap:2px}
-.seg button{flex:1;background:none;border:0;color:var(--tx2);padding:9px 6px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:all var(--fast) var(--ease)}
+.seg{display:flex;background:var(--s2);border-radius:var(--r2);padding:4px;margin:10px 0;gap:2px;overflow-x:auto;scrollbar-width:none}.seg::-webkit-scrollbar{display:none}
+.seg button{flex:1 0 auto;white-space:nowrap;background:none;border:0;color:var(--tx2);padding:9px 12px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:all var(--fast) var(--ease)}
 .seg button.on{background:var(--s1);color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.25)}
 details{background:var(--s1);border:1px solid var(--line);border-radius:var(--r2);padding:12px 16px;margin:10px 0}
 summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center}
