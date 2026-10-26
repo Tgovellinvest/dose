@@ -6,7 +6,7 @@
 - **p01 A dose certa.** — "O corpo responde ao estímulo certo, na quantidade certa, repetido por tempo suficiente. DOSE é um app grátis de treino, nutrição e progresso — cada regra com fonte. Link na bio."
 - **p02 Mais não é melhor.** — "Volume acima do teto vira fadiga, não músculo. O DOSE compara suas séries da semana com o teto da ciência por grupo muscular e avisa quando passou do ponto."
 - **p03 Sem outdoor.** — "Sem frase motivacional, sem culpa, sem feed, sem login obrigatório. Só a dose de hoje."
-- **p04 44 referências.** — "Cada regra do coach aponta para autor, periódico, ano e link. Aba Ciência, dentro do app."
+- **p04 45 referências.** — "Cada regra do coach aponta para autor, periódico, ano e link. Aba Ciência, dentro do app."
 - **p05 Grátis de verdade.** — "Funciona no navegador, instala na tela de início, dados ficam no seu aparelho. Conta só se quiser sincronizar."
 - **p06 O método.** — "Revisar → treinar → registrar → ajustar. A semana fecha, o coach lê, a próxima começa ajustada."
 
@@ -27,3 +27,7 @@
 ## Perfil
 - `avatar.png` (1080×1080) · capas de destaque `capa-*.png`.
 - Bio sugerida: "A dose certa de treino, nutrição e progresso. Grátis, com fonte. ↓"
+
+## Comunidade (pilar novo, 2026-10-26)
+- **p07 Cool é registrar.** — "Cada treino vira um card: sessão, corrida, semana, mês, medalha, % até a meta. Posta de onde quiser. #dose #adosecerta"
+- **p08 Poste o que fez.** — "Depois de registrar, o DOSE monta o card em um toque. Feed ou story. O número é seu; a linguagem é nossa."

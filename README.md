@@ -1,6 +1,6 @@
 # DOSE — a dose certa
 
-**App:** https://tgovellinvest.github.io/dose/ · PWA gratuita de treino, nutrição e progresso, baseada em 44 referências científicas listadas dentro do app (aba Ciência).
+**App:** https://tgovellinvest.github.io/dose/ · PWA gratuita de treino, nutrição e progresso, baseada em 45 referências científicas listadas dentro do app (aba Ciência).
 
 DOSE diz a dose certa de hoje, registra sem fricção e ajusta pela semana — sem motivação de outdoor, sem culpa, sem feed.
 

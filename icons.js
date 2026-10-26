@@ -44,6 +44,7 @@ const P={
  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
  play:'<path d="M8 5v14l11-7z"/>',
  card:'<rect x="4" y="5" width="16" height="14" rx="2.5"/><path d="M4 10h16M8 15h4"/>',
+ share:'<path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/>',
  star:'<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"/>',
  bike:'<circle cx="6" cy="16" r="3.5"/><circle cx="18" cy="16" r="3.5"/><path d="M6 16l4-7h5l3 7M10 9l4 7M13 5h3"/>',
  tennis:'<circle cx="12" cy="12" r="8"/><path d="M5 8c3 1 5 3 5 7M19 16c-3-1-5-3-5-7"/>',

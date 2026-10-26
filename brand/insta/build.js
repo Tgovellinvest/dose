@@ -30,6 +30,7 @@ h1{font-weight:900;text-transform:uppercase;letter-spacing:-0.025em;line-height:
 `;
 const head=(cls='')=>`<!doctype html><html class="${cls}"><head><meta charset="utf-8"><style>${CSS}</style></head><body>`;
 const foot=(r='@dose.app')=>`<div class="foot"><span>${r}</span><span>tgovellinvest.github.io/dose</span></div>`;
+const card=n=>'data:image/png;base64,'+fs.readFileSync(`/home/claude/insta/cards/${n}.png`).toString('base64');
 const shot=n=>'data:image/png;base64,'+fs.readFileSync(`/home/claude/insta/shots/${n}.png`).toString('base64');
 
 // ---------- POSICIONAMENTO ----------
@@ -47,7 +48,7 @@ const POS=[
    <p class="serif" style="font-size:44px;margin-top:40px;max-width:900px">Só a dose de hoje, registrada sem fricção, ajustada pela semana.</p></div>${foot()}</div>`},
  {id:'p04-com-fonte',html:`<div class="post"><div class="grain"></div><div class="wm">DOSE<i>.</i></div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:36px"><div class="eyebrow">Ciência, não achismo</div>
-   <div style="display:flex;align-items:baseline;gap:24px"><span class="num" style="font-size:300px;line-height:.85">44</span><span style="font-size:48px;font-weight:700;line-height:1.05;max-width:420px">referências<br>lidas e<br>conferidas</span></div>
+   <div style="display:flex;align-items:baseline;gap:24px"><span class="num" style="font-size:300px;line-height:.85">45</span><span style="font-size:48px;font-weight:700;line-height:1.05;max-width:420px">referências<br>lidas e<br>conferidas</span></div>
    <p class="serif" style="font-size:46px;max-width:900px">Cada regra do coach aponta para a fonte. Se não tem fonte, não entra no app.</p>
    <div style="display:flex;gap:16px;flex-wrap:wrap"><span class="chip">Hipertrofia</span><span class="chip">Nutrição</span><span class="chip">Recuperação</span><span class="chip">Esportes</span><span class="chip">Feminino</span></div></div>${foot()}</div>`},
  {id:'p05-gratis',html:`<div class="post"><div class="grain"></div><div class="wm">DOSE<i>.</i></div>
@@ -57,6 +58,15 @@ const POS=[
  {id:'p06-como-funciona',html:`<div class="post"><div class="grain"></div><div class="wm">DOSE<i>.</i></div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:40px"><div class="eyebrow">O método</div><h1 style="font-size:120px">Revisar.<br>Treinar.<br>Registrar.<br>Ajustar.</h1>
    <p class="serif" style="font-size:44px;max-width:900px">Um sistema operacional para o seu treino: a semana fecha, o coach lê, a próxima começa ajustada.</p></div>${foot()}</div>`},
+ {id:'p07-cool-e-registrar',html:`<div class="post"><div class="grain"></div><div class="wm">DOSE<i>.</i></div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:40px"><div class="eyebrow">Comunidade</div><h1 style="font-size:150px">Cool é<br>registrar.</h1>
+   <p class="serif" style="font-size:48px;max-width:900px">Treino, km, séries, medalhas, % até a meta. Cada registro vira um card para postar — com a sua cara e a nossa linguagem.</p>
+   <div style="display:flex;gap:16px;flex-wrap:wrap"><span class="chip on">#dose</span><span class="chip">#adosecerta</span><span class="chip">#registradonaoprometido</span></div></div>${foot()}</div>`},
+ {id:'p08-compartilhe-o-feito',html:`<div class="post"><div class="grain"></div><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="wm">DOSE<i>.</i></div><div class="eyebrow" style="margin-top:12px">Compartilhar</div></div>
+  <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:40px;align-items:center;margin-top:30px">
+   <div style="display:flex;flex-direction:column;gap:34px"><h1 style="font-size:84px">Poste o<br>que fez.<br>Não o que<br>prometeu.</h1><p class="serif" style="font-size:36px">Depois de cada treino, corrida ou medalha, o DOSE monta o card. Feed ou story, em um toque.</p></div>
+   <div style="display:flex;flex-direction:column;gap:18px"><img style="width:100%;border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.6)" src="${card('semana-feed')}"><img style="width:100%;border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.6)" src="${card('medalha-feed')}"></div></div>
+  <div style="margin-top:28px">${foot()}</div></div>`},
 ];
 
 // ---------- FUNCIONALIDADES (print + texto) ----------

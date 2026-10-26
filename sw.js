@@ -1,5 +1,5 @@
-const C='dose-v2.4';
-const F=['./','./index.html','./styles.css','./app.js','./views.js','./views2.js','./generator.js','./coach.js','./features.js','./cloud.js','./ads.js','./icons.js','./onboard.js','./data/sports2.js','./data/exercises.js','./data/programs.js','./data/foods.js','./manifest.json','./icon.svg','./apple-touch-icon.png','./icon-192.png','./icon-512.png','./termos.html','./privacidade.html','./legal.css'];
+const C='dose-v2.5';
+const F=['./','./index.html','./styles.css','./app.js','./views.js','./views2.js','./generator.js','./coach.js','./features.js','./cloud.js','./share.js','./ads.js','./icons.js','./onboard.js','./data/sports2.js','./data/exercises.js','./data/programs.js','./data/foods.js','./manifest.json','./icon.svg','./apple-touch-icon.png','./icon-192.png','./icon-512.png','./termos.html','./privacidade.html','./legal.css'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F).catch(()=>{})).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 // Network-first para o próprio site (sempre a versão nova quando há rede); cache como fallback offline.
