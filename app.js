@@ -3,7 +3,7 @@
 const EX = Object.fromEntries(window.EXERCISES.map(e=>[e.id,e]));
 const DB_KEY = 'guia-treino-v1';
 const DEFAULT = {
-  perfil:{nome:"", sexo:"m", idade:null, altura:null, peso:null, bf:null, atividade:"alto", objetivo:"cut", programa:"ppl2", modo:"predio", esporteFoco:"bjj", cotovelo:true, joelho:false, protocoloCoach:{kcal:null,p:null,c:null,g:null,fonte:""}},
+  perfil:{nome:"", sexo:"m", idade:null, altura:null, peso:null, bf:null, atividade:"mod", objetivo:"manter", programa:"ul_4", modo:"completa", esporteFoco:"", cotovelo:false, joelho:false, experiencia:"intermediario", pesoAlvo:null, bfAlvo:null, metaEsporte:"", esportes:{}, diasMusc:[], protocoloCoach:{kcal:null,p:null,c:null,g:null,fonte:""}},
   rotacao:{ppl2:0, predio:0},
   logs:[],        // {id,data,programa,sessao,nome,sets:[{ex,set,peso,reps,rir,done}],dur,bjj,dorCot,dorJo,notas}
   cardio:[],      // {data,tipo,min,fc,dist,rpe,fonte}
@@ -47,12 +47,19 @@ function programa(){ return window.PROGRAMS[S.perfil.programa] || window.PROGRAM
 function proximaSessaoId(){ const p=programa(); const i=(S.rotacao[p.id]||0)%p.rotacao.length; return p.rotacao[i]; }
 function avancaRotacao(){ const p=programa(); S.rotacao[p.id]=((S.rotacao[p.id]||0)+1)%p.rotacao.length; save(); }
 function diaSemana(d=new Date()){ return ["dom","seg","ter","qua","qui","sex","sab"][d.getDay()]; }
+// Semana do usuário: dias de musculação e de esporte vêm do perfil (onboarding). Sem perfil preenchido, cai no programa.
+function semanaUsuario(){ const pf=S.perfil; const out={}; const dsem=["seg","ter","qua","qui","sex","sab","dom"]; const temPerfil=(pf.diasMusc&&pf.diasMusc.length)||Object.keys(pf.esportes||{}).length;
+  const base=programa().semana||window.PROGRAMS.ppl2.semana;
+  dsem.forEach(d=>{ if(temPerfil){ const esp=Object.entries(pf.esportes||{}).filter(([k,dias])=>(dias||[]).includes(d)).map(([k])=>k); out[d]={musc:(pf.diasMusc||[]).includes(d)?"rotação":null, esportes:esp, bjj:esp.includes("bjj")?"fixo":null}; }
+    else { const b=base[d]||{}; out[d]={musc:b.musc||null, esportes:b.bjj?["bjj"]:[], bjj:b.bjj||null}; } });
+  return out; }
 function planoHoje(){
-  const p=programa(); const ds=diaSemana(); const sem=window.PROGRAMS.ppl2.semana[ds];
+  const p=programa(); const ds=diaSemana(); const sem=semanaUsuario()[ds];
   const prox=proximaSessaoId();
-  let musc=null;
-  if(sem.musc==="rotação"||sem.musc) musc=prox; // sempre o próximo da rotação (regra: PPL contínuo)
-  return {dia:ds, bjj:sem.bjj, musc, sessao:musc?p.sessoes[musc]:null, nota:(ds==="qua"&&sem.bjj==="opcional")?"Se fizer BJJ forte hoje, não faça Legs pesado normal.":(ds==="sab"?"O quarto treino de musculação é opcional se houver BJJ.":"")};
+  const musc=sem.musc?prox:null; // sempre o próximo da rotação (programa contínuo)
+  const esp=(sem.esportes||[]).map(k=>(window.SPORTS.find(s=>s.id===k)||{}).nome||k);
+  let nota=""; if(musc&&esp.length) nota=`Dia com ${esp.join(" e ")}: musculação antes, ou separe ≥3 h. Se o esporte for duro, corte 1 série por exercício.`; else if(!musc&&esp.length) nota=`Hoje é ${esp.join(" e ")}. O próximo da rotação é ${p.sessoes[prox].nome}.`;
+  return {dia:ds, bjj:sem.bjj, esportes:sem.esportes||[], musc, sessao:musc?p.sessoes[musc]:null, nota};
 }
 
 // ---------- Progressão (double progression) ----------
@@ -85,8 +92,10 @@ function calcNutri(p){
   let ffm=null;
   if(bf){ ffm=peso*(1-bf/100); eq.push({n:"Cunningham (massa magra)",v:500+22*ffm}); eq.push({n:"Katch-McArdle",v:370+21.6*ffm}); }
   const tmb=Math.min(...eq.map(e=>e.v));
-  const at=window.NUTRI.atividade.find(a=>a.k===atividade)||window.NUTRI.atividade[2];
-  const tdee=tmb*at.fc; const tdeePadrao=tmb*at.f;
+  const atSel=window.NUTRI.atividade.find(a=>a.k===atividade)||window.NUTRI.atividade[2]; const MOD=window.NUTRI.atividade[2];
+  // Regra DOSE: por mais que a pessoa treine, o gasto é calculado como 'moderado'. Quem se declara atleta costuma superestimar; errar para baixo e ajustar pelo peso real é mais seguro.
+  const at=atSel.fc>MOD.fc?Object.assign({},atSel,{fc:MOD.fc,capped:true,declarado:atSel.n}):atSel;
+  const tdee=tmb*at.fc; const tdeePadrao=tmb*atSel.f;
   const ob=window.NUTRI.objetivos.find(o=>o.k===objetivo)||window.NUTRI.objetivos[0];
   let alvo=tdee*(1+ob.d); if(alvo<tmb && ob.d<0) alvo=tmb;
   const protMin = ffm? Math.max(1.6*peso,2.3*ffm) : 1.6*peso; const protMax = ffm? Math.min(3.1*ffm,2.4*peso) : 2.2*peso;
@@ -114,23 +123,23 @@ function medalhas(){
   const cint=S.checkins.filter(c=>c.cintura).map(c=>c.cintura); const cintPerdida = cint.length>1? Math.max(...cint)-cint[cint.length-1]:0;
   const tiers=(v,[a,b,c])=>v>=c?3:v>=b?2:v>=a?1:0;
   const list=[
-   {cat:"Força",ico:"🏋️",nome:"Sessões de força",v:nMusc,t:[1,25,100],un:"sessões"},
-   {cat:"Força",ico:"📈",nome:"Exercícios com PR registrado",v:prs,t:[5,15,30],un:"exercícios"},
-   {cat:"Tatame",ico:"🥋",nome:"Treinos no tatame",v:nBjj,t:[10,50,150],un:"treinos"},
-   {cat:"Arena",ico:"🔥",nome:"Blocos Hyrox",v:nHyrox,t:[1,8,24],un:"blocos"},
-   {cat:"Asfalto",ico:"👟",nome:"Sessões de corrida/esteira",v:nCorr,t:[3,20,60],un:"sessões"},
-   {cat:"Base",ico:"❤️",nome:"Minutos em Z2",v:minZ2,t:[60,600,2000],un:"min"},
-   {cat:"Ringue",ico:"🥊",nome:"Sessões de boxe",v:nBoxe,t:[1,10,30],un:"sessões"},
-   {cat:"Campo",ico:"⚽",nome:"Jogos/sessões",v:nFut,t:[1,10,30],un:"sessões"},
-   {cat:"Piscina",ico:"🏊",nome:"Sessões na piscina",v:nNat,t:[1,10,30],un:"sessões"},
-   {cat:"Constância",ico:"🗓️",nome:"Semanas seguidas (≥3 treinos)",v:st,t:[2,6,12],un:"semanas"},
-   {cat:"Prova",ico:"📏",nome:"Check-ins semanais",v:ck,t:[1,8,24],un:"check-ins"},
-   {cat:"Forma",ico:"⚖️",nome:"Quilos abaixo do máximo registrado",v:Math.round(perdido*10)/10,t:[2,10,25],un:"kg"},
-   {cat:"Forma",ico:"📐",nome:"Centímetros de cintura a menos",v:Math.round(cintPerdida*10)/10,t:[2,8,20],un:"cm"}
+   {cat:"Força",ico:"strength",nome:"Sessões de força",v:nMusc,t:[1,25,100],un:"sessões"},
+   {cat:"Força",ico:"progress",nome:"Exercícios com PR registrado",v:prs,t:[5,15,30],un:"exercícios"},
+   {cat:"Tatame",ico:"bjj",nome:"Treinos no tatame",v:nBjj,t:[10,50,150],un:"treinos"},
+   {cat:"Arena",ico:"flame",nome:"Blocos Hyrox",v:nHyrox,t:[1,8,24],un:"blocos"},
+   {cat:"Asfalto",ico:"run",nome:"Sessões de corrida/esteira",v:nCorr,t:[3,20,60],un:"sessões"},
+   {cat:"Base",ico:"heart",nome:"Minutos em Z2",v:minZ2,t:[60,600,2000],un:"min"},
+   {cat:"Ringue",ico:"box",nome:"Sessões de boxe",v:nBoxe,t:[1,10,30],un:"sessões"},
+   {cat:"Campo",ico:"football",nome:"Jogos/sessões",v:nFut,t:[1,10,30],un:"sessões"},
+   {cat:"Piscina",ico:"swim",nome:"Sessões na piscina",v:nNat,t:[1,10,30],un:"sessões"},
+   {cat:"Constância",ico:"calendar",nome:"Semanas seguidas (≥3 treinos)",v:st,t:[2,6,12],un:"semanas"},
+   {cat:"Prova",ico:"ruler",nome:"Check-ins semanais",v:ck,t:[1,8,24],un:"check-ins"},
+   {cat:"Forma",ico:"scale",nome:"Quilos abaixo do máximo registrado",v:Math.round(perdido*10)/10,t:[2,10,25],un:"kg"},
+   {cat:"Forma",ico:"ruler",nome:"Centímetros de cintura a menos",v:Math.round(cintPerdida*10)/10,t:[2,8,20],un:"cm"}
   ];
   return list.map(m=>({...m,tier:tiers(m.v,m.t),prox:m.t.find(x=>x>m.v)||null}));
 }
-const TIER={0:"—",1:"🥉 Bronze",2:"🥈 Prata",3:"🥇 Ouro"};
+const TIER={0:"—",1:"Bronze",2:"Prata",3:"Ouro"};
 
 // ---------- Timer de descanso ----------
 let timer={end:0,int:null};
@@ -167,4 +176,4 @@ document.getElementById('tabbar').addEventListener('click',e=>{const b=e.target.
 function sheet(html){ const s=document.getElementById('sheet'); document.getElementById('sheetBody').innerHTML=html; s.classList.remove('hidden'); }
 function closeSheet(){ document.getElementById('sheet').classList.add('hidden'); }
 document.getElementById('sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') closeSheet(); });
-window.addEventListener('DOMContentLoaded',()=>{ if(!location.hash) location.hash="hoje"; route(); });
+window.addEventListener('DOMContentLoaded',()=>{ document.querySelectorAll('.tabbar i[data-i]').forEach(el=>el.innerHTML=I(el.dataset.i)); if(!location.hash) location.hash="hoje"; route(); });

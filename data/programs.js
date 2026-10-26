@@ -106,7 +106,7 @@ window.CARDIO = {
 
 // ---------- Esportes ----------
 window.SPORTS = [
- {id:"bjj", nome:"Jiu-Jitsu", emoji:"🥋", status:"vigente",
+ {id:"bjj", nome:"Jiu-Jitsu", emoji:"bjj", status:"vigente",
   resumo:"Esporte intermitente: esforços de alta intensidade de 5–30 s intercalados com pausas, por 5–10 min. Sucesso associa-se a força máxima, força isométrica (pegada, controle) e endurance muscular; VO₂max (42–52 ml/kg/min) não discrimina nível competitivo.",
   fonte:"Andreato et al. 2017, Sports Med Open (revisão sistemática de 58 estudos)",
   demandas:[{q:"Força máxima",onde:"queda, body lock, pressão, sair de posição ruim",treino:"Compostos pesados do PPL 2.0 (supino, agachamento, puxada, remada)"},{q:"Força isométrica",onde:"pegada, underhook, over-under, 100 kg, montada",treino:"Bloco de isometrias (remada isométrica, Pallof, adução, split-squat hold)"},{q:"Anti-rotação",onde:"impedir raspagem, manter base, body lock",treino:"Pallof press hold"},{q:"Adução de quadril",onde:"guarda, meia, controle de pernas, ashi",treino:"Adução isométrica, adutor magno no agachamento"},{q:"Resistência muscular",onde:"manter pressão sem morrer em 40 s",treino:"Séries de 12–20 em isoladores, bloco Hyrox leve"},{q:"Capacidade de repetir esforços",onde:"rola de 6 min, torneio com várias lutas",treino:"Intervalado 1–2 min + Z2 base"}],
@@ -115,7 +115,7 @@ window.SPORTS = [
   blocos:[{nome:"Isometrias para performance (2 por sessão, 30–50% da força, sem prender a respiração)", itens:["Remada isométrica 2×15–30 s (cotovelo 70–100°)","Split-squat hold 2×20–30 s por perna","Pallof press hold 2×20–30 s por lado","Adução isométrica 2×20–30 s","Pegada em toalha/Gi 2×20–30 s — suspensa enquanto o cotovelo doer"], progressao:"1) tolerância à posição → 2) duração → 3) resistência."}],
   aquecimento:["5 min de corrida leve ou pular corda","Mobilidade de quadril (90/90, cossack) 2 min","Ponte de glúteo e rotação externa de ombro com elástico 2×12","Rolamentos, quedas e shrimp 3 min"], prevencao:["Pescoço: isometria 4 direções 2×10 s","Cotovelo: evitar pegadas máximas com tendão sintomático; descarregar após campeonatos","Joelho: adução e abdução com elástico 2×15","Dedos: abrir e fechar com elástico 2×20"],
   link:"O jogo técnico (guardas, passagens, finalizações, vídeos) vive no BJJ Lab e em 04 - Hobbies/02 - BJJ do vault."},
- {id:"hyrox", nome:"Hyrox", emoji:"🏃", status:"novo (out/2026)",
+ {id:"hyrox", nome:"Hyrox", emoji:"hyrox", status:"novo (out/2026)",
   resumo:"Prova padronizada: 8 × 1 km de corrida intercalados com 8 estações, sempre na mesma ordem. A corrida é quase metade do tempo final, por isso ritmo e capacidade aeróbica decidem mais que força bruta. Primeira prova típica: 90–120 min.",
   fonte:"Formato oficial Hyrox (hyrox.com); Brandt et al. 2025 (primeiro estudo revisado por pares, mediana 86,5 min em prova simulada)",
   estacoes:[{n:1,nome:"SkiErg",dose:"1.000 m",open:"—"},{n:2,nome:"Sled push",dose:"50 m",open:"152 kg (M Open, inclui sled)"},{n:3,nome:"Sled pull",dose:"50 m",open:"103 kg (M Open)"},{n:4,nome:"Burpee broad jump",dose:"80 m",open:"—"},{n:5,nome:"Remo",dose:"1.000 m",open:"—"},{n:6,nome:"Farmer carry",dose:"200 m",open:"2 × 24 kg"},{n:7,nome:"Sandbag lunges",dose:"100 m",open:"20 kg"},{n:8,nome:"Wall balls",dose:"100 reps",open:"6 kg, alvo 3 m"}],
@@ -127,7 +127,7 @@ window.SPORTS = [
   ]},
   aquecimento:["5 min caminhada rápida → trote","Agachamento corporal 10, afundo 6/perna, ponte 10","Pull-apart 15 e rotação de ombro 10","2 × 200 m progressivos"], prevencao:["Panturrilha e sóleo 2×15 (impacto)","Nordic curl 2×4","Prancha lateral 2×30 s","Volume de corrida sobe no máximo 10% por semana"],
   regras:["Hyrox fica separado da musculação: não vira terceiro treino de perna no mesmo dia do Legs.","Com cotovelo sintomático: sem burpee com flexão, sem farmer carry pesado, sem sled pull.","Primeiro volume, depois velocidade.","Peso corporal alto → progressão de corrida conservadora; se doer joelho, esteira inclinada (fora de casa) ou bike substituem corridas."]},
- {id:"corrida", nome:"Corrida", emoji:"👟", status:"base",
+ {id:"corrida", nome:"Corrida", emoji:"run", status:"base",
   resumo:"Objetivo atual: condicionamento aeróbico e preparação para Hyrox sem comprometer musculação e BJJ. Com peso elevado, a progressão é de caminhada/trote para corrida contínua, volume antes de velocidade, aumento de ~10% por semana como teto prático (regra de bolso, evidência fraca, mas conservadora).",
   fonte:"OMS 2020 (150–300 min/sem moderado); Schumann 2022 e Lundberg 2022 (interferência menor com bike que corrida)",
   demandas:[{q:"Base aeróbica",onde:"tudo",treino:"Z2 3×/sem 30–45 min"},{q:"Economia de corrida",onde:"ritmo sustentado",treino:"Cadência 170–180, passada curta, trote regular"},{q:"Tolerância ao impacto",onde:"joelho, panturrilha, canela",treino:"Progressão lenta, panturrilha e sóleo no Legs"}],
@@ -140,7 +140,7 @@ window.SPORTS = [
   ]},
   aquecimento:["5 min caminhada rápida","Elevação de joelho, calcanhar no glúteo, skipping 20 m cada","Panturrilha no degrau 15","2 × 100 m progressivos"], prevencao:["Nordic curl 2×4–6 (van Dyk 2019)","Panturrilha unilateral 2×15","Ponte de glúteo unilateral 2×12","Tênis adequado ao peso; trocar a cada ~600–800 km"],
   regras:["Progressão é condicional: dor, recuperação ruim ou sequência pesada de BJJ → repete a semana ou troca por Z2 contínuo.","Sem sprint como rotina.","Separar da musculação de perna por ≥3 h, ou colocar depois."]},
- {id:"boxe", nome:"Boxe", emoji:"🥊", status:"modo",
+ {id:"boxe", nome:"Boxe", emoji:"box", status:"modo",
   resumo:"A força de impacto do soco vem do chão: força máxima e explosiva de membros inferiores diferenciam quem soca forte; força máxima de membros superiores não. Rounds de 3 min com 1 min de pausa exigem capacidade aeróbica alta e repetição de esforços.",
   fonte:"Beattie & Ruddock 2022, JSCR (revisão); Uthoff & Lenetsky 2023, SCJ; Hernandez-Martinez 2024 (scoping review)",
   demandas:[{q:"Força máxima de pernas",onde:"base do soco",treino:"Agachamento/hack 3×3–6 (RIR 2) 1–2×/sem"},{q:"Força explosiva",onde:"soco, esquiva",treino:"Saltos (CMJ, box jump) 3×5; arremesso de medball rotacional 3×6/lado; carga 30–70% 1RM com intenção máxima (ACSM 2026 para potência)"},{q:"Rotação / anti-rotação",onde:"transferência quadril→punho",treino:"Pallof press, chop e lift na polia"},{q:"Resistência de ombro",onde:"guarda alta por 3 min",treino:"Elevação lateral 15–20, isometria de guarda 30–45 s"},{q:"Condicionamento",onde:"rounds",treino:"Intervalados 3 min forte / 1 min leve × 4–6 (esteira, bike ou saco)"}],
@@ -150,7 +150,7 @@ window.SPORTS = [
   ]},
   aquecimento:["Pular corda 5 min","Rotação de tronco e ombro com elástico 2×12","Sombra 2 rounds de 2 min progressivos"], prevencao:["Manguito rotador com elástico 2×15","Punho: flexão e extensão com halter leve 2×15; bandagem sempre","Pescoço: isometria 2×10 s por direção"],
   regras:["Soco não é braço: priorize pernas e tronco.","Com cotovelo sintomático, evite socar saco pesado com cotovelo estendido ao máximo; luvas e bandagem sempre."]},
- {id:"futebol", nome:"Futebol", emoji:"⚽", status:"modo",
+ {id:"futebol", nome:"Futebol", emoji:"football", status:"modo",
   resumo:"Jogo de 90 min: ~10 km a intensidade média perto do limiar anaeróbico (80–90% FCmáx), com sprints, saltos, mudanças de direção e contato. Capacidade aeróbica alta, força/potência de pernas e prevenção de lesão de posterior (nordic) são o que a ciência sustenta.",
   fonte:"Stølen et al. 2005, Sports Med (revisão de 181 estudos); Hoff & Helgerud 2004 (intervalado 4×4 min a 90–95% FCmáx)",
   demandas:[{q:"Capacidade aeróbica",onde:"manter intensidade nos 90 min",treino:"4×4 min a 90–95% FCmáx com 3 min leves, 1–2×/sem"},{q:"Força máxima e potência",onde:"sprint, salto, disputa",treino:"Agachamento 3×4–6; saltos 3×5"},{q:"Mudança de direção",onde:"drible, marcação",treino:"Shuttle 5–10 m, afundo lateral"},{q:"Prevenção de lesão",onde:"posterior, virilha, tornozelo",treino:"Nordic curl 2×4–6, adução isométrica/Copenhagen, panturrilha unilateral"}],
@@ -160,7 +160,7 @@ window.SPORTS = [
   ]},
   aquecimento:["FIFA 11+ reduzido: corrida leve 3 min, mudanças de direção, saltos, nordic 1×3, prancha 20 s (10–12 min)"], prevencao:["Nordic curl 2×4–6 (−51% lesão de posterior)","Copenhagen/adução isométrica 2×20 s (virilha)","Equilíbrio unipodal 2×30 s (tornozelo)","Agachamento e RDL no dia de força"],
   regras:["Jogar com 130 kg é carga articular alta: campo society com tênis adequado, aquecimento com corrida progressiva e mobilidade de quadril.","Dia seguinte ao jogo = recuperação (Z1 ou off), não Legs pesado."]},
- {id:"natacao", nome:"Natação", emoji:"🏊", status:"modo",
+ {id:"natacao", nome:"Natação", emoji:"swim", status:"modo",
   resumo:"A força em terra transfere pouco e indiretamente para a água. O que a revisão sistemática sustenta: força máxima em terra (2–4 sessões/sem por 6–12 semanas) e pliometria melhoram saídas e viradas; para o nado, treino específico com resistência na água (elásticos, paraquedas) transfere melhor. Baixo impacto: ótimo cardio para peso elevado e joelho sensível.",
   fonte:"Amaro et al. 2018/2019, Science & Sports (revisão sistemática); Fone & van den Tillaar 2022, Sports Med Open (27 estudos); Crowley 2017",
   demandas:[{q:"Puxada (latíssimo, tríceps)",onde:"braçada",treino:"Puxada, pullover, tríceps — já no PPL"},{q:"Força de pernas e pliometria",onde:"saída e virada",treino:"Agachamento + saltos 3×5"},{q:"Core",onde:"posição do corpo",treino:"Pallof, prancha lateral"},{q:"Aeróbico",onde:"distância",treino:"Séries de 50–100 m com pausas curtas; nado contínuo Z2"}],
@@ -249,9 +249,9 @@ window.SCIENCE = [
 
 // ---------- Nutrição (regras da calculadora) ----------
 window.NUTRI = {
-  atividade:[{k:"sed",n:"Sedentário · trabalho sentado, sem treino",f:1.2,fc:1.15},{k:"leve",n:"Leve · 1–2 treinos por semana",f:1.375,fc:1.3},{k:"mod",n:"Moderado · 3–4 treinos por semana",f:1.55,fc:1.45},{k:"alto",n:"Alto · 5–7 treinos por semana (musculação + esporte)",f:1.725,fc:1.6},{k:"muito",n:"Muito alto · 2 treinos por dia ou trabalho físico",f:1.9,fc:1.7}],
-  nota:"Conservador = menor TMB entre as equações × fator de atividade reduzido (fc). Relógios inflam gasto de treino de força em 20–35%; por isso o app não soma 'calorias ativas' do relógio.",
-  objetivos:[{k:"cut",n:"Perder gordura (déficit 20%)",d:-0.2},{k:"cutLeve",n:"Perder gordura devagar (déficit 12%)",d:-0.12},{k:"recomp",n:"Recomposição (déficit leve, proteína alta)",d:-0.06},{k:"manter",n:"Manter peso e performance",d:0},{k:"bulkLeve",n:"Ganhar massa devagar (superávit 5%)",d:0.05},{k:"bulk",n:"Ganhar massa (superávit 10%)",d:0.10},{k:"performance",n:"Performance esportiva (manutenção + carbo no treino)",d:0.02}],
+  atividade:[{k:"sed",n:"Quase não me mexo (trabalho sentado, sem treino)",f:1.2,fc:1.15},{k:"leve",n:"Treino 1–2 vezes por semana",f:1.375,fc:1.3},{k:"mod",n:"Treino 3–4 vezes por semana",f:1.55,fc:1.45},{k:"alto",n:"Treino 5–7 vezes por semana",f:1.725,fc:1.6},{k:"muito",n:"Treino 2 vezes por dia ou trabalho físico pesado",f:1.9,fc:1.7}],
+  nota:"Conservador = menor TMB entre as equações × fator de atividade reduzido, com teto em '3–4 treinos por semana' mesmo para quem treina mais ou se declara atleta: errar para baixo e ajustar pelo peso real é mais seguro. Relógios inflam gasto de treino de força em 20–35%; por isso o app não soma 'calorias ativas' do relógio.",
+  objetivos:[{k:"cut",n:"Perder gordura mais rápido (−20%)",d:-0.2},{k:"cutLeve",n:"Perder gordura com calma (−12%)",d:-0.12},{k:"recomp",n:"Trocar gordura por músculo (−6%, proteína alta)",d:-0.06},{k:"manter",n:"Manter como estou",d:0},{k:"bulkLeve",n:"Ganhar músculo com calma (+5%)",d:0.05},{k:"bulk",n:"Ganhar músculo mais rápido (+10%)",d:0.10},{k:"performance",n:"Render no esporte (manutenção, mais carbo no treino)",d:0.02}],
   regras:["Déficit de 10–25% (nunca abaixo da TMB); meta de 0,5–1% do peso por semana (Helms 2014).","Proteína: 1,6–2,2 g/kg de peso; em déficit, 2,3–3,1 g/kg de massa magra quando % de gordura for conhecido (ISSN 2017; Helms 2014).","Gordura: 0,6–1,0 g/kg, no mínimo 20% das calorias.","Carboidrato: o que sobrar, concentrado em torno de treino e BJJ.","Água: ~35 ml/kg/dia + 500 ml por hora de treino (referência prática).","Fibra 25–38 g/dia.","Uma refeição fora não vira três dias fora; próxima refeição normal."],
   precedencia:"Se existe um protocolo formal de coach/nutricionista vigente, ele prevalece sobre esta calculadora. Use a calculadora para entender a lógica e conferir se o protocolo está dentro das faixas de consenso."
 };

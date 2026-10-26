@@ -21,20 +21,22 @@
 <body>
 <header class="top">
   <div class="brand"><span>Dose<span class="dotp">.</span></span><span id="topTitle">Hoje</span></div>
-  <div class="top-right"><span id="modeBadge" class="badge"></span></div>
+  <div class="top-right"><span id="modeBadge" class="badge" hidden></span></div>
 </header>
 <main id="view" class="view"></main>
 <nav class="tabbar" id="tabbar">
-  <button data-r="hoje"><i>⌂</i><span>Hoje</span></button>
-  <button data-r="treino"><i>▦</i><span>Treino</span></button>
-  <button data-r="nutricao"><i>◐</i><span>Nutrição</span></button>
-  <button data-r="progresso"><i>↗</i><span>Progresso</span></button>
-  <button data-r="mais"><i>⋯</i><span>Mais</span></button>
+  <button data-r="hoje"><i data-i="home"></i><span>Hoje</span></button>
+  <button data-r="treino"><i data-i="grid"></i><span>Treino</span></button>
+  <button data-r="nutricao"><i data-i="nutrition"></i><span>Nutrição</span></button>
+  <button data-r="progresso"><i data-i="progress"></i><span>Progresso</span></button>
+  <button data-r="mais"><i data-i="more"></i><span>Mais</span></button>
 </nav>
 <div id="sheet" class="sheet hidden"><div class="sheet-card"><div class="sheet-handle"></div><div id="sheetBody"></div></div></div>
 <div id="toast" class="toast hidden"></div>
+<script src="icons.js"></script>
 <script src="data/exercises.js"></script>
 <script src="data/programs.js"></script>
+<script src="data/sports2.js"></script>
 <script src="data/foods.js"></script>
 <script src="generator.js"></script>
 <script src="coach.js"></script>
@@ -42,6 +44,7 @@
 <script src="app.js"></script>
 <script src="views.js"></script>
 <script src="views2.js"></script>
+<script src="onboard.js"></script>
 <script src="cloud.js"></script>
 <script src="ads.js"></script>
 <script>
