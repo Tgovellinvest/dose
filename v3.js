@@ -157,6 +157,10 @@ V.hoje=()=>{ let html=_hoje(); const semPerfil=!(S.perfil.diasMusc||[]).length&&
   return html; };
 const _onb=V.onboard; V.onboard=(p)=>{ document.body.classList.add('onboarding'); return _onb(p); };
 const _route=window.route; window.addEventListener('hashchange',()=>{ if(!/^#onboard/.test(location.hash)) document.body.classList.remove('onboarding'); });
+// Pílula do timer (padrão Hevy/Strong): aparece quando o card do timer sai da tela e o descanso está rodando
+(function(){ const pill=document.createElement('div'); pill.className='timer-pill'; pill.id='timerPill'; pill.textContent='00:00'; pill.onclick=()=>{ const c=document.getElementById('timerCard'); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); }; document.body.appendChild(pill);
+  let io=null; const arm=()=>{ if(io) io.disconnect(); const c=document.getElementById('timerCard'); if(!c) return pill.classList.remove('show'); io=new IntersectionObserver(([e])=>{ const running=window.timer&&window.timer.end&&window.timer.end>Date.now(); pill.classList.toggle('show',!e.isIntersecting&&!!running); },{threshold:0}); io.observe(c); };
+  window.addEventListener('hashchange',()=>setTimeout(arm,50)); setTimeout(arm,300); const _st=window.startTimer; window.startTimer=function(sec){ _st(sec); setTimeout(arm,10); }; })();
 // Sessão: dores múltiplas no fim (substitui os dois campos fixos)
 const _sessao=V.sessao;
 V.sessao=(p)=>{ let html=_sessao(p); html=html.replace(/<div class="grid2"><div><label>Dor cotovelo pós \(0–10\)<\/label><input id="lgCot" type="number" value="0"><\/div><div><label>Dor joelho pós \(0–10\)<\/label><input id="lgJo" type="number" value="0"><\/div><\/div>/,`<label>Dor depois (0–10) — toque para marcar</label><div id="lgDores">${V._doresInputs('lg')}</div><input id="lgCot" type="hidden" value="0"><input id="lgJo" type="hidden" value="0">`).replace('<label>BJJ no mesmo dia?</label>','<label>Esporte no mesmo dia?</label>'); return html; };

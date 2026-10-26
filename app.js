@@ -150,9 +150,9 @@ function medalhas(){
 const TIER={0:"—",1:"Bronze",2:"Prata",3:"Ouro"};
 
 // ---------- Timer de descanso ----------
-let timer={end:0,int:null};
+let timer={end:0,int:null}; window.timer=timer;
 function startTimer(sec){ const el0=document.getElementById('timerVal'); if(el0){ el0.classList.remove('up'); el0.classList.add('run'); } timer.end=Date.now()+sec*1000; clearInterval(timer.int); timer.int=setInterval(tickTimer,250); tickTimer(); }
-function tickTimer(){ const el=document.getElementById('timerVal'); if(!el){clearInterval(timer.int);return;} const r=Math.max(0,Math.round((timer.end-Date.now())/1000)); el.textContent=`${String(Math.floor(r/60)).padStart(2,'0')}:${String(r%60).padStart(2,'0')}`; if(r<=0){clearInterval(timer.int); el.classList.add("up"); if(navigator.vibrate) navigator.vibrate([200,100,200]); if(window.avisaFim) window.avisaFim();} }
+function tickTimer(){ const el=document.getElementById('timerVal'); if(!el){clearInterval(timer.int);return;} const r=Math.max(0,Math.round((timer.end-Date.now())/1000)); el.textContent=`${String(Math.floor(r/60)).padStart(2,'0')}:${String(r%60).padStart(2,'0')}`; const pill=document.getElementById('timerPill'); if(pill){ pill.textContent=el.textContent; pill.classList.toggle('run',r>0); } if(r<=0){clearInterval(timer.int); el.classList.add("up"); el.classList.remove("run"); if(pill) pill.classList.remove('show'); if(navigator.vibrate) navigator.vibrate([200,100,200]); if(window.avisaFim) window.avisaFim();} }
 function parseRest(s){ const m=String(s||"90 s").match(/([\d,\.]+)\s*(min|s)/); if(!m) return 90; const v=parseFloat(m[1].replace(',','.')); return m[2]==="min"?Math.round(v*60):Math.round(v); }
 
 // ---------- YouTube ----------

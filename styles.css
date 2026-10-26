@@ -204,3 +204,24 @@ body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
 .wiz .foot .btn.ghost{width:56px;flex:none;font-size:20px;padding:0}
 .toast{font-family:var(--serif);font-style:italic;font-weight:400;font-size:16px;letter-spacing:0;background:var(--s3);color:var(--tx);border:1px solid var(--line)}
 .vazio{padding:28px 6px 18px}.vazio .serif{font-size:26px;line-height:1.2;margin:10px 0 12px}
+
+/* ===== v3.2 · referências Apple (HIG, Gentler Streak, Hevy, Fitness) + escala por modelo de iPhone ===== */
+/* Tab bar flutuante (iOS 26): pílula com blur, respeita a Dynamic Island / barra inicial */
+.tabbar{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 8px);height:var(--tab);padding-bottom:0;border-radius:24px;border:1px solid color-mix(in srgb,var(--line) 80%,transparent);background:color-mix(in srgb,var(--s1) 82%,transparent);backdrop-filter:blur(22px) saturate(1.3);-webkit-backdrop-filter:blur(22px) saturate(1.3);box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.04)}
+.tabbar button{border-radius:18px;margin:6px 2px}
+.tabbar button.on{background:color-mix(in srgb,var(--tx) 7%,transparent)}
+.view{padding-bottom:calc(var(--tab) + env(safe-area-inset-bottom) + 44px)}
+.toast{bottom:calc(var(--tab) + env(safe-area-inset-bottom) + 24px)}
+/* Header: título grande que vira pequeno ao rolar é caro; mantemos sticky curto e deixamos o H1 da tela ser o "large title" */
+.top{padding-top:calc(env(safe-area-inset-top) + 10px)}
+/* Timer da sessão: pílula fixa quando está rodando e saiu da tela (padrão Hevy/Strong) */
+.timer-pill{position:fixed;top:calc(env(safe-area-inset-top) + 58px);left:50%;transform:translateX(-50%) translateY(-20px);opacity:0;pointer-events:none;background:var(--s3);color:var(--tx);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-family:var(--num);font-weight:700;font-size:20px;letter-spacing:-.02em;z-index:7;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity var(--fast),transform var(--fast) var(--spring)}
+.timer-pill.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.timer-pill.run{color:var(--ember);border-color:color-mix(in srgb,var(--ember) 50%,var(--line))}
+/* Escala por largura (iPhone SE/mini → 14/15 → Plus/Pro Max → iPad) */
+@media (max-width:380px){ body{font-size:15px} .view{padding-left:16px;padding-right:16px} h1{font-size:clamp(28px,8vw,34px)} .kpi .v{font-size:26px} .grid3{gap:8px} .btn{font-size:12.5px;padding:13px 12px} .seg button{font-size:10.5px;padding:8px 4px} .tabbar button{font-size:9px;letter-spacing:.06em} }
+@media (min-width:420px){ :root{--gap:14px;--r:18px;--r2:13px;--tab:68px} body{font-size:17px} .view{padding-left:22px;padding-right:22px} h1{font-size:clamp(34px,8vw,44px)} h1.sec{font-size:28px} .big{font-size:50px} .kpi .v{font-size:34px} .btn{font-size:14px;padding:16px 18px} .seg button{font-size:12px;padding:10px 8px} .tabbar .ico{width:24px;height:24px} .tabbar button{font-size:10.5px} .serif.coach{font-size:23px} .ring{width:116px;height:116px} .card{padding:18px} .item{padding:15px} }
+@media (min-width:600px){ .view{max-width:640px;padding-left:28px;padding-right:28px} .tabbar{left:50%;right:auto;transform:translateX(-50%);width:560px} }
+/* Toque: alvos ≥44pt */
+.btn,.seg button,.chip,.item,.tabbar button,.cal{min-height:44px}
+.chip{min-height:36px}
