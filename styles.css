@@ -256,3 +256,18 @@ body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
 
 /* v4.5: chips de categoria do seletor de alimentos em linha única */
 #fdCat .chip,#fdSub .chip{white-space:nowrap;flex:0 0 auto}
+/* v4.6: ranking dos grupos */
+.podio{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:8px;margin-top:14px}
+.podio .pd{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;text-align:center}
+.podio .pd b{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.podio .pd .num{font-size:18px;font-weight:800}
+.podio .av{width:44px;height:44px;border-radius:50%;border:2px solid;display:grid;place-items:center;font-weight:800;font-size:18px;background:var(--s2);color:var(--tx)}
+.podio .p1 .av{width:56px;height:56px;font-size:22px}
+.podio .degrau{width:100%;border-radius:10px 10px 0 0;color:#15161A;font-weight:900;font-size:15px;display:grid;place-items:center;letter-spacing:.02em}
+.podio .p1 .degrau{height:64px}.podio .p2 .degrau{height:46px}.podio .p3 .degrau{height:32px}
+.rkrow{justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.rkrow:last-child{border-bottom:0}
+.rkrow .pos{width:30px;color:var(--tx3);font-weight:800}
+.rkrow.eu{background:var(--ember-soft);margin:0 -14px;padding:10px 14px}
+.rkrow.eu .pos{color:var(--ember)}
+.rk{font-size:11px;font-weight:800;margin-left:4px}.rk.up{color:var(--ok)}.rk.dn{color:var(--stop)}.rk.eq{color:var(--tx3)}

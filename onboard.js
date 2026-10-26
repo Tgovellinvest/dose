@@ -19,8 +19,9 @@ const steps=[
  // 1 — você
  ()=>{ const p=S.perfil; return `<div class="wiz">${bar(1)}<div class="body"><div class="eyebrow">1 · Você</div><h1>Quem treina</h1><p class="small muted">Só o necessário para calcular. Fica no seu aparelho.</p>
   <label>Como quer ser chamado</label><input id="obNome" value="${esc(p.nome||"")}" placeholder="Primeiro nome" autocomplete="given-name">
-  <div class="grid3"><div><label>Sexo</label><select id="obSexo"><option value="m" ${p.sexo==='m'?'selected':''}>Homem</option><option value="f" ${p.sexo==='f'?'selected':''}>Mulher</option></select></div><div><label>Idade</label><input id="obIdade" type="number" inputmode="numeric" value="${p.idade??''}" placeholder="anos"></div><div><label>Altura</label><input id="obAlt" type="number" inputmode="numeric" value="${p.altura??''}" placeholder="cm"></div></div>
-  <div class="grid2"><div><label>Peso hoje</label><input id="obPeso" type="number" inputmode="decimal" step="0.1" value="${p.peso??''}" placeholder="kg"></div><div><label>% de gordura (se souber)</label><input id="obBf" type="number" inputmode="decimal" step="0.5" value="${p.bf??''}" placeholder="opcional"></div></div>
+  <div class="grid3"><div><label>Sexo</label><select id="obSexo"><option value="m" ${p.sexo==='m'?'selected':''}>Homem</option><option value="f" ${p.sexo==='f'?'selected':''}>Mulher</option></select></div><div><label>Idade</label><input id="obIdade" type="number" inputmode="numeric" value="${p.idade??''}" placeholder="anos"></div><div><label>Altura</label><input id="obAlt" type="number" inputmode="numeric" value="${p.altura??''}" placeholder="cm" oninput="obImc()"></div></div>
+  <div class="grid2"><div><label>Peso hoje</label><input id="obPeso" type="number" inputmode="decimal" step="0.1" value="${p.peso??''}" placeholder="kg" oninput="obImc()"></div><div><label>% de gordura (se souber)</label><input id="obBf" type="number" inputmode="decimal" step="0.5" value="${p.bf??''}" placeholder="opcional"></div></div>
+  <div id="obImcBox" class="card sub" style="margin-top:12px">${imcHTML(p.peso,p.altura)}</div>
   </div>${foot(1,"obSalvar1()")}</div>`; },
  // 2 — metas
  ()=>{ const p=S.perfil; return `<div class="wiz">${bar(2)}<div class="body"><div class="eyebrow">2 · Metas</div><h1>Aonde quer chegar</h1><p class="small muted">Metas são bússola, não prazo. O DOSE ajusta a semana para chegar lá sem queimar etapa.</p>
@@ -37,7 +38,7 @@ const steps=[
  // 4 — nível e lugar
  ()=>{ const p=S.perfil; return `<div class="wiz">${bar(4)}<div class="body"><div class="eyebrow">4 · Nível e lugar</div><h1>Como você treina</h1>
   <h3>Experiência com musculação</h3><div class="chips">${EXP.map(([k,nm])=>`<span class="chip ${(p.experiencia||'intermediario')===k?'on':''}" onclick="S.perfil.experiencia='${k}';save();route()">${nm}</span>`).join("")}</div>
-  <h3>Onde treina</h3><div class="chips">${Object.entries(MODOS).map(([k,nm])=>`<span class="chip ${p.modo===k?'on':''}" onclick="S.perfil.modo='${k}';save();route()">${nm}</span>`).join("")}</div>
+  <h3>Onde treina</h3><p class="tiny" style="margin-top:-4px">Marque todos os lugares. O treino é montado para o mais completo; no dia, você troca o lugar em 1 toque.</p><div class="chips">${Object.entries(MODOS).map(([k,nm])=>`<span class="chip ${modosDe(p).includes(k)?'on':''}" onclick="obModo('${k}')">${nm}</span>`).join("")}</div>${modosDe(p).length>1?`<p class="tiny">Base do treino: <b>${esc(MODOS[p.modo]||'')}</b>.</p>`:''}
   <h3>Alguma dor que limita?</h3><div class="chips">${window.DORES.map(([k,n])=>`<span class="chip ${(p.dores||{})[k]||(k==='cotovelo'&&p.cotovelo)||(k==='joelho'&&p.joelho)?'on':''}" onclick="dorPerfil('${k}')">${n}</span>`).join("")}</div><p class="tiny">Dor marcada tira ou adapta exercícios de risco. Dor aguda ou persistente é caso de médico ou fisioterapeuta, não de app.</p>
   </div>${foot(4,"obMontar()","Montar meu treino DOSE")}</div>`; },
  // 5 — treino montado + nutrição
@@ -52,10 +53,18 @@ const steps=[
   </div>${foot(5,"obFinalizar()","Entrar no DOSE")}</div>`; }
 ];
 
+// IMC (OMS). Só um indicador: não separa músculo de gordura.
+window.imcInfo=(peso,alt)=>{ peso=+peso; alt=+alt; if(!peso||!alt||alt<100||alt>230||peso<25||peso>350) return null; const v=peso/Math.pow(alt/100,2); const f=v<18.5?["Abaixo do peso","warn"]:v<25?["Peso adequado","ok"]:v<30?["Sobrepeso","warn"]:v<35?["Obesidade grau I","stop"]:v<40?["Obesidade grau II","stop"]:["Obesidade grau III","stop"]; return {v:Math.round(v*10)/10,faixa:f[0],cor:f[1]}; };
+const imcHTML=(peso,alt)=>{ const r=imcInfo(peso,alt); if(!r) return `<b>IMC</b><p class="tiny">Preencha altura e peso: o IMC aparece aqui na hora.</p>`; return `<div class="row" style="justify-content:space-between;align-items:center"><div><div class="eyebrow">IMC</div><b class="num" style="font-size:26px">${String(r.v).replace('.',',')}</b></div><span class="chip on" style="background:var(--${r.cor});color:#15161A;border-color:transparent">${r.faixa}</span></div><p class="tiny" style="margin-top:6px">Faixas da OMS. O IMC não separa músculo de gordura: quem treina força pode marcar "sobrepeso" sem ter excesso de gordura. Se souber seu % de gordura, ele pesa mais nas metas.</p>`; };
+window.obImc=()=>{ const el=document.getElementById('obImcBox'); if(el) el.innerHTML=imcHTML(n('obPeso'),n('obAlt')); };
+// Vários lugares de treino: p.modos (lista) e p.modo (base do programa = o mais completo)
+const ORDEM_MODO=["completa","predio","maquinas","box","home","livre","halteres","kettle","calistenia","hotel","elastico","semequip"];
+window.modosDe=p=>Array.isArray(p.modos)&&p.modos.length?p.modos:(p.modo?[p.modo]:[]);
+window.obModo=(k)=>{ const p=S.perfil; let m=modosDe(p).slice(); m=m.includes(k)?m.filter(x=>x!==k):[...m,k]; if(!m.length) m=[k]; p.modos=m; p.modo=m.slice().sort((a,b)=>ORDEM_MODO.indexOf(a)-ORDEM_MODO.indexOf(b))[0]; save(); route(); };
 V.onboard=()=>{ setTitle("Começar"); const i=Math.min(TOTAL-1,Math.max(0,+(R.p.i||0))); return steps[i](); };
 A.onboard=()=>{ window.scrollTo(0,0); };
 
-window.obSalvar1=()=>{ const p=S.perfil; p.nome=v('obNome').trim(); p.sexo=v('obSexo'); p.idade=n('obIdade'); p.altura=n('obAlt'); p.peso=n('obPeso'); p.bf=n('obBf'); if(!p.idade||!p.altura||!p.peso){ toast("Idade, altura e peso são necessários"); return; } if(p.peso) S.pesagens=S.pesagens||[]; save(); go('onboard',{i:2}); };
+window.obSalvar1=()=>{ const p=S.perfil; p.nome=v('obNome').trim(); p.sexo=v('obSexo'); p.idade=n('obIdade'); p.altura=n('obAlt'); p.peso=n('obPeso'); p.bf=n('obBf'); const im=imcInfo(p.peso,p.altura); p.imc=im?im.v:null; if(!p.idade||!p.altura||!p.peso){ toast("Idade, altura e peso são necessários"); return; } if(p.peso) S.pesagens=S.pesagens||[]; save(); go('onboard',{i:2}); };
 window.obSalvar2=()=>{ const p=S.perfil; p.pesoAlvo=n('obPesoAlvo'); p.bfAlvo=n('obBfAlvo'); p.metaEsporte=v('obMeta').trim();
   if(p.pesoAlvo&&p.peso){ const d=(p.pesoAlvo-p.peso)/p.peso; p.objetivo=d<-0.08?"cut":d<-0.02?"cutLeve":d<0.02?(p.bfAlvo&&p.bf&&p.bfAlvo<p.bf?"recomp":"manter"):d<0.06?"bulkLeve":"bulk"; }
   save(); go('onboard',{i:3}); };
