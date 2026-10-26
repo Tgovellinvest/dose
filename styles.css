@@ -283,3 +283,4 @@ body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
 .semana4 .dia.feito{border-color:var(--ok)}
 .semana4 .dia .ok{display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--ok);color:#15161A}
 .semana4 .dia .ok svg{width:11px;height:11px;stroke-width:3}
+.seg.intens button{text-transform:none;letter-spacing:0;font-size:14px}

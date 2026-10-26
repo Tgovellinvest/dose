@@ -21,10 +21,10 @@ window.V_mapa=function(){
 };
 
 // --- Dose de hoje: um número com contribuintes (Oura/WHOOP, mas sem caixa-preta) ---
-// Carga de uma atividade (sRPE = minutos × RPE, Foster 2001). Sem RPE: 7 (moderado-alto) para esporte, 5 para cardio.
-window.cargaAtiv=function(x,tipo){ if(tipo==='musc'){ const sets=(x.sets||[]).filter(s=>s.done).length; const min=x.dur||Math.max(20,sets*3); const rpe=x.esforco?({1:5,2:7,3:9})[x.esforco]:7; return Math.round(min*rpe); }
-  const min=x.min||(tipo==='esp'?60:30); const rpe=x.rpe||(tipo==='esp'?7:5); return Math.round(min*rpe); };
-window.atividadesDe=function(d){ const out=[]; S.logs.filter(l=>l.data===d).forEach(l=>out.push({tipo:'musc',nome:l.nome||"Musculação",min:l.dur||null,rpe:l.esforco?({1:5,2:7,3:9})[l.esforco]:null,carga:cargaAtiv(l,'musc')}));
+// Carga de uma atividade (sRPE = minutos × RPE, Foster 2001). Intensidade em 3 níveis: baixa 4 · média 6 · alta 8. Sem informação: média.
+window.cargaAtiv=function(x,tipo){ if(tipo==='musc'){ const sets=(x.sets||[]).filter(s=>s.done).length; const min=x.dur||Math.max(20,sets*3); const rpe=x.esforco?({1:4,2:6,3:8})[x.esforco]:6; return Math.round(min*rpe); }
+  const min=x.min||(tipo==='esp'?60:30); const rpe=x.rpe||6; return Math.round(min*rpe); };
+window.atividadesDe=function(d){ const out=[]; S.logs.filter(l=>l.data===d).forEach(l=>out.push({tipo:'musc',nome:l.nome||"Musculação",min:l.dur||null,rpe:l.esforco?({1:4,2:6,3:8})[l.esforco]:null,carga:cargaAtiv(l,'musc')}));
   S.bjj.filter(b=>b.data===d).forEach(b=>out.push({tipo:'esp',nome:b.tipo||nomeEsp(b.esporte),min:b.min||null,rpe:b.rpe||null,carga:cargaAtiv(b,'esp')}));
   S.cardio.filter(c=>c.data===d).forEach(c=>out.push({tipo:'cardio',nome:c.tipo?String(c.tipo).charAt(0).toUpperCase()+String(c.tipo).slice(1):"Cardio",min:c.min||null,rpe:c.rpe||null,carga:cargaAtiv(c,'cardio')})); return out; };
 const nomeEsp=k=>((window.SPORTS||[]).find(x=>x.id===k)||{}).nome||"Esporte";
@@ -43,7 +43,7 @@ window.doseHoje=function(){
   const base=Math.max(20,Math.min(100,score));
   // o que já foi feito hoje consome dose: 1 ponto a cada 12 de carga (60 min × RPE 7 ≈ 35), mínimo 5 por atividade
   const feitos=atividadesDe(today()); let consumo=0;
-  feitos.forEach(f=>{ const pts=Math.max(5,Math.round(f.carga/12)); consumo+=pts; why.unshift({t:`${f.nome} hoje${f.min?` · ${f.min} min`:""}${f.rpe?` · RPE ${f.rpe}`:""}`,d:`−${pts} · carga da sessão (min × RPE, Foster 2001)${f.rpe?"":"; sem RPE, contei 7"}`}); });
+  feitos.forEach(f=>{ const pts=Math.max(5,Math.round(f.carga/12)); consumo+=pts; const it=window.intensDe?intensDe(f.rpe):null; why.unshift({t:`${f.nome} hoje${f.min?` · ${f.min} min`:""}${it?` · intensidade ${it.n.toLowerCase()}`:""}`,d:`−${pts} · minutos × intensidade (Foster 2001)${f.rpe?"":"; sem intensidade, contei média"}${f.min?"":"; sem duração, estimei"}`}); });
   consumo=Math.min(consumo,80);
   score=Math.max(10,base-consumo);
   const nivel=score>=85?"cheia":score>=65?"normal":score>=45?"reduzida":"leve";
@@ -68,7 +68,7 @@ window.platos=function(){
 // --- Check-in pós-sessão (3 toques: pump / dor / esforço — RP) ---
 window.V_posSessao=function(){
   const seg=(id,lbl,opts)=>`<div><label>${lbl}</label><div class="seg" id="${id}">${opts.map((o,i)=>`<button type="button" data-v="${i+1}" onclick="segPick(this)">${o}</button>`).join("")}</div></div>`;
-  return `<div class="card"><b>Como foi? (3 toques)</b><p class="tiny">Alimenta o ajuste da próxima semana. Sem resposta = não informado.</p>${seg("psPump","Pump/estímulo",["Nada","Ok","Forte"])}${seg("psDor","Dor muscular residual da última vez",["Nenhuma","Alguma","Ainda dolorido"])}${seg("psEsf","Esforço da sessão",["Fácil","Na medida","Muito duro"])}</div>`;
+  return `<div class="card"><b>Como foi? (3 toques)</b><p class="tiny">Alimenta o ajuste da próxima semana. Sem resposta = não informado.</p>${seg("psPump","Pump/estímulo",["Nada","Ok","Forte"])}${seg("psDor","Dor muscular residual da última vez",["Nenhuma","Alguma","Ainda dolorido"])}${seg("psEsf","Intensidade da sessão",["Baixa","Média","Alta"])}<p class="tiny" style="margin-top:4px">Baixa: sobraram 4+ reps nas séries. Média: sobraram 1–3. Alta: até a falha ou quase.</p></div>`;
 };
 window.segPick=function(b){ b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); };
 window.lerPosSessao=function(){ const v=id=>{ const el=document.getElementById(id); const on=el&&el.querySelector('button.on'); return on?+on.dataset.v:null; }; return {pump:v("psPump"),dorMusc:v("psDor"),esforco:v("psEsf")}; };
