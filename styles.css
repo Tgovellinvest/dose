@@ -231,7 +231,7 @@ body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
 .hero4 .eyebrow{text-align:center}
 .hero4:before{content:"";position:absolute;inset:-20px -40px 0;background:radial-gradient(60% 55% at 50% 20%,color-mix(in srgb,var(--ember) 14%,transparent),transparent 70%);pointer-events:none;z-index:-1}
 .arco-wrap{position:relative;width:230px;margin:6px auto 0}
-.arco{display:block;width:100%;height:auto;overflow:visible}
+.arco{display:block;width:100%;height:auto;overflow:visible}.arco-wrap{display:block}
 .arco-num{position:absolute;left:0;right:0;bottom:4px;text-align:center}
 .arco-num .big{font-size:64px;letter-spacing:-.04em}
 .arco-lbl{font-family:var(--num);font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
