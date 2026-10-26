@@ -1,0 +1,2 @@
+ZXing TypeScript (@zxing/library) 0.21.3 — licença declarada no package.json: MIT. https://github.com/zxing-js/library
+Usado só para decodificar códigos de barras no aparelho (nenhum dado sai do celular nessa etapa).
