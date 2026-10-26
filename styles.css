@@ -133,10 +133,9 @@ details[open] summary::after{transform:rotate(-135deg)}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .video.vert{aspect-ratio:9/16;max-height:60dvh}
 .medal{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--s1);border:1px solid var(--line);border-radius:var(--r2);padding:12px 6px;text-align:center}
-.medal .ico-wrap{width:48px;height:48px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;color:var(--tx3);opacity:.45;transition:all var(--slow) var(--spring)}
-.medal.won .ico-wrap{opacity:1;color:var(--tx);transform:scale(1.04)}
-.medal.t1 .ico-wrap{border-color:var(--bronze)}.medal.t2 .ico-wrap{border-color:var(--silver)}.medal.t3 .ico-wrap{border-color:var(--gold)}
-.medal.won.t3 .ico-wrap{color:var(--gold)}
+.medal .medal-svg{opacity:.55;transition:all var(--slow) var(--spring)}
+.medal.won .medal-svg{opacity:1;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.medal.won.t3 .medal-svg{filter:drop-shadow(0 4px 14px color-mix(in srgb,var(--gold) 45%,transparent))}
 .medal b{font-size:12px;letter-spacing:-.01em;line-height:1.2}.medal span{font-size:11px;color:var(--tx3)}
 .bar{height:8px;background:var(--s3);border-radius:4px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--bone);width:0;transition:width var(--slow) var(--ease)}

@@ -92,10 +92,15 @@ function calcNutri(p){
   let ffm=null;
   if(bf){ ffm=peso*(1-bf/100); eq.push({n:"Cunningham (massa magra)",v:500+22*ffm}); eq.push({n:"Katch-McArdle",v:370+21.6*ffm}); }
   const tmb=Math.min(...eq.map(e=>e.v));
-  const atSel=window.NUTRI.atividade.find(a=>a.k===atividade)||window.NUTRI.atividade[2]; const MOD=window.NUTRI.atividade[2];
-  // Regra DOSE: por mais que a pessoa treine, o gasto é calculado como 'moderado'. Quem se declara atleta costuma superestimar; errar para baixo e ajustar pelo peso real é mais seguro.
-  const at=atSel.fc>MOD.fc?Object.assign({},atSel,{fc:MOD.fc,capped:true,declarado:atSel.n}):atSel;
-  const tdee=tmb*at.fc; const tdeePadrao=tmb*atSel.f;
+  const atSel=window.NUTRI.atividade.find(a=>a.k===atividade)||window.NUTRI.atividade[2];
+  // Regra DOSE: o gasto é calculado com 1,5 dia de treino a menos do que a pessoa informa (quem se declara muito ativo costuma superestimar).
+  // Dias informados: da semana do perfil (musculação + esportes) quando preenchida; senão, pelo nível de atividade escolhido.
+  const diasPerfil=(p.diasMusc||[]).length+Object.values(p.esportes||{}).reduce((a,x)=>a+(x||[]).length,0); const diasNivel=({sed:0,leve:1.5,mod:3.5,alto:6,muito:9})[atSel.k]; const diasInformados=diasPerfil>0?diasPerfil:(diasNivel??3.5);
+  const diasCalc=Math.max(0,diasInformados-1.5);
+  // Fator reduzido por dias/semana (interpolação): 0→1,15 · 1,5→1,30 · 3,5→1,45 · 6→1,60 · 9→1,70
+  const pts=[[0,1.15],[1.5,1.30],[3.5,1.45],[6,1.60],[9,1.70]]; let fc=1.70; for(let i=1;i<pts.length;i++){ if(diasCalc<=pts[i][0]){ const [x0,y0]=pts[i-1],[x1,y1]=pts[i]; fc=y0+(y1-y0)*(diasCalc-x0)/(x1-x0); break; } } fc=Math.round(fc*1000)/1000;
+  const at=Object.assign({},atSel,{fc,diasInformados,diasCalc});
+  const tdee=tmb*fc; const tdeePadrao=tmb*atSel.f;
   const ob=window.NUTRI.objetivos.find(o=>o.k===objetivo)||window.NUTRI.objetivos[0];
   let alvo=tdee*(1+ob.d); if(alvo<tmb && ob.d<0) alvo=tmb;
   const protMin = ffm? Math.max(1.6*peso,2.3*ffm) : 1.6*peso; const protMax = ffm? Math.min(3.1*ffm,2.4*peso) : 2.2*peso;
