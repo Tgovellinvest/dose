@@ -225,3 +225,31 @@ body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
 /* Toque: alvos ≥44pt */
 .btn,.seg button,.chip,.item,.tabbar button,.cal{min-height:44px}
 .chip{min-height:36px}
+
+/* ===== v4 · linguagem visual (Oura / Gentler Streak / Fitbod) ===== */
+.hero4{position:relative;padding:10px 0 6px;text-align:center}
+.hero4 .eyebrow{text-align:center}
+.hero4:before{content:"";position:absolute;inset:-20px -40px 0;background:radial-gradient(60% 55% at 50% 20%,color-mix(in srgb,var(--ember) 14%,transparent),transparent 70%);pointer-events:none;z-index:-1}
+.arco-wrap{position:relative;width:230px;margin:6px auto 0}
+.arco{display:block;width:100%;height:auto;overflow:visible}
+.arco-num{position:absolute;left:0;right:0;bottom:4px;text-align:center}
+.arco-num .big{font-size:64px;letter-spacing:-.04em}
+.arco-lbl{font-family:var(--num);font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin-top:14px}
+.tile{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:14px 14px 12px;cursor:pointer;transition:transform var(--fast) var(--spring),border-color var(--fast)}
+.tile:active{transform:scale(.97)}
+.tile .tl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);font-weight:700}
+.tile .tv{font-family:var(--num);font-weight:700;font-size:34px;letter-spacing:-.03em;line-height:1.05;margin-top:6px;font-variant-numeric:tabular-nums}.tile .tv small{font-size:16px;color:var(--tx2);font-weight:600;letter-spacing:0;margin-left:2px}
+.tile .ts{font-size:12.5px;color:var(--tx2);margin-top:4px}
+.quick{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:12px -20px 0;padding:0 20px}.quick::-webkit-scrollbar{display:none}
+.quick button{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--s1);border:1px solid var(--line);color:var(--tx);border-radius:16px;padding:12px 14px;min-width:72px;font-family:inherit;font-size:12px;font-weight:700;transition:transform var(--fast) var(--spring)}
+.quick button:active{transform:scale(.95)}.quick button .ico{color:var(--bone)}
+.semana4{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:14px 0 4px}
+.semana4 .dia{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0;border-radius:12px;background:var(--s1);border:1px solid var(--line);font-family:var(--num);font-weight:700;font-size:12px;color:var(--tx3)}
+.semana4 .dia.hoje{border-color:var(--ember);color:var(--tx)}
+.semana4 .dia i{width:8px;height:8px;border-radius:50%;background:transparent;border:1px solid var(--line)}
+.semana4 .dia i.m{background:var(--tx);border-color:var(--tx)}.semana4 .dia i.e{background:var(--bone);border-color:var(--bone)}.semana4 .dia i.m.e{background:linear-gradient(90deg,var(--tx) 50%,var(--bone) 50%);border-color:transparent}
+.corpos{display:flex;gap:6px;flex:none}.corpo{width:62px;height:auto}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.caminho{display:block;width:100%;height:auto;margin:8px 0 2px}
+@media (min-width:420px){ .arco-wrap{width:260px} .arco-num .big{font-size:72px} .tile .tv{font-size:38px} .corpo{width:70px} }

@@ -1,0 +1,57 @@
+// ================= DOSE v4 · linguagem visual (referências: Oura, Gentler Streak, Fitbod, Hevy) =================
+// Hoje: arco com um número, frase em serifa, tiles de duas colunas, mapa do corpo (recuperação), caminho da semana (banda suave).
+(function(){
+const V=window.VIEWS, A=window.AFTER;
+const DIASEM=["seg","ter","qua","qui","sex","sab","dom"]; const DN={seg:"S",ter:"T",qua:"Q",qui:"Q",sex:"S",sab:"S",dom:"D"};
+const corDose=s=>s>=85?"var(--ok)":s>=65?"var(--tx)":s>=45?"var(--warn)":"var(--stop)";
+
+// ---- Arco (gauge) 0–100
+window.arcoSVG=(v,size=220,cor="var(--tx)")=>{ const r=92, c=Math.PI*r; const pct=Math.max(0,Math.min(100,v))/100; return `<svg class="arco" viewBox="0 0 220 130" style="width:${size}px"><path d="M18 118 A92 92 0 0 1 202 118" fill="none" stroke="var(--s3)" stroke-width="10" stroke-linecap="round"/><path class="arco-v" d="M18 118 A92 92 0 0 1 202 118" fill="none" stroke="${cor}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct)}"/><circle class="arco-dot" r="6" fill="var(--ember)" cx="${110-92*Math.cos(Math.PI*pct)}" cy="${118-92*Math.sin(Math.PI*pct)}"/></svg>`; };
+
+// ---- Corpo: silhueta abstrata (frente e costas) com regiões coloridas pela recuperação
+const FRONT={Ombro:[[31,42,13],[89,42,13]],Peitoral:[[47,52,16,13],[73,52,16,13]],Bíceps:[[26,64,9,16],[94,64,9,16]],Abdômen:[[60,76,14,20]],Core:[[60,76,14,20]],Quadríceps:[[48,116,12,26],[72,116,12,26]],Panturrilha:[[48,160,9,18],[72,160,9,18]]};
+const BACK={Trapézio:[[60,42,22,10]],Dorsal:[[46,62,15,18],[74,62,15,18]],Tríceps:[[26,64,9,16],[94,64,9,16]],Glúteo:[[49,98,12,11],[71,98,12,11]],Posterior:[[48,124,12,24],[72,124,12,24]],Panturrilha:[[48,160,9,18],[72,160,9,18]]};
+function corpo(map,st){ const cor={recuperando:"var(--warn)",pronto:"var(--ok)",fresco:"var(--tx3)"}; const base=`<circle cx="60" cy="18" r="11" fill="var(--s3)"/><path d="M38 34h44l10 40-8 2-4-24v36l6 70h-12l-8-56-8 56H44l6-70V52l-4 24-8-2z" fill="var(--s3)"/>`;
+  const regs=Object.entries(map).map(([g,shapes])=>{ const s=st[g]||"fresco"; return shapes.map(sh=>{ const op=s==="fresco"?.55:1; return sh.length===3?`<circle cx="${sh[0]}" cy="${sh[1]}" r="${sh[2]}" fill="${cor[s]}" opacity="${op}"/>`:`<ellipse cx="${sh[0]}" cy="${sh[1]}" rx="${sh[2]}" ry="${sh[3]}" fill="${cor[s]}" opacity="${op}"/>`; }).join(""); }).join("");
+  return `<svg viewBox="0 0 120 190" class="corpo">${base}${regs}</svg>`; }
+window.V_corpo=function(){ const m=window.mapaRecuperacao(); const st={}; m.forEach(x=>st[x.g]=x.st); const rec=m.filter(x=>x.st==="recuperando").map(x=>x.g); const pronto=m.filter(x=>x.st==="pronto").map(x=>x.g);
+  return `<div class="card"><div class="row" style="justify-content:space-between;align-items:baseline"><b>Recuperação</b><span class="tiny">48 h = pronto</span></div>
+   <div class="row" style="gap:18px;align-items:center;margin-top:8px"><div class="corpos">${corpo(FRONT,st)}${corpo(BACK,st)}</div><div style="flex:1;min-width:0"><div class="small"><i class="dot" style="background:var(--warn)"></i> ${rec.length?esc(rec.join(", ")):"nada em recuperação"}</div><div class="small" style="margin-top:6px"><i class="dot" style="background:var(--ok)"></i> ${pronto.length?esc(pronto.join(", ")):"—"}</div><div class="tiny" style="margin-top:6px">Laranja: treinado há menos de 48 h. Verde: pronto. Cinza: fresco.</div></div></div></div>`; };
+
+// ---- Caminho da semana (14 dias): banda suave = carga do dia; linha pontilhada = média
+function cargaDia(d){ const s=S.logs.filter(l=>l.data===d).reduce((a,l)=>a+l.sets.filter(x=>x.done).length,0); const c=S.cardio.filter(x=>x.data===d).reduce((a,x)=>a+(x.min||0)/4,0); const e=S.bjj.filter(x=>x.data===d).reduce((a,x)=>a+(x.min||0)/4,0); return s+c+e; }
+window.V_caminho=function(){ const dias=[]; for(let i=13;i>=0;i--){ const x=new Date(); x.setDate(x.getDate()-i); dias.push(x.toISOString().slice(0,10)); } const vals=dias.map(cargaDia); const max=Math.max(10,...vals); const W=320,H=90,pad=6; const pts=vals.map((v,i)=>[pad+i*(W-2*pad)/13, H-8-(v/max)*(H-24)]);
+  const path=pts.map((p,i)=>{ if(!i) return `M${p[0]},${p[1]}`; const a=pts[i-1]; const cx=(a[0]+p[0])/2; return `C${cx},${a[1]} ${cx},${p[1]} ${p[0]},${p[1]}`; }).join(" "); const area=`${path} L${pts[pts.length-1][0]},${H} L${pts[0][0]},${H} Z`; const media=vals.reduce((a,b)=>a+b,0)/vals.length; const ym=H-8-(media/max)*(H-24);
+  const total=vals.reduce((a,b)=>a+b,0); const ativos=vals.filter(v=>v>0).length;
+  return `<div class="card"><div class="row" style="justify-content:space-between;align-items:baseline"><b>Caminho · 14 dias</b><span class="tiny">${ativos} dias ativos</span></div>
+   <svg viewBox="0 0 ${W} ${H}" class="caminho"><defs><linearGradient id="gcam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--bone)" stop-opacity=".55"/><stop offset="1" stop-color="var(--bone)" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#gcam)"/><path d="${path}" fill="none" stroke="var(--bone)" stroke-width="2.2" stroke-linejoin="round"/><line x1="${pad}" x2="${W-pad}" y1="${ym}" y2="${ym}" stroke="var(--tx3)" stroke-dasharray="3 4"/><circle cx="${pts[13][0]}" cy="${pts[13][1]}" r="4.5" fill="var(--ember)"/></svg>
+   <div class="row" style="justify-content:space-between"><span class="tiny">${fmtD(dias[0])}</span><span class="tiny">hoje</span></div></div>`; };
+
+// ---- HOJE
+V.hoje=()=>{ setTitle("Hoje"); const pl=planoHoje(); const p=programa(); const d=window.doseHoje(); const vol=volumeSemana(); const alvoTot=Object.values(ALVO).reduce((a,[x,y])=>a+y,0); const volTot=Object.entries(ALVO).reduce((a,[g])=>a+Math.min(vol[g]||0,ALVO[g][1]),0); const pct=Math.round(volTot/alvoTot*100);
+  const sessSem=S.logs.filter(l=>l.data>=semanaIni()).length, espSem=S.bjj.filter(l=>l.data>=semanaIni()).length, cardSem=S.cardio.filter(l=>l.data>=semanaIni()).reduce((a,c)=>a+(c.min||0),0);
+  const semPerfil=!(S.perfil.diasMusc||[]).length&&!Object.keys(S.perfil.esportes||{}).length; const prox=proximaSessaoId(); const ps=p.sessoes[prox];
+  const semU=semanaUsuario(); const dias=DIASEM.map(dd=>{ const s=semU[dd]; const temEsp=(s.esportes||[]).length; return `<div class="dia ${dd===pl.dia?'hoje':''}"><span>${DN[dd]}</span><i class="${s.musc?'m':''} ${temEsp?'e':''}"></i></div>`; }).join("");
+  const lt=window.leituraSemana(); const ck=S.checkins[S.checkins.length-1]||{}; const pes=(S.pesagens||[]).slice(-7); const media=pes.length?Math.round(pes.reduce((a,x)=>a+x.peso,0)/pes.length*10)/10:null;
+  return `
+  ${semPerfil?`<div class="card" style="border-color:var(--ember);margin-top:8px"><b>Complete seu perfil em 2 minutos</b><p class="small">Esportes, dias de musculação e metas. Com isso o DOSE monta a ficha certa e as calorias.</p><button class="btn em sm" onclick="go('onboard',{i:0})">Completar agora</button></div>`:""}
+  <div class="hero4"><div class="eyebrow">${DIAS[pl.dia]} · ${fmtDL(today())}</div>
+    <div class="arco-wrap">${window.arcoSVG(d.score,230,corDose(d.score))}<div class="arco-num"><div class="big">${d.score}</div><div class="arco-lbl" style="color:${corDose(d.score)}">dose ${d.nivel}</div></div></div>
+    <p class="serif coach" style="text-align:center;margin:4px 0 2px">${esc(d.acao.split(". ")[0])}.</p>
+    <div class="tiny" style="text-align:center">${d.why.slice(0,2).map(w=>esc(w.t)).join(" · ")}</div></div>
+  <div class="tiles">
+    <div class="tile" onclick="go('progresso',{g:'treino'})"><div class="tl">Semana</div><div class="tv">${pct}<small>%</small></div><div class="ts">${sessSem} musc · ${espSem} esporte · ${cardSem} min</div></div>
+    <div class="tile" onclick="go('nutricao',{t:'peso'})"><div class="tl">Peso · 7 dias</div><div class="tv">${media!=null?String(media).replace('.',','):'—'}<small>${media!=null?' kg':''}</small></div><div class="ts">${ck.sono!=null?`sono ${ck.sono} h`:"registre a pesagem"}</div></div>
+  </div>
+  <div class="card hero" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px"><div><div class="eyebrow">${pl.sessao?"Hoje":pl.dia==="dom"?"Descanso":"Próxima da rotação"}</div><b style="font-size:20px;display:block;margin-top:2px">${esc(ps.nome)}</b><div class="tiny">${ps.slots.length} exercícios · ${ps.slots.reduce((a,s)=>a+s.sets,0)} séries${ps.cardio?` · ${esc(ps.cardio)}`:""}</div></div></div>
+    <div class="grid2" style="margin-top:12px"><button class="btn em" onclick="go('sessao',{s:'${prox}'})">${I("play")} Iniciar</button><button class="btn sec" onclick="sheet(V._trocar())">Trocar ou pular</button></div>
+    ${pl.nota?`<p class="tiny" style="margin-top:8px">${esc(pl.nota)}</p>`:""}</div>
+  <div class="quick"><button onclick="sheet(V._logEsporte())">${I("football",20)}<span>Esporte</span></button><button onclick="sheet(V._logCardio())">${I("heart",20)}<span>Cardio</span></button><button onclick="go('nutricao',{t:'peso'})">${I("scale",20)}<span>Pesar</span></button><button onclick="go('nutricao')">${I("nutrition",20)}<span>Comer</span></button><button onclick="go('progresso',{t:'checkin'})">${I("check",20)}<span>Check-in</span></button></div>
+  <div class="semana4">${dias}</div>
+  ${window.V_corpo()}
+  ${window.V_caminho()}
+  ${lt.length?`<h3>Leitura do coach</h3><div class="list">${lt.slice(0,2).map(x=>`<div class="item" style="border-left:3px solid var(--${x.n==='stop'?'stop':x.n==='watch'?'warn':x.n==='ok'?'ok':'bone'})"><div class="t"><b>${esc(x.t)}</b><span>${esc(x.d)}</span></div></div>`).join("")}</div>`:""}
+  ${window.adSlot('hoje')}
+  <h3>Volume da semana</h3><div class="card">${["Dorsal","Ombro","Peitoral","Quadríceps","Posterior","Glúteo","Tríceps","Bíceps"].map(g=>volBar(g,vol[g]||0)).join("")}</div>`; };
+A.hoje=()=>{ const a=document.querySelector('.arco-v'); if(a){ const off=a.getAttribute('stroke-dashoffset'); a.setAttribute('stroke-dashoffset',a.getAttribute('stroke-dasharray')); requestAnimationFrame(()=>requestAnimationFrame(()=>{ a.style.transition='stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)'; a.setAttribute('stroke-dashoffset',off); })); } };
+})();
