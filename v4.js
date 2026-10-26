@@ -44,12 +44,29 @@ const recentes=()=>{ const vist=new Set(), out=[]; (S.diario||[]).slice().revers
 const linhaF=f=>`<div class="item" onclick="pickFood('${esc(f.n).replace(/'/g,"\\'")}')"><div class="t"><b>${esc(f.n)}</b><span>${esc(f.u)} · ${f.k} kcal · P ${f.p} · C ${f.c} · G ${f.g}</span></div><span class="arrow">+</span></div>`;
 V._addFood=(d)=>{ const rec=recentes(); return `<h2>Adicionar</h2><input id="fdQ" placeholder="Buscar entre ${window.FOODS.length} alimentos (ex.: frango, pão, açaí)" oninput="filtraFood()" autocomplete="off">
   <div class="chips" id="fdCat" style="margin-top:8px;flex-wrap:nowrap;overflow-x:auto">${["Recentes","Marcas",...window.FOOD_CATS.filter(c=>!/^Marcas/.test(c))].map((c,i)=>`<button class="chip ${i===0&&rec.length?'on':''}" data-c="${esc(c)}" onclick="[...fdCat.children].forEach(x=>x.classList.toggle('on',x===this&&!this.classList.contains('on')));filtraFood()">${esc(c)}</button>`).join("")}</div>
+  <div class="chips" id="fdSub" style="margin-top:6px;flex-wrap:nowrap;overflow-x:auto;display:none"></div>
   <div id="fdList" class="list" style="margin-top:8px;max-height:44dvh;overflow:auto">${(rec.length?rec:window.FOODS.slice(0,15)).map(linhaF).join("")}</div>
   <div class="sep"></div><details><summary>Não achou? Lançar manual</summary><input id="fdNome" placeholder="Nome" style="margin-top:8px"><div class="grid2"><div><label>kcal</label><input id="fdK" type="number"></div><div><label>Proteína g</label><input id="fdP" type="number"></div></div><div class="grid2"><div><label>Carboidrato g</label><input id="fdC" type="number"></div><div><label>Gordura g</label><input id="fdG" type="number"></div></div><button class="btn sec" style="margin-top:10px" onclick="addFoodManual('${d}')">Lançar</button></details>
-  <p class="tiny" style="margin-top:8px">Genéricos: médias da TACO (Unicamp) e USDA. Marcas: rótulos do Open Food Facts; confira a embalagem, receitas mudam.</p>`; };
-window.filtraFood=()=>{ const q=norm((document.getElementById('fdQ')||{}).value||""); const on=document.querySelector('#fdCat .on'); const c=on?on.dataset.c:""; let L;
-  if(c==="Recentes"&&!q) L=recentes(); else { const ws=q.split(/\s+/).filter(Boolean); L=window.FOODS.filter(f=>(!c||c==="Recentes"||f.cat===c||(c==="Marcas"&&/^Marcas/.test(f.cat||"")))&&ws.every(w=>norm(f.n).includes(w))); if(q) L.sort((a,b)=>(norm(a.n).startsWith(q)?0:1)-(norm(b.n).startsWith(q)?0:1)||a.n.length-b.n.length); }
-  document.getElementById('fdList').innerHTML=L.slice(0,40).map(linhaF).join("")||'<p class="muted small">Nada encontrado. Use "Lançar manual" abaixo.</p>'; };
+  <p class="tiny" style="margin-top:8px">Genéricos: médias da TACO (Unicamp) e USDA. Marcas: rótulos do Open Food Facts (porção típica de rótulo por tipo); confira a embalagem, receitas mudam.</p>`; };
+window.filtraFood=()=>{ const q=norm((document.getElementById('fdQ')||{}).value||""); const on=document.querySelector('#fdCat .on'); const c=on?on.dataset.c:"";
+  const sub=document.getElementById('fdSub'); if(sub){ if(c==="Marcas"){ if(!sub.children.length) sub.innerHTML=window.FOOD_CATS.filter(x=>/^Marcas · /.test(x)).sort().map(x=>`<button class="chip" data-c="${esc(x)}" onclick="[...fdSub.children].forEach(y=>y.classList.toggle('on',y===this&&!this.classList.contains('on')));filtraFood()">${esc(x.replace('Marcas · ',''))}</button>`).join(""); sub.style.display='flex'; } else { sub.style.display='none'; sub.innerHTML=''; } }
+  const so=document.querySelector('#fdSub .on'); const sc=so?so.dataset.c:""; let L;
+  if(c==="Recentes"&&!q) L=recentes(); else { const ws=q.split(/\s+/).filter(Boolean); L=window.FOODS.filter(f=>(!c||c==="Recentes"||f.cat===c||(c==="Marcas"&&/^Marcas/.test(f.cat||"")&&(!sc||f.cat===sc)))&&ws.every(w=>(f._n||(f._n=norm(f.n))).includes(w))); if(q) L.sort((a,b)=>(a._n.startsWith(q)?0:1)-(b._n.startsWith(q)?0:1)||a.n.length-b.n.length); }
+  const tot=L.length; document.getElementById('fdList').innerHTML=L.slice(0,60).map(linhaF).join("")+(tot>60?`<p class="tiny" style="padding:8px 4px">Mostrando 60 de ${tot}. Digite mais para refinar (ex.: marca, sabor).</p>`:"")||'<p class="muted small">Nada encontrado. Use "Lançar manual" abaixo.</p>'; };
+// ---- Porção ou gramas
+const baseG=u=>{ const m=String(u).match(/(\d+(?:[.,]\d+)?)\s*(g|ml)\b/i); return m?{q:parseFloat(m[1].replace(',','.')),un:m[2].toLowerCase()}:null; };
+window.pickFood=(nome)=>{ const f=window.FOODS.find(x=>x.n===nome); if(!f) return; const b=baseG(f.u);
+  document.getElementById('sheetBody').innerHTML=`<h2>${esc(f.n)}</h2><p class="muted small">Porção de referência: ${esc(f.u)} = ${f.k} kcal · P ${f.p} · C ${f.c} · G ${f.g}</p>
+  <div class="grid2"><div><label>Porções</label><input id="fdMult" type="number" step="0.25" min="0" value="1" inputmode="decimal" oninput="fdSync('m')"></div>${b?`<div><label>Ou em ${b.un}</label><input id="fdGr" type="number" step="5" min="0" value="${b.q}" inputmode="decimal" oninput="fdSync('g')"></div>`:''}</div>
+  <p class="mono" id="fdPrev" style="margin-top:8px">${f.k} kcal</p>
+  <div class="grid2" style="margin-top:12px"><button class="btn ghost" onclick="sheet(V._addFood(R.p.d||today()))">‹ Voltar</button><button class="btn em" onclick="addFood('${esc(f.n).replace(/'/g,"\\'")}')">Adicionar</button></div>`;
+  window._fdCur=f; };
+window.fdSync=(o)=>{ const f=window._fdCur; if(!f) return; const b=baseG(f.u); const mi=document.getElementById('fdMult'), gi=document.getElementById('fdGr');
+  if(o==='g'&&b&&gi){ mi.value=+(num(gi.value)/b.q).toFixed(2); } else if(b&&gi){ gi.value=Math.round(num(mi.value)*b.q); }
+  const m=num(mi.value)||0; document.getElementById('fdPrev').textContent=`${Math.round(f.k*m)} kcal · P ${Math.round(f.p*m)} · C ${Math.round(f.c*m)} · G ${Math.round(f.g*m)}`; };
+window.addFood=(nome)=>{ const f=window.FOODS.find(x=>x.n===nome); if(!f) return; const m=num(document.getElementById('fdMult').value)||1; const b=baseG(f.u); const d=R.p.d||today();
+  const qtd=b&&m!==1?`${Math.round(m*b.q)} ${b.un}`:`${m}× ${f.u}`;
+  S.diario.push({id:uid(),data:d,per:S._per||"almoco",nome:f.n,qtd,k:f.k*m,p:f.p*m,c:f.c*m,g:f.g*m}); save(); closeSheet(); toast("Adicionado"); go('nutricao',{d}); };
 // ---- HOJE
 V.hoje=()=>{ setTitle("Hoje"); const pl=planoHoje(); const p=programa(); const d=window.doseHoje(); const vol=volumeSemana(); const alvoTot=Object.values(ALVO).reduce((a,[x,y])=>a+y,0); const volTot=Object.entries(ALVO).reduce((a,[g])=>a+Math.min(vol[g]||0,ALVO[g][1]),0); const pct=Math.round(volTot/alvoTot*100);
   const sessSem=S.logs.filter(l=>l.data>=semanaIni()).length, espSem=S.bjj.filter(l=>l.data>=semanaIni()).length, cardSem=S.cardio.filter(l=>l.data>=semanaIni()).reduce((a,c)=>a+(c.min||0),0);
