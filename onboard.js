@@ -38,7 +38,7 @@ const steps=[
  ()=>{ const p=S.perfil; return `<div class="wiz">${bar(4)}<div class="body"><div class="eyebrow">4 · Nível e lugar</div><h1>Como você treina</h1>
   <h3>Experiência com musculação</h3><div class="chips">${EXP.map(([k,nm])=>`<span class="chip ${(p.experiencia||'intermediario')===k?'on':''}" onclick="S.perfil.experiencia='${k}';save();route()">${nm}</span>`).join("")}</div>
   <h3>Onde treina</h3><div class="chips">${Object.entries(MODOS).map(([k,nm])=>`<span class="chip ${p.modo===k?'on':''}" onclick="S.perfil.modo='${k}';save();route()">${nm}</span>`).join("")}</div>
-  <h3>Alguma dor que limita?</h3><div class="chips"><span class="chip ${p.cotovelo?'on':''}" onclick="S.perfil.cotovelo=!S.perfil.cotovelo;save();route()">Cotovelo / antebraço</span><span class="chip ${p.joelho?'on':''}" onclick="S.perfil.joelho=!S.perfil.joelho;save();route()">Joelho</span></div><p class="tiny">Dor marcada tira ou adapta exercícios de risco. Dor aguda ou persistente é caso de médico ou fisioterapeuta, não de app.</p>
+  <h3>Alguma dor que limita?</h3><div class="chips">${window.DORES.map(([k,n])=>`<span class="chip ${(p.dores||{})[k]||(k==='cotovelo'&&p.cotovelo)||(k==='joelho'&&p.joelho)?'on':''}" onclick="dorPerfil('${k}')">${n}</span>`).join("")}</div><p class="tiny">Dor marcada tira ou adapta exercícios de risco. Dor aguda ou persistente é caso de médico ou fisioterapeuta, não de app.</p>
   </div>${foot(4,"obMontar()","Montar meu treino DOSE")}</div>`; },
  // 5 — treino montado + nutrição
  ()=>{ const p=S.perfil; const g=S.gerado; const nu=calcNutri(p); const pc=p.protocoloCoach||{}; const k=pc.kcal||nu?.alvo, pr=pc.p||nu?.prot, c=pc.c||nu?.carb, gd=pc.g||nu?.gord;
@@ -68,7 +68,7 @@ window.obMontar=()=>{ const p=S.perfil; const dias=(p.diasMusc||[]).length; if(!
   const esp=Object.keys(p.esportes||{}); const diasEsp=[...new Set(Object.values(p.esportes||{}).flat())];
   let obj="hipertrofia"; if(["cut","cutLeve"].includes(p.objetivo)) obj="emagrecer"; else if(p.objetivo==="recomp") obj="hipertrofia"; if(esp.some(x=>["bjj","boxe","futebol","hyrox"].includes(x))&&dias<=3) obj=["cut","cutLeve"].includes(p.objetivo)?"emagrecer":"potencia"; if(p.experiencia==="nunca") obj="geral"; if(p.idade>=50&&p.experiencia!=="atleta") obj=obj==="hipertrofia"?"saude":obj;
   const pri=[]; if(p.sexo==='f') pri.push("gluteo"); if(esp.includes("bjj")||esp.includes("boxe")) pri.push("costas"); if(esp.includes("corrida")||esp.includes("futebol")) pri.push("pernas"); if(!pri.length) pri.push("ombro","costas");
-  const cfg={objetivoTreino:obj,dias:Math.min(6,Math.max(2,dias)),experiencia:p.experiencia||"intermediario",prioridades:pri.slice(0,3),diasBjj:diasEsp,diasMusc:p.diasMusc,preferSplit:dias>=5?"ppl":"ul",modo:p.modo,cotovelo:p.cotovelo,joelho:p.joelho};
+  const cfg={objetivoTreino:obj,dias:Math.min(6,Math.max(2,dias)),experiencia:p.experiencia||"intermediario",prioridades:pri.slice(0,3),diasBjj:diasEsp,diasMusc:p.diasMusc,preferSplit:dias>=5?"ppl":"ul",modo:p.modo,cotovelo:p.cotovelo,joelho:p.joelho,dores:p.dores||{}};
   S.gerador=cfg; S.gerado=window.gerarPrograma(cfg); window.PROGRAMS.gerado=S.gerado; S.rotacao.gerado=0; p.programa="gerado"; save(); go('onboard',{i:5}); };
 window.obFinalizar=()=>{ const p=S.perfil; const k=n('obK'),pr=n('obP'),c=n('obC'),g=n('obG'); const nu=calcNutri(p);
   if(nu&&k&&pr){ const igual=k===nu.alvo&&pr===nu.prot&&c===nu.carb&&g===nu.gord; p.protocoloCoach=igual?{kcal:null,p:null,c:null,g:null,fonte:""}:{kcal:k,p:pr,c:c||0,g:g||0,fonte:"você"}; if(k<nu.tmb) toast("Abaixo da TMB: cuidado"); }

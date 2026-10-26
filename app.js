@@ -3,7 +3,7 @@
 const EX = Object.fromEntries(window.EXERCISES.map(e=>[e.id,e]));
 const DB_KEY = 'guia-treino-v1';
 const DEFAULT = {
-  perfil:{nome:"", sexo:"m", idade:null, altura:null, peso:null, bf:null, atividade:"mod", objetivo:"manter", programa:"ul_4", modo:"completa", esporteFoco:"", cotovelo:false, joelho:false, experiencia:"intermediario", pesoAlvo:null, bfAlvo:null, metaEsporte:"", esportes:{}, diasMusc:[], enfaseEsporte:true, prioridades:[], protocoloCoach:{kcal:null,p:null,c:null,g:null,fonte:""}},
+  perfil:{nome:"", sexo:"m", idade:null, altura:null, peso:null, bf:null, atividade:"mod", objetivo:"manter", programa:"ul_4", modo:"completa", esporteFoco:"", cotovelo:false, joelho:false, experiencia:"intermediario", pesoAlvo:null, bfAlvo:null, metaEsporte:"", esportes:{}, diasMusc:[], dores:{}, enfaseEsporte:true, prioridades:[], protocoloCoach:{kcal:null,p:null,c:null,g:null,fonte:""}},
   rotacao:{ppl2:0, predio:0},
   logs:[],        // {id,data,programa,sessao,nome,sets:[{ex,set,peso,reps,rir,done}],dur,bjj,dorCot,dorJo,dores:{local:0-10},notas}
   cardio:[],      // {data,tipo,min,fc,dist,rpe,fonte}
@@ -36,14 +36,14 @@ function resolveEx(id){
   const allowed=(window.EQUIP||{})[modo]; const main=(e.equip||[]).filter(q=>q!=='banco'); if(allowed&&main.length&&!main.some(q=>allowed.includes(q))&&window.POOL){ const pat=Object.keys(window.POOL).find(k=>window.POOL[k].includes(id)); if(pat){ for(const cand of window.POOL[pat]){ const c=EX[cand]; const cm=(c?c.equip:[]).filter(q=>q!=='banco'); if(c&&cm.length&&cm.some(q=>allowed.includes(q))) return c; } } }
   return e;
 }
+window.dorAtiva=k=>{ const d=S.perfil.dores||{}; return !!(d[k]||(k==='cotovelo'&&S.perfil.cotovelo)||(k==='joelho'&&S.perfil.joelho)); };
+// Exercícios que saem da ficha quando a dor está ativa (além das flags do acervo)
+window.DOR_EVITA={ombro:["desenvolvimento_smith","desenvolvimento_maquina","desenvolvimento_halteres","pike_pushup","supino_inclinado_barra","wall_ball"],lombar:["rdl_barra","rdl_smith","good_morning_corporal","agachamento_smith","sandbag_lunge"],punho:["rosca_direta_smith","flexao_solo","flexao_declinada","pike_pushup","barra_fixa"],quadril:["bulgarian_smith","afundo_reverso","hack","sandbag_lunge"],tornozelo:["step_up","afundo_reverso","bulgarian_smith","burpee_broad_jump","agachamento_corporal"],pescoco:["encolhimento_smith","encolhimento_halteres","good_morning_corporal","wall_ball"],joelho:[],cotovelo:[]};
 function flagsAtivas(e){
-  const f=[]; if(!e.flags) return f;
-  if(S.perfil.cotovelo && e.flags.cotovelo) f.push({k:"cotovelo",t:e.flags.cotovelo});
-  if(S.perfil.joelho && e.flags.joelho) f.push({k:"joelho",t:e.flags.joelho});
-  if(e.flags.ombro) f.push({k:"ombro",t:e.flags.ombro});
+  const f=[]; if(!e) return f; (window.DORES||[]).forEach(([k,n])=>{ if(!window.dorAtiva(k)) return; if(e.flags&&e.flags[k]) f.push({k:n,t:e.flags[k]}); else if((window.DOR_EVITA[k]||[]).includes(e.id)) f.push({k:n,t:"Costuma incomodar quem tem dor aqui. Troque por outro do mesmo padrão se doer."}); });
   return f;
 }
-function suspenso(e){ return S.perfil.cotovelo && e.flags && e.flags.cotovelo && /fora|suspens/i.test(e.flags.cotovelo); }
+function suspenso(e){ if(!e) return false; return (window.DORES||[]).some(([k])=>window.dorAtiva(k)&&((e.flags&&e.flags[k]&&/fora|suspens/i.test(e.flags[k]))||(window.DOR_EVITA[k]||[]).includes(e.id))); }
 
 // ---------- Programa e rotação ----------
 function programa(){ return window.PROGRAMS[S.perfil.programa] || window.PROGRAMS.ppl2; }

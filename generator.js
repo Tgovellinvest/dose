@@ -16,7 +16,7 @@ const POOL={ // padrão → exercícios por preferência (o modo de equipamento 
 };
 const EQUIP={completa:["smith","barra","halteres","banco","polia","maquina","kettlebell","band","corpo","esteira","tornozeleira","sled","skierg","remo","medball","sandbag"],predio:["smith","polia","banco","maquina","halteres","band","corpo","esteira","tornozeleira"],box:["barra","halteres","banco","kettlebell","band","corpo","medball","sandbag","remo","skierg","sled"],home:["halteres","banco","band","corpo"],livre:["barra","halteres","banco","kettlebell","corpo","band"],kettle:["kettlebell","band","corpo"],hotel:["halteres","corpo","esteira","band"],semequip:["corpo","band"]};
 if(window.EQUIP_V3) Object.assign(EQUIP,window.EQUIP_V3); window.POOL=POOL; window.EQUIP=EQUIP;
-function pick(pattern, p, used){ const allowed=EQUIP[p.modo]||EQUIP.predio; for(const id of POOL[pattern]){ const e=window.EXERCISES.find(x=>x.id===id); if(!e||used.has(id)) continue; if(p.cotovelo&&e.flags&&e.flags.cotovelo&&/fora|suspens/i.test(e.flags.cotovelo)) continue; const main=e.equip.filter(q=>q!=='banco'); const ok=!main.length||main.every(q=>allowed.includes(q)); if(ok){ used.add(id); return id; } } return null; }
+function pick(pattern, p, used){ const allowed=EQUIP[p.modo]||EQUIP.predio; for(const id of POOL[pattern]){ const e=window.EXERCISES.find(x=>x.id===id); if(!e||used.has(id)) continue; if(p.cotovelo&&e.flags&&e.flags.cotovelo&&/fora|suspens/i.test(e.flags.cotovelo)) continue; const dz=p.dores||{}; if(Object.keys(dz).some(k=>dz[k]&&((window.DOR_EVITA||{})[k]||[]).includes(id))) continue; if(Object.keys(dz).some(k=>dz[k]&&e.flags&&e.flags[k]&&/fora|suspens/i.test(e.flags[k]))) continue; const main=e.equip.filter(q=>q!=='banco'); const ok=!main.length||main.every(q=>allowed.includes(q)); if(ok){ used.add(id); return id; } } return null; }
 // Faixas por objetivo
 const OBJ={ geral:{comp:{reps:"8–12",rir:"2–3",rest:"2 min"}, iso:{reps:"10–15",rir:"1–2",rest:"90 s"}, hi:{reps:"12–20",rir:"1–2",rest:"60 s"}},
  potencia:{comp:{reps:"3–5",rir:"3",rest:"3 min"}, iso:{reps:"6–10",rir:"2",rest:"2 min"}, hi:{reps:"10–15",rir:"1–2",rest:"90 s"}},
@@ -59,7 +59,7 @@ window.gerarPrograma=function(p){
    `Objetivo ${p.objetivoTreino||"hipertrofia"}: compostos ${OBJ[p.objetivoTreino||"hipertrofia"].comp.reps} reps a RIR ${OBJ[p.objetivoTreino||"hipertrofia"].comp.rir}; isoladores ${OBJ[p.objetivoTreino||"hipertrofia"].iso.reps} a RIR ${OBJ[p.objetivoTreino||"hipertrofia"].iso.rir}.`,
    p.prioridades&&p.prioridades.length?`Prioridades (${p.prioridades.join(", ")}) recebem +1 série nos exercícios do grupo e, no glúteo, um exercício a mais.`:"Sem prioridade declarada: volume equilibrado por grupo.",
    p.enfaseEsporte&&p.esporteFoco?`Ênfase no esporte (${p.esporteFoco}): 1 exercício específico por sessão, no lugar do último acessório.`:"",
-   p.cotovelo?"Cotovelo sintomático: exercícios suspensos foram excluídos.":"", p.joelho?"Joelho sintomático: respeite o ângulo indolor; o app marca os exercícios de atenção.":"",
+   p.cotovelo?"Cotovelo sintomático: exercícios suspensos foram excluídos.":"", ...Object.keys(p.dores||{}).filter(k=>p.dores[k]&&k!=='cotovelo'&&k!=='joelho').map(k=>`${(window.DORES.find(d=>d[0]===k)||[k,k])[1]} com dor: ${(window.DOR_EVITA[k]||[]).length} exercícios ficaram de fora.`), p.joelho?"Joelho sintomático: respeite o ângulo indolor; o app marca os exercícios de atenção.":"",
    (p.diasBjj||[]).length>=4?"4+ BJJ na semana: se a fadiga subir, corte acessórios antes dos compostos.":"",
    p.experiencia==="nunca"?"Primeiras 2 semanas: só 2 séries por exercício, RIR 3, foco em aprender o movimento. Dor muscular leve é normal; dor articular não.":"",
    "Progressão: topo da faixa nas working sets → sobe carga. Deload a cada 4–6 semanas."].filter(Boolean);
@@ -68,7 +68,7 @@ window.gerarPrograma=function(p){
 
 // Programas prontos (atalhos do perfil): são o gerador com presets
 window.programaPronto=function(key,perfil){
-  const base={modo:perfil.modo,cotovelo:perfil.cotovelo,joelho:perfil.joelho,prioridades:[],diasBjj:[]};
+  const base={modo:perfil.modo,cotovelo:perfil.cotovelo,joelho:perfil.joelho,dores:perfil.dores||{},prioridades:[],diasBjj:[]};
   const P={fb_iniciante:{objetivoTreino:"geral",dias:3,experiencia:perfil.experiencia==="nunca"?"nunca":"iniciante"},
    ul_4:{objetivoTreino:"hipertrofia",dias:4,experiencia:"intermediario",preferSplit:"ul"},
    ppl_6:{objetivoTreino:"hipertrofia",dias:6,experiencia:"avancado",preferSplit:"ppl"},
