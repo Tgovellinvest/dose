@@ -76,6 +76,7 @@ SH.abrir=async(tipo,arg)=>{ cur={tipo,arg,fmt:cur.fmt||'feed',blob:null};
    <div class="seg" style="margin:8px 0"><button class="${cur.fmt==='feed'?'on':''}" onclick="SHARE.fmt('feed')">Feed 4:5</button><button class="${cur.fmt==='story'?'on':''}" onclick="SHARE.fmt('story')">Story 9:16</button></div>
    <div id="shPrev" style="border-radius:16px;overflow:hidden;background:#000;aspect-ratio:${cur.fmt==='story'?'9/16':'4/5'};max-height:52dvh;margin:0 auto"></div>
    <div class="grid2" style="margin-top:12px"><button class="btn em" onclick="SHARE.compartilhar()">${I("share")} Compartilhar</button><button class="btn sec" onclick="SHARE.baixar()">Baixar PNG</button></div>
+   ${window.GRUPOS&&window.CLOUD&&CLOUD.user()?`<button class="btn sec" style="margin-top:8px" onclick="SHARE.postarGrupo()">${I("users")} Postar no grupo</button>`:""}
    <button class="btn sm ghost" style="margin-top:8px" onclick="closeSheet()">Agora não</button>`);
   await SH.render(); };
 SH.fmt=async f=>{ cur.fmt=f; await SH.abrir(cur.tipo,cur.arg); };
@@ -84,6 +85,16 @@ SH.render=async()=>{ await fontsOk(); const c=await SH.draw[cur.tipo](cur.fmt,cu
 const nome=()=>`dose-${cur.tipo}-${today()}.png`;
 SH.compartilhar=async()=>{ try{ const blob=cur.blob||await SH.render(); const file=new File([blob],nome(),{type:"image/png"}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:"DOSE",text:"A dose certa. "+SH.URL}); toast("Compartilhado"); } else { SH.baixar(); toast("Imagem baixada: poste de onde quiser"); } }catch(e){ if(e&&e.name!=="AbortError") toast("Não deu para compartilhar; baixe o PNG"); } };
 SH.baixar=async()=>{ const blob=cur.blob||await SH.render(); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=nome(); document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000); };
+// Resumo em texto (sem dados sensíveis) para o feed do grupo
+SH.resumo=()=>{ const t=cur.tipo,a=cur.arg; const f1=n=>String(Math.round(n*10)/10).replace('.',',');
+  if(t==='sessao'){ const done=a.sets.filter(s=>s.done); const ton=done.reduce((x,s)=>x+(s.peso||0)*(s.reps||0),0); return {titulo:a.nome||"Treino de força",linhas:[`${done.length} séries`,ton>=1000?`${f1(ton/1000)} t`:`${Math.round(ton)} kg`,a.dur?`${a.dur} min`:null].filter(Boolean)}; }
+  if(t==='cardio'){ return {titulo:a.tipo,linhas:[a.dist?`${f1(a.dist)} km`:null,a.min?`${a.min} min`:null,a.dist&&a.min?`${Math.floor(a.min/a.dist)}:${String(Math.round((a.min/a.dist%1)*60)).padStart(2,'0')} /km`:null].filter(Boolean)}; }
+  if(t==='medalha') return {titulo:`Medalha · ${a.nome}`,linhas:[TIER[a.tier],`${a.v} ${a.un}`]};
+  if(t==='semana'){ const ini=semanaIni(); const L=S.logs.filter(l=>l.data>=ini).length+S.bjj.filter(l=>l.data>=ini).length+S.cardio.filter(l=>l.data>=ini).length; return {titulo:"Semana",linhas:[`${L} treinos`]}; }
+  if(t==='mes'){ const ini=today().slice(0,8)+"01"; const d=new Set([...S.logs,...S.bjj,...S.cardio].filter(l=>l.data>=ini).map(l=>l.data)).size; return {titulo:"Mês",linhas:[`${d} dias ativos`]}; }
+  if(t==='objetivo'){ const p=S.perfil; const pes=(S.pesagens||[]); const atual=pes.length?pes[pes.length-1].peso:p.peso, ini=pes.length?pes[0].peso:p.peso; const pct=p.pesoAlvo&&ini!==p.pesoAlvo?Math.round(Math.max(0,Math.min(1,(ini-atual)/(ini-p.pesoAlvo)))*100):null; return {titulo:"Objetivo",linhas:[pct!=null?`${pct}% do caminho`:"meta não definida"]}; }
+  return {titulo:t,linhas:[]}; };
+SH.postarGrupo=()=>{ const r=SH.resumo(); window.gpPostarSheet(cur.tipo,r); };
 // Atalhos
 SH.sessao=id=>{ const l=S.logs.find(x=>x.id===id)||S.logs[S.logs.length-1]; if(l) SH.abrir('sessao',l); };
 SH.cardio=id=>{ const c=S.cardio.find(x=>x.id===id)||S.cardio[S.cardio.length-1]; if(c) SH.abrir('cardio',c); };

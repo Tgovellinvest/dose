@@ -60,6 +60,7 @@ C.healthSync=async()=>{ const u=C.user(); if(!u) return 0; const r=await fetch(`
     Object.keys(extra).forEach(k=>{ if(extra[k]!=null&&(ck[k]==null||ck.fonte==='iphone')){ if(ck[k]!==extra[k]) n++; ck[k]=extra[k]; } }); }
   S.pesagens.sort((a,b)=>a.data.localeCompare(b.data)); S.checkins.sort((a,b)=>a.data.localeCompare(b.data)); if(n) save(); return n; };
 C.healthEndpoint=`${FN}/health-sync`;
+C._ah=AH;
 window.CLOUD=C;
 
 // ---------- UI: Mais → Conta ----------

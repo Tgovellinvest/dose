@@ -171,7 +171,7 @@ let R={r:"hoje",p:{}};
 function go(r,p={}){ R={r,p}; location.hash=r+(Object.keys(p).length?"?"+new URLSearchParams(p):""); }
 function applyTheme(){ document.documentElement.dataset.theme=S.perfil.tema||S.tema||"dark"; }
 function route(){ applyTheme(); const [r,q]=location.hash.replace('#','').split('?'); R={r:r||"hoje",p:Object.fromEntries(new URLSearchParams(q||""))};
-  const maisRoutes=['esportes','calendario','gerador','tutorial','mais']; document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.r===R.r || R.r.startsWith(b.dataset.r) || (b.dataset.r==='mais'&&maisRoutes.includes(R.r)) || (b.dataset.r==='treino'&&(R.r==='sessao'||R.r==='exercicio'))));
+  const maisRoutes=['esportes','calendario','gerador','tutorial','mais','grupos']; document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.r===R.r || R.r.startsWith(b.dataset.r) || (b.dataset.r==='mais'&&maisRoutes.includes(R.r)) || (b.dataset.r==='treino'&&(R.r==='sessao'||R.r==='exercicio'))));
   document.getElementById('modeBadge').textContent=({completa:"Academia",predio:"Prédio",box:"Box",home:"Home gym",livre:"Pesos livres",kettle:"Kettlebell",hotel:"Hotel",semequip:"Sem equip."})[S.perfil.modo]||"";
   const v=window.VIEWS[R.r]||window.VIEWS.hoje; const html=v(R.p); const el=document.getElementById('view'); el.innerHTML=html; window.scrollTo(0,0);
   if(window.AFTER[R.r]) window.AFTER[R.r](R.p);
