@@ -178,3 +178,29 @@ a{color:var(--ember)}
 .item.next{border-color:color-mix(in srgb,var(--ember) 45%,var(--line));background:linear-gradient(135deg,var(--ember-soft),var(--s1) 70%)}
 .switch{position:relative;display:inline-block;width:46px;height:28px;flex:none}.switch input{opacity:0;width:0;height:0}.switch i{position:absolute;inset:0;background:var(--s3);border-radius:999px;transition:background var(--fast)}.switch i:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:var(--tx);border-radius:50%;transition:transform var(--fast) var(--spring)}.switch input:checked+i{background:var(--ember)}.switch input:checked+i:before{transform:translateX(18px)}
 .chips .chip.warn.on{background:color-mix(in srgb,var(--stop) 28%,var(--s1));color:var(--stop)}
+
+/* ===== v3.1 · parecer da equipe de arte ===== */
+.card.hero{background:var(--s1);border-color:var(--line);border-top:2px solid var(--ember);padding:18px}
+.item.next{background:var(--s1);border-color:color-mix(in srgb,var(--ember) 55%,var(--line))}
+.item.next .n{border:1px solid var(--ember);color:var(--ember);background:var(--s1)}
+.item .n[style]{background:var(--s3)!important;color:var(--tx)!important;border:1px solid var(--line)}
+.btn{letter-spacing:.04em;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.btn.sec,.btn.ghost{text-transform:none;letter-spacing:0;font-weight:700;font-size:14px}
+.grid2 .btn,.grid3 .btn{padding:14px 10px}
+.seg button{flex:1 1 0;min-width:0;padding:9px 6px;letter-spacing:.02em;font-size:11px;overflow:hidden;text-overflow:ellipsis}
+.seg{mask-image:linear-gradient(90deg,#000 92%,transparent)}
+h1.sec{font-size:26px;letter-spacing:-.03em;margin:8px 0 4px}
+.eyebrow{color:var(--tx3)}.eyebrow.em{color:var(--ember)}
+.tiny{font-size:12.5px;color:var(--tx2)}.kpi .l,h3{color:var(--tx3)}
+.ring .v{stroke:var(--bone)}.ring .dot{fill:var(--ember)}
+.cal.today{outline:2px solid var(--ember)}.cal .tiny{color:var(--tx2)!important}
+h1 .em{color:var(--tx2)}
+.medal.won .medal-svg,.medal.won.t3 .medal-svg{filter:none}
+h3::before{content:"";display:inline-block;width:18px;height:8px;margin-right:8px;vertical-align:middle;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 10'%3E%3Cpath d='M1 9C8 9 10 2 23 1' fill='none' stroke='%23E4572E' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E")}
+.serif.coach{font-size:21px;margin:6px 0 10px;color:var(--bone)}.serif i{color:var(--ember);font-style:normal}
+.timer.run{color:var(--ember)}
+body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
+.wiz label,.card label{text-transform:none;letter-spacing:0;font-size:13px;color:var(--tx2);font-weight:600}
+.wiz .foot .btn.ghost{width:56px;flex:none;font-size:20px;padding:0}
+.toast{font-family:var(--serif);font-style:italic;font-weight:400;font-size:16px;letter-spacing:0;background:var(--s3);color:var(--tx);border:1px solid var(--line)}
+.vazio{padding:28px 6px 18px}.vazio .serif{font-size:26px;line-height:1.2;margin:10px 0 12px}
