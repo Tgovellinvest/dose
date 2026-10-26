@@ -172,7 +172,7 @@ function importCSV(file){ const r=new FileReader(); r.onload=()=>{ const lines=r
 
 // ---------- Roteamento ----------
 let R={r:"hoje",p:{}};
-function go(r,p={}){ R={r,p}; location.hash=r+(Object.keys(p).length?"?"+new URLSearchParams(p):""); }
+function go(r,p={}){ R={r,p}; const h=r+(Object.keys(p).length?"?"+new URLSearchParams(p):""); if(location.hash.replace(/^#/,"")===h){ const y=window.scrollY; route(); if(r===(window._lastR||"")) requestAnimationFrame(()=>window.scrollTo(0,y)); } else location.hash=h; window._lastR=r; }
 function applyTheme(){ document.documentElement.dataset.theme=S.perfil.tema||S.tema||"dark"; }
 function route(){ applyTheme(); const [r,q]=location.hash.replace('#','').split('?'); R={r:r||"hoje",p:Object.fromEntries(new URLSearchParams(q||""))};
   const maisRoutes=['esportes','calendario','gerador','tutorial','mais','grupos']; document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.r===R.r || R.r.startsWith(b.dataset.r) || (b.dataset.r==='mais'&&maisRoutes.includes(R.r)) || (b.dataset.r==='treino'&&(R.r==='sessao'||R.r==='exercicio'||R.r==='ficha'))));
