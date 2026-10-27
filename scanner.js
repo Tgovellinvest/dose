@@ -17,6 +17,7 @@ function porcao(nome,qtd,servG){ const nl=nome.toLowerCase(); const m=String(qtd
   if(pq&&pq<=600&&/marmita|pronto|prato|liv ?up|risoto|escondidinho|estrogonofe|strogonoff|lasanha|frango|carne|filé|file|sopa|caldo|bowl|salada|yakisoba|nhoque|massa ao|feijoada|monster|energ|lata|refrigerante|suco|iogurte|bebida|shake|barra|whey pronto|yopro/.test(nl)) return {u:`1 embalagem (${Math.round(pq)} ${un})`,q:pq};
   if(servG&&servG>=5&&servG<=600) return {u:`1 porção (${Math.round(servG)} ${/bebida|suco|leite|refrigerante|água|agua|chá|cha\b/.test(nl)?'ml':'g'})`,q:servG};
   if(/liv ?up|marmita|pronto|prato|risot|escondidinho|estrogonofe|strogonoff|lasanha|nhoque|bowl|sopa|caldo|,| com | e (arroz|feijão|purê|batata|legumes)/.test(nl)&&!/biscoito|chocolate|bolacha|cookie|barra|cereal|granola/.test(nl)) return {u:'100 g',q:100};
+  if(/refrigerante|coca|pepsi|guaran|fanta|sprite|sukita|suco|néctar|nectar|bebida|^leite (uht|integral|desnatado|semi|zero)|^leite$|água|agua|chá|cha\b|energ|isotôn|isoton|gatorade|powerade|kombucha|tônica|tonica|cerveja/.test(nl)&&!/em pó|em po|condensado|pó\b/.test(nl)) return {u:'200 ml',q:200};
   const T=[[/leite condensado|doce de leite|creme de avelã|nutella|geleia|\bmel\b|pasta de amendoim/,20],[/chocolate|bombom|bis\b|kit ?kat|talento|baton/,25],[/biscoito|bolacha|cookie|wafer|torrada|cracker/,30],[/salgadinho|chips|batata palha|pipoca|amendoim/,25],[/requeij|cream cheese|queijo|ricota/,30],[/manteiga|margarina/,10],[/achocolatado|nescau|toddy|leite em pó|leite em po/,20],[/whey|proteína em pó|proteina em po/,30],[/granola|cereal|aveia/,30],[/pão|pao|bisnag/,50],[/presunto|peito de peru|mortadela|salame/,40],[/arroz/,50],[/feij|lentilha|grão|grao/,30],[/macarr|espaguete|massa|penne/,80],[/maionese|ketchup|mostarda/,12],[/azeite|óleo|oleo/,13],[/iogurte/,100],[/sorvete|picolé/,60]];
   for(const [rx,g] of T) if(rx.test(nl)) return {u:`${g} g`,q:g};
   return {u:'100 g',q:100}; }
@@ -28,7 +29,7 @@ function montar(nome,marca,qtd,k100,p100,c100,g100,servG,fonte,code){ let n=(nom
 async function buscar(code){ code=String(code).replace(/\D/g,''); if(code.length<8) return null;
   const v=[code,code.replace(/^0+/,''),code.padStart(13,'0')];
   const m=meus().find(x=>x.code&&v.includes(x.code)); if(m) return Object.assign({fonte:"Meus alimentos",coerente:true},m);
-  try{ await loadScript('data/barcodes.js?v=4.7'); }catch(e){}
+  try{ await loadScript('data/barcodes.js?v=4.8.1'); }catch(e){}
   const B=window.BARCODES||{}; const hit=v.map(c=>B[c]).find(Boolean); if(hit){ const [n,b,q,k,p,c,g]=hit; return montar(n,b,q,k,p,c,g,null,"Open Food Facts (índice do DOSE)",code); }
   if(!navigator.onLine) return {offline:true};
   for(const host of ['https://world.openfoodfacts.org','https://br.openfoodfacts.org']){ try{ const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),7000);
