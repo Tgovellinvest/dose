@@ -90,18 +90,18 @@ const MODELOS={
   'mes':{nome:"Mês sem falhar",desc:"Bater a meta de dias toda semana, por 4 semanas.",tipo:'dias',meta:null,per:'semana',dur:28,ic:'calendar'},
   '100km':{nome:"100 km em 30 dias",desc:"Corrida, bike ou natação: cada um soma os seus km.",tipo:'km',meta:100,per:'total',dur:30,ic:'heart'}
 };
-window.comModelo=k=>{ if(!(window.CLOUD&&CLOUD.user())){ toast("Entre na conta para criar o desafio"); return go('mais',{t:'conta'}); } const m=MODELOS[k]; gpNovo();
+window.comModelo=k=>{ if(!(window.CLOUD&&CLOUD.user())) return garantirConta(()=>comModelo(k),"Para criar o desafio"); const m=MODELOS[k]; gpNovo();
   setTimeout(()=>{ const $=id=>document.getElementById(id); if(!$('gpNome')) return; $('gpNome').value=m.nome; $('gpDesc').value=m.desc; [...$('gpTipo').children].forEach(c=>c.classList.toggle('on',c.dataset.k===m.tipo));
     const meta=m.meta||Math.max(2,Object.values(semanaUsuario()).filter(u=>u&&(u.musc||(u.esportes||[]).length)).length||4); $('gpMeta').value=meta; $('gpPer').value=m.per; $('gpFim').value=shiftData(today(),m.dur-1); },50); };
 
 V.comunidade=(p)=>{ setTitle("Comunidade"); const logado=window.CLOUD&&CLOUD.user();
   return `<h1 class="sec">Comunidade</h1><p class="serif coach" style="margin:2px 0 12px">Juntos somos mais fortes. <i>Quem aparece, conta.</i></p>
-   <div class="card hero" id="comTopo"><div class="eyebrow">Sua semana na comunidade</div><div id="comTopoTxt" class="small" style="margin-top:6px">${logado?"carregando…":"Entre na conta para criar desafios, entrar em grupos e aparecer no ranking."}</div>${logado?"":`<button class="btn em sm" style="margin-top:10px" onclick="go('mais',{t:'conta'})">Entrar na conta</button>`}</div>
+   <div class="card hero" id="comTopo"><div class="eyebrow">Sua semana na comunidade</div><div id="comTopoTxt" class="small" style="margin-top:6px">${logado?"carregando…":"Crie um desafio ou entre num grupo. Dá para começar sem cadastro."}</div>${logado?"":`<button class="btn em sm" style="margin-top:10px" onclick="garantirConta(()=>route(),'Entrar na Comunidade')">Entrar · 5 segundos</button>`}</div>
    <div id="comRegiao">${window.V_regiao?V_regiao():""}</div>
    <h3>Desafios prontos</h3><div class="list">${Object.entries(MODELOS).map(([k,m])=>`<div class="item" onclick="comModelo('${k}')"><div class="n">${I(m.ic)}</div><div class="t"><b>${m.nome}</b><span>${m.desc}</span></div><span class="arrow">Criar</span></div>`).join("")}</div>
    <p class="tiny">Ranking premia constância: 10 pontos por dia ativo, +2 no dia duplo, +5 por semana que bate a meta. Ninguém vê sua carga, seu peso ou sua dieta.</p>
    <h3>Seus grupos</h3><div id="comGrupos">${logado?`<div class="card sub small">carregando…</div>`:`<div class="card sub small">Sem conta, sem grupos.</div>`}</div>
-   <div class="grid2" style="margin-top:8px"><button class="btn sec sm" onclick="${logado?'gpNovo()':"go('mais',{t:'conta'})"}">${I("plus")} Criar grupo</button><button class="btn sec sm" onclick="${logado?"gpEntrar('')":"go('mais',{t:'conta'})"}">${I("link")} Tenho código</button></div>`; };
+   <div class="grid2" style="margin-top:8px"><button class="btn sec sm" onclick="gpNovo()">${I("plus")} Criar grupo</button><button class="btn sec sm" onclick="gpEntrar('')">${I("link")} Tenho código</button></div>`; };
 A.comunidade=async()=>{ if(window.A_regiao) A_regiao(); if(!(window.CLOUD&&CLOUD.user())||!window.GRUPOS) return;
   try{ const gs=await GRUPOS.listar(); const pos=await GRUPOS.posicoes(gs).catch(()=>({}));
     const el=document.getElementById('comGrupos'); if(el) el.innerHTML=gs.length?`<div class="list">${gs.map(g=>{ const q=pos[g.id]; return `<div class="item" onclick="go('grupos',{g:'${g.id}'})"><div class="n">${q?`<b class="mono">${q.pos}º</b>`:I("users")}</div><div class="t"><b>${esc(g.nome)}</b><span>${q?`${q.pos}º de ${q.n} na semana${q.acima?` · faltam ${q.acima.dif} pts para ${esc(q.acima.nome)}`:q.pos===1?' · liderando':''}`:'sem registros na semana'}</span></div><span class="arrow">›</span></div>`; }).join("")}</div>`:`<div class="vazio"><p class="serif">Quem aparece, conta. <i>Chame quem treina com você.</i></p><p class="small">Use um desafio pronto acima ou crie o seu.</p></div>`;

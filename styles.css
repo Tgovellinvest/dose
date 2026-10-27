@@ -325,3 +325,8 @@ body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
 details.card summary{cursor:pointer;min-height:32px;display:flex;align-items:center;gap:6px;list-style:none}
 details.card summary::-webkit-details-marker{display:none}
 details.card[open] summary{margin-bottom:4px}
+/* v6.1 · menu (3 traços em ember) e botões de login social */
+.menubtn{width:48px;height:48px;margin-left:6px;margin-right:-8px;display:inline-flex;align-items:center;justify-content:center;background:none;border:0;color:var(--ember);cursor:pointer;border-radius:12px;transition:transform var(--fast) var(--spring),background var(--fast)}
+.menubtn:active{transform:scale(.92);background:var(--s2)}
+.btn.social{background:#fff;color:#1f1f1f;border:1px solid #dadce0;display:flex;align-items:center;justify-content:center;gap:10px;text-transform:none;letter-spacing:0;font-weight:600}
+:root[data-theme="light"] .btn.social{border-color:#c9c9c9}

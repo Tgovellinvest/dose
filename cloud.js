@@ -15,7 +15,7 @@ const AH=async()=>{ const t=await token(); if(!t) throw new Error("Sessão expir
 const errMsg=async r=>{ try{ const j=await r.json(); return j.msg||j.error_description||j.message||j.error||r.statusText; }catch(e){ return r.statusText; } };
 
 const C={};
-C.user=()=>sess&&sess.user?{id:sess.user.id,email:sess.user.email}:null;
+C.user=()=>sess&&sess.user?{id:sess.user.id,email:sess.user.email||null,anon:!!sess.user.is_anonymous,nome:(sess.user.user_metadata||{}).full_name||(sess.user.user_metadata||{}).name||null}:null;
 C.entrar=async(email,senha)=>{ const r=await fetch(`${URL_}/auth/v1/token?grant_type=password`,{method:'POST',headers:H(),body:JSON.stringify({email,password:senha})}); if(!r.ok) throw new Error(await errMsg(r)); setSess(await r.json()); return C.user(); };
 C.criar=async(email,senha)=>{ const r=await fetch(`${URL_}/auth/v1/signup`,{method:'POST',headers:H(),body:JSON.stringify({email,password:senha,data:{app:'dose'}})}); if(!r.ok) throw new Error(await errMsg(r)); const j=await r.json(); if(j.access_token) setSess(j); return {confirmar:!j.access_token,user:j.user}; };
 C.recuperar=async(email)=>{ const r=await fetch(`${URL_}/auth/v1/recover`,{method:'POST',headers:H(),body:JSON.stringify({email})}); if(!r.ok) throw new Error(await errMsg(r)); return true; };
@@ -60,18 +60,42 @@ C.healthSync=async()=>{ const u=C.user(); if(!u) return 0; const r=await fetch(`
     Object.keys(extra).forEach(k=>{ if(extra[k]!=null&&(ck[k]==null||ck.fonte==='iphone')){ if(ck[k]!==extra[k]) n++; ck[k]=extra[k]; } }); }
   S.pesagens.sort((a,b)=>a.data.localeCompare(b.data)); S.checkins.sort((a,b)=>a.data.localeCompare(b.data)); if(n) save(); return n; };
 C.healthEndpoint=`${FN}/health-sync`;
+
+// ---------- v6.1: entrar sem cadastro, Google e Apple (PKCE; o app usa # para rotas) ----------
+const PK='dose-pkce-v1';
+const b64u=buf=>btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+async function pkce(){ const a=new Uint8Array(48); crypto.getRandomValues(a); const ver=b64u(a); const ch=b64u(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(ver))); return {ver,ch}; }
+let _cfg=null; C.provedores=async()=>{ if(_cfg) return _cfg; try{ const r=await fetch(`${URL_}/auth/v1/settings`,{headers:H()}); const j=await r.json(); const ex=j.external||{}; _cfg={google:!!ex.google,apple:!!ex.apple,anon:!!(ex.anonymous_users||j.anonymous_users_enabled)}; }catch(e){ _cfg={google:false,apple:false,anon:false}; } return _cfg; };
+C.anonimo=async()=>{ const r=await fetch(`${URL_}/auth/v1/signup`,{method:'POST',headers:H(),body:JSON.stringify({data:{app:'dose'}})}); if(!r.ok){ const m=await errMsg(r); throw new Error(/anonymous/i.test(m)?"Entrar sem cadastro ainda não foi ativado no servidor.":m); } setSess(await r.json()); return C.user(); };
+C.oauth=async(provider)=>{ const cfg=await C.provedores(); if(!cfg[provider]) throw new Error(`Entrar com ${provider==='google'?'Google':'Apple'} ainda não foi ativado.`);
+  const {ver,ch}=await pkce(); try{ localStorage.setItem(PK,JSON.stringify({ver,volta:location.hash||'#hoje',t:Date.now(),ligar:!!(C.user()&&C.user().anon)})); }catch(e){}
+  const redir=location.origin+location.pathname; const q=`provider=${provider}&redirect_to=${encodeURIComponent(redir)}&code_challenge=${ch}&code_challenge_method=s256`;
+  if(C.user()&&C.user().anon){ const r=await fetch(`${URL_}/auth/v1/user/identities/authorize?${q}&skip_http_redirect=true`,{headers:await AH()}); if(r.ok){ const j=await r.json(); if(j.url){ location.href=j.url; return; } } }
+  location.href=`${URL_}/auth/v1/authorize?${q}`; };
+C.retornoOAuth=async()=>{ const u=new URL(location.href); const code=u.searchParams.get('code'), err=u.searchParams.get('error_description')||u.searchParams.get('error'); if(!code&&!err) return null;
+  let st=null; try{ st=JSON.parse(localStorage.getItem(PK)||'null'); localStorage.removeItem(PK); }catch(e){}
+  history.replaceState(null,'',location.pathname+((st&&st.volta)||'#hoje'));
+  if(err) throw new Error(decodeURIComponent(err).replace(/\+/g,' '));
+  if(!st||!st.ver) throw new Error("Login expirou. Tente de novo.");
+  const r=await fetch(`${URL_}/auth/v1/token?grant_type=pkce`,{method:'POST',headers:H(),body:JSON.stringify({auth_code:code,code_verifier:st.ver})}); if(!r.ok) throw new Error(await errMsg(r)); setSess(await r.json()); return C.user(); };
 C._ah=AH;
 window.CLOUD=C;
 
 // ---------- UI: Mais → Conta ----------
-window.V_conta=function(){ const u=C.user(); const last=S.cloud&&S.cloud.ultimoSync?new Date(S.cloud.ultimoSync):null;
-  if(!u) return `<div class="card"><b>Sua conta, seus dados</b><p class="small">Sem conta o app funciona do mesmo jeito, só neste aparelho. Com conta, o histórico fica guardado e você abre no celular e no computador. Só e-mail e senha; nada de rede social.</p>
+window.V_conta=function(){ setTimeout(()=>window.ajustaLogin&&ajustaLogin(),0); const u=C.user(); const last=S.cloud&&S.cloud.ultimoSync?new Date(S.cloud.ultimoSync):null;
+  const G_='<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+  const A_='<svg width="16" height="18" viewBox="0 0 17 20" aria-hidden="true"><path fill="currentColor" d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9C3.6 4.8 2 5.8 1.1 7.4c-1.9 3.2-.5 8 1.3 10.6.9 1.3 1.9 2.7 3.3 2.6 1.3-.1 1.8-.9 3.4-.9s2 .9 3.4.8c1.4 0 2.3-1.3 3.2-2.6 1-1.5 1.4-2.9 1.4-3-.1 0-2.8-1.1-3-4.3zM11.6 3c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3-1.5z"/></svg>';
+  const sociais=`<div class="col" style="gap:8px;margin-top:10px"><button class="btn social" data-prov="google" hidden onclick="contaOAuth('google')">${G_} Continuar com Google</button><button class="btn social" data-prov="apple" hidden onclick="contaOAuth('apple')">${A_} Continuar com Apple</button></div>`;
+  if(u&&u.anon) return `<div class="card"><b>Você está sem cadastro</b><p class="small">Seus grupos e o backup estão ligados a este aparelho. Conecte o Google ou a Apple para não perder nada se trocar de celular.</p>${sociais}<button class="btn ghost" style="margin-top:8px" onclick="contaSair()">Sair (os dados ficam no aparelho)</button></div>`;
+  if(!u) return `<div class="card"><b>Sua conta, seus dados</b><p class="small">Sem conta o app funciona do mesmo jeito, só neste aparelho. Com conta, o histórico fica guardado, você entra em grupos e abre no celular e no computador.</p>${sociais}
+    <button class="btn sec" data-prov="anon" hidden style="margin-top:8px" onclick="contaAnonimo()">Entrar sem cadastro</button>
+    <details data-prov-fallback style="margin-top:10px"><summary class="small" style="cursor:pointer;min-height:36px;display:flex;align-items:center">Prefiro e-mail e senha</summary>
     <label>E-mail</label><input id="acEmail" type="email" autocomplete="email" placeholder="voce@exemplo.com"><label>Senha (mín. 8)</label><input id="acSenha" type="password" autocomplete="current-password" minlength="8">
     <div class="grid2" style="margin-top:10px"><button class="btn em" onclick="contaEntrar()">Entrar</button><button class="btn sec" onclick="contaCriar()">Criar conta</button></div>
-    <button class="btn sm ghost" style="margin-top:8px" onclick="contaRecuperar()">Esqueci a senha</button>
+    <button class="btn sm ghost" style="margin-top:8px" onclick="contaRecuperar()">Esqueci a senha</button></details>
     <p class="tiny" style="margin-top:10px">Guardamos só o que o app já guarda no aparelho (perfil, treinos, check-ins, diário). Nada é vendido nem compartilhado. Você apaga tudo quando quiser, aqui mesmo.</p><p class="tiny">Ao criar conta ou entrar, você concorda com os <a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</p></div>`;
   setTimeout(()=>window.integraPintar&&integraPintar(),0);
-  return `<div class="card"><b>${esc(u.email)}</b><p class="small">Sincronização automática ligada. Último envio: ${last?last.toLocaleString('pt-BR'):"ainda não"}.</p>
+  return `<div class="card"><b>${esc(u.email||u.nome||"Sua conta")}</b><p class="small">Sincronização automática ligada. Último envio: ${last?last.toLocaleString('pt-BR'):"ainda não"}.</p>
     <div class="grid2" style="margin-top:10px"><button class="btn sec" onclick="contaSync('push')">Enviar agora</button><button class="btn sec" onclick="contaSync('pull')">Baixar da conta</button></div>
     <button class="btn ghost" style="margin-top:8px" onclick="contaSair()">Sair (os dados ficam no aparelho)</button></div>
     <div class="card" id="cardIntegra"><b>Conectar apps</b><p class="small">Relógio, Garmin, Apple Watch e apps de corrida entram pelo Strava. Peso, passos, sono e frequência cardíaca entram pela Saúde do iPhone. Nada sai do DOSE para eles.</p>
@@ -117,4 +141,12 @@ window.healthNovaChave=async()=>{ if(!confirm("Gerar nova chave? A antiga para d
 window.addEventListener('load',()=>{ setTimeout(async()=>{ if(!C.user()||!navigator.onLine) return; const last=S.cloud&&S.cloud.ultimaIntegra?new Date(S.cloud.ultimaIntegra).getTime():0; if(Date.now()-last<6*3600e3) return;
   let n=0; try{ if(await C.stravaStatus()) n+=await C.stravaSync(); }catch(e){} try{ n+=await C.healthSync(); }catch(e){} S.cloud=Object.assign({},S.cloud,{ultimaIntegra:new Date().toISOString()}); try{ localStorage.setItem(DB_KEY,JSON.stringify(S)); }catch(e){} if(n){ toast(`${n} novidade(s) dos seus apps`); if(typeof route==='function') route(); } },4000); });
 window.contaApagar=async()=>{ if(!confirm("Apagar o histórico guardado na conta? O que está neste aparelho continua.")) return; try{ await C.apagarDados(); toast("Dados da conta apagados"); }catch(e){ toast(e.message); } };
+
+window.ajustaLogin=async()=>{ const cfg=await C.provedores(); let n=0; document.querySelectorAll('[data-prov]').forEach(b=>{ const on=!!cfg[b.dataset.prov]; b.hidden=!on; if(on&&b.offsetParent!==null||on) n++; }); document.querySelectorAll('[data-prov-fallback]').forEach(f=>{ if(f.tagName==='DETAILS'){ if(!n) f.open=true; } else f.hidden=!!n; }); };
+window.contaOAuth=async(p)=>{ try{ await C.oauth(p); }catch(e){ toast(e.message); } };
+window.contaAnonimo=async(depois)=>{ try{ await C.anonimo(); toast("Pronto. Você já pode criar e entrar em grupos."); if(typeof depois==='function') depois(); else route(); }catch(e){ toast(e.message); } };
+// Pede conta só na hora em que precisa (criar/entrar em grupo, desafio)
+window.garantirConta=(acao,motivo)=>{ if(C.user()) return acao(); window._depoisConta=acao;
+  setTimeout(()=>ajustaLogin(),0); sheet(`<h3>${esc(motivo||"Para criar o grupo")}</h3><p class="small">Escolha como entrar.</p><div class="col" style="gap:8px"><button class="btn social" data-prov="google" hidden onclick="contaOAuth('google')">Continuar com Google</button><button class="btn social" data-prov="apple" hidden onclick="contaOAuth('apple')">Continuar com Apple</button><button class="btn sec" data-prov="anon" hidden onclick="closeSheet();contaAnonimo(window._depoisConta)">Entrar sem cadastro</button><button class="btn em" data-prov-fallback hidden onclick="closeSheet();go('mais',{t:'conta'})">Entrar com e-mail</button></div><p class="tiny" style="margin-top:8px">Sem cadastro, os grupos ficam ligados a este aparelho. Ao continuar, você concorda com os <a href="termos.html" target="_blank" rel="noopener">Termos</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Privacidade</a>.</p>`); };
+document.addEventListener('DOMContentLoaded',async()=>{ try{ const u=await C.retornoOAuth(); if(u){ toast("Conta conectada"); try{ const r=await C.primeiraSync(); if(r==="conflito") go('mais',{t:'conta'}); }catch(e){} route(); } }catch(e){ toast(e.message); } });
 })();

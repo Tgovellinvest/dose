@@ -8,7 +8,7 @@ async function AH(){ const h=await C()._ah(); return h; }
 const api=async(path,opt={})=>{ const r=await fetch(`${URL_}/rest/v1/${path}`,Object.assign({headers:await AH()},opt,{headers:Object.assign(await AH(),opt.headers||{})})); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||j.msg||j.hint||m; }catch(e){} throw new Error(trad(m)); } const t=await r.text(); return t?JSON.parse(t):null; };
 const rpc=async(fn,args)=>{ const r=await fetch(`${URL_}/rest/v1/rpc/${fn}`,{method:'POST',headers:await AH(),body:JSON.stringify(args)}); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||m; }catch(e){} throw new Error(trad(m)); } return r.json(); };
 const trad=m=>({sessao:"Entre na conta primeiro",codigo:"Código não encontrado",cheio:"Grupo cheio (50 pessoas)",limite:"Você já criou 5 grupos"})[String(m).trim()]||m;
-const apelido=()=>{ const u=C().user(); return (S.perfil.nome||"").split(" ")[0]||(u?u.email.split("@")[0]:"alguém"); };
+const apelido=()=>{ const u=C().user(); return (S.perfil.nome||"").split(" ")[0]||(u&&u.nome?u.nome.split(" ")[0]:u&&u.email?u.email.split("@")[0]:"alguém"); };
 const G={cache:{grupos:null,detalhe:{}}};
 G.listar=async()=>{ G.cache.grupos=await api(`grupos?select=id,codigo,nome,descricao,dono,desafio,criado_em&order=criado_em.desc`); return G.cache.grupos; };
 G.criar=async(nome,descricao,desafio)=>{ const g=await rpc('criar_grupo',{p_nome:nome,p_descricao:descricao,p_desafio:desafio,p_apelido:apelido()}); await G.sincronizar(g.id,g.desafio); return g; };
@@ -78,7 +78,7 @@ const descDesafio=d=>{ if(!d||!d.tipo) return "Sem desafio: só o placar de dias
 const TIPOPOST={sessao:"strength",cardio:"run",semana:"calendar",mes:"calendar",medalha:"trophy",objetivo:"target"};
 
 // ---------- Views ----------
-V.grupos=(p)=>{ if(window.setTitle) setTitle("Grupos"); if(!C().user()) return `<h1 class="sec">Grupos</h1><div class="vazio"><div class="eyebrow">Fase A</div><p class="serif">Grupo fechado, por convite. <i>Ranking só entre quem está dentro.</i></p><p class="small">Um desafio com prazo, ranking da semana, do mês e do desafio, e os registros de cada um. Para usar, entre na sua conta.</p><button class="btn ghost" style="margin-top:12px" onclick="go('mais',{t:'conta'})">Entrar na conta</button></div>`;
+V.grupos=(p)=>{ if(window.setTitle) setTitle("Grupos"); if(!C().user()) return `<h1 class="sec">Grupos</h1><div class="vazio"><div class="eyebrow">Fase A</div><p class="serif">Grupo fechado, por convite. <i>Ranking só entre quem está dentro.</i></p><p class="small">Um desafio com prazo, ranking da semana, do mês e do desafio, e os registros de cada um. Dá para começar sem cadastro.</p><div class="grid2" style="margin-top:12px"><button class="btn em" onclick="gpNovo()">Criar grupo</button><button class="btn sec" onclick="gpEntrar('${esc(p.c||"")}')">Tenho código</button></div></div>`;
   if(p.g) return `<button class="btn sm ghost" onclick="go('grupos')">‹ Grupos</button><div id="gpDet"><div class="card sub small">carregando…</div></div>`;
   return `<h1 class="sec">Grupos</h1>
    <div class="grid2"><button class="btn em" onclick="gpNovo()">${I("plus")} Criar</button><button class="btn sec" onclick="gpEntrar('${esc(p.c||"")}')">${I("link")} Tenho código</button></div>
@@ -123,4 +123,5 @@ G.api=api; G.rpc=rpc; G.apelido=apelido;
 window.GRUPOS=G;
 // Ao abrir com conta: sincroniza dias dos grupos (silencioso, 1x por abertura)
 window.addEventListener('load',()=>{ setTimeout(()=>{ if(C().user()&&navigator.onLine) G.listar().then(()=>G.sincronizarTodos()).catch(()=>{}); },6000); });
+{ const _n=window.gpNovo, _e=window.gpEntrar; window.gpNovo=()=>window.garantirConta?garantirConta(_n,"Para criar o grupo"):_n(); window.gpEntrar=(c)=>window.garantirConta?garantirConta(()=>_e(c),"Para entrar no grupo"):_e(c); }
 })();
