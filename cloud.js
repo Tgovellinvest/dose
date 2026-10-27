@@ -78,6 +78,7 @@ C.retornoOAuth=async()=>{ const u=new URL(location.href); const code=u.searchPar
   if(err) throw new Error(decodeURIComponent(err).replace(/\+/g,' '));
   if(!st||!st.ver) throw new Error("Login expirou. Tente de novo.");
   const r=await fetch(`${URL_}/auth/v1/token?grant_type=pkce`,{method:'POST',headers:H(),body:JSON.stringify({auth_code:code,code_verifier:st.ver})}); if(!r.ok) throw new Error(await errMsg(r)); setSess(await r.json()); return C.user(); };
+C.ATALHO_URL=null; // link iCloud do atalho pronto (Tiago monta uma vez e compartilha)
 C._ah=AH;
 window.CLOUD=C;
 
@@ -118,18 +119,22 @@ window.stravaDesconectar=async()=>{ if(!confirm("Desconectar o Strava? Os treino
 window.integraSync=async()=>{ let msg=[]; try{ const st=await C.stravaStatus(); if(st){ const n=await C.stravaSync(); msg.push(n?`${n} treino(s) do Strava`:"Strava: nada novo"); } }catch(e){ msg.push(e.message); }
   try{ const n=await C.healthSync(); msg.push(n?`${n} dado(s) da Saúde`:"Saúde: nada novo"); }catch(e){ msg.push(e.message); } toast(msg.join(" · ")); integraPintar(); };
 window.healthAbrir=async()=>{ let key=null; try{ key=await C.healthKey(true); }catch(e){ return toast(e.message); } if(!key) return toast("Entre na conta primeiro");
-  sheet(`<h3>Saúde do iPhone → DOSE</h3><p class="small">O iPhone não deixa sites lerem a Saúde direto. O caminho é um <b>Atalho</b> que roda sozinho todo dia e manda para a sua conta: peso, passos, sono, FC em repouso e HRV. Leva uns 5 minutos para montar, uma vez só.</p>
-    <div class="card" style="margin:10px 0"><b>Sua chave pessoal</b><div class="mono" style="word-break:break-all;margin:6px 0" id="hkTxt">${esc(key)}</div><div class="grid2"><button class="btn sm sec" onclick="navigator.clipboard.writeText('${esc(key)}').then(()=>toast('Chave copiada'))">Copiar chave</button><button class="btn sm ghost" onclick="healthNovaChave()">Gerar nova</button></div><p class="tiny">Quem tiver a chave consegue enviar dados para a sua conta (só enviar; nunca ler). Se vazar, gere outra.</p></div>
-    <b>Montar o Atalho (iOS 17+)</b>
-    <ol class="small" style="padding-left:18px;line-height:1.55">
-      <li>Abra <b>Atalhos</b> → <b>+</b> → nome <b>DOSE Saúde</b>.</li>
-      <li>Ação <b>Buscar Amostras de Saúde</b>: Tipo <b>Peso</b>, Ordenar por Data de início, Limite 1. (Renomeie a variável para <b>peso</b>.)</li>
-      <li>Repita para <b>Passos</b> (hoje, somar), <b>Sono</b> (ontem à noite, somar, em horas → <b>sono</b>), <b>Frequência cardíaca em repouso</b> (último → <b>fcrep</b>) e <b>Variabilidade da FC</b> (último → <b>hrv</b>). Pode pular o que não usa.</li>
-      <li>Ação <b>Obter Conteúdo de URL</b>: URL <span class="mono" style="word-break:break-all">${C.healthEndpoint}</span> · Método <b>POST</b> · Corpo <b>JSON</b> com os campos: <b>key</b> = sua chave, <b>peso</b>, <b>passos</b>, <b>sono</b>, <b>fcrep</b>, <b>hrv</b> (cada um com a variável correspondente).</li>
-      <li>Rode uma vez e autorize o acesso à Saúde. Depois, em <b>Automação</b> → <b>Hora do dia</b> (ex.: 9h, diariamente) → <b>Executar imediatamente</b>, escolha o atalho.</li>
-    </ol>
-    <p class="tiny">Dica: com <b>Automação</b> sem confirmação, o envio acontece sozinho. No DOSE, toque em <b>Buscar novidades agora</b> ou simplesmente abra o app: os dados entram em Progresso (peso) e nos check-ins do dia.</p>
-    <button class="btn em" style="margin-top:8px" onclick="closeSheet();integraSync()">Já configurei, buscar agora</button>`); };
+  const cp=(t,lbl)=>`<button class="btn sm sec" style="width:auto" onclick="navigator.clipboard.writeText('${esc(t)}').then(()=>toast('${lbl} copiado'))">Copiar ${lbl.toLowerCase()}</button>`;
+  const passo=(n,t,d)=>`<div class="hpasso"><span class="hp-n">${n}</span><div><b>${t}</b><div class="small">${d}</div></div></div>`;
+  sheet(`<h3>Saúde do iPhone → DOSE</h3><p class="small">O iPhone só libera a Saúde para apps da loja. Por isso a ponte é um <b>Atalho</b>: ele lê peso e passos e manda para a sua conta todo dia, sozinho.</p>
+   ${C.ATALHO_URL?`<div class="card" style="margin:10px 0;border-color:var(--ember)"><b>Jeito rápido: atalho pronto</b><ol class="small" style="padding-left:18px;line-height:1.55;margin:6px 0"><li>Copie a sua chave (abaixo).</li><li>Toque em <b>Adicionar atalho</b>; quando o iPhone perguntar a chave, cole.</li><li>Faça o passo 7 (automação) da lista abaixo.</li></ol><a class="btn em sm" href="${C.ATALHO_URL}" target="_blank" rel="noopener">Adicionar atalho</a></div>`:""}
+   <div class="card" style="margin:10px 0"><b>Sua chave pessoal</b><div class="mono" style="word-break:break-all;margin:6px 0;font-size:13px">${esc(key)}</div><div class="row" style="gap:8px;flex-wrap:wrap;justify-content:flex-start">${cp(key,'Chave')}${cp(C.healthEndpoint,'Endereço')}<button class="btn sm ghost" style="width:auto" onclick="healthNovaChave()">Gerar nova</button></div><p class="tiny">A chave só envia dados para a sua conta, nunca lê. Se vazar, gere outra.</p></div>
+   <b>Montar o atalho (uma vez, ~5 min)</b>
+   ${passo(1,'Abra o app Atalhos','É um app (ícone com dois quadrados coloridos), não fica nos Ajustes. Procure "Atalhos" deslizando a tela inicial para baixo. Se não tiver, baixe "Atalhos" da Apple na App Store.')}
+   ${passo(2,'Crie um atalho novo','Aba <b>Atalhos</b> → <b>+</b> no canto de cima → toque no nome e escreva <b>DOSE Saúde</b>.')}
+   ${passo(3,'Peso','Toque em <b>Buscar ações</b>, digite <b>amostras</b> e escolha <b>Encontrar Amostras de Saúde</b>. Tipo: <b>Peso</b>. Ordenar por <b>Data de início</b>, <b>Mais recentes primeiro</b>, Limite <b>1</b>.')}
+   ${passo(4,'Passos','Busque <b>amostras</b> de novo: Tipo <b>Passos</b>, filtro <b>Data de início é hoje</b>. Depois busque <b>estatísticas</b> → <b>Calcular Estatísticas</b> → <b>Soma</b>.')}
+   ${passo(5,'Enviar para o DOSE','Busque <b>URL</b> → <b>Obter Conteúdo do URL</b>. No campo do endereço, cole o <b>Endereço</b> (botão acima). Toque em <b>Mostrar Mais</b>: Método <b>POST</b> · Corpo da Solicitação <b>JSON</b>. Em <b>Adicionar novo campo</b>: <b>Texto</b> key = cole a <b>Chave</b>; <b>Número</b> peso = variável <i>Amostras de Saúde</i>; <b>Número</b> passos = variável <i>Estatísticas</i>.')}
+   ${passo(6,'Teste','Toque em ▶. Permita o acesso à Saúde. Se aparecer <span class="mono">"ok":true</span>, deu certo.')}
+   ${passo(7,'Todo dia sozinho','Aba <b>Automação</b> → <b>+</b> → <b>Hora do Dia</b> (ex.: 9:00, Diariamente) → <b>Executar Imediatamente</b> → escolha <b>DOSE Saúde</b>.')}
+   <details style="margin-top:8px"><summary class="small" style="min-height:36px;display:flex;align-items:center;cursor:pointer">Opcional: sono, FC em repouso e HRV</summary><p class="small">Repita o passo 3 com o tipo <b>Análise do Sono</b> (ontem), <b>Frequência Cardíaca em Repouso</b> e <b>Variabilidade da Frequência Cardíaca</b> (Limite 1) e adicione os campos <b>sono</b> (em horas), <b>fcrep</b> e <b>hrv</b> no passo 5.</p></details>
+   <p class="tiny" style="margin-top:8px">Os nomes das ações podem variar um pouco entre versões do iOS; buscar pela palavra-chave (amostras, estatísticas, URL) sempre encontra.</p>
+   <button class="btn em" style="margin-top:8px" onclick="closeSheet();integraSync()">Já configurei, buscar agora</button>`); };
 window.healthNovaChave=async()=>{ if(!confirm("Gerar nova chave? A antiga para de funcionar e você precisa atualizar o Atalho.")) return; try{ const k=await C.healthKeyNova(); const el=document.getElementById('hkTxt'); if(el) el.textContent=k; toast("Nova chave gerada"); }catch(e){ toast(e.message); } };
 // Volta do Strava (strava-auth redireciona para #mais?t=conta&strava=ok|negado|erro|...)
 (function(){ const m=location.hash.match(/[?&]strava=([a-z]+)/); if(!m) return; const s=m[1]; history.replaceState(null,'',location.pathname+location.search+'#mais?t=conta');
