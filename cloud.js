@@ -131,14 +131,14 @@ window.healthSheet=async()=>{ let key=null; try{ key=await C.healthKey(true); }c
   sheet(`<h3>Conectar Saúde</h3><p class="small">Peso, passos, sono e batimentos do iPhone e do Apple Watch entram no DOSE. Leva menos de 1 minuto, uma vez só.</p>
    ${pronto?`${passo(1,'Instale o atalho do DOSE','Toque abaixo e depois em <b>Adicionar atalho</b>. Volte para cá.',`<a class="btn em sm" style="margin-top:8px;width:auto" href="${C.ATALHO_URL}" target="_blank" rel="noopener" onclick="saudeEstado().instalado=Date.now();save()">Adicionar atalho</a>`,st.instalado)}
    ${passo(2,'Sincronize','Na primeira vez, o iPhone pergunta se pode ler a Saúde: toque em <b>Permitir</b>. Depois volte para o DOSE.',`<button class="btn ${st.instalado?'em':'sec'} sm" style="margin-top:8px;width:auto" onclick="closeSheet();healthSincronizar()">Sincronizar agora</button>`,st.ok)}`
-   :`<div class="card" style="margin:10px 0"><b>Em breve</b><p class="small">O atalho pronto do DOSE está sendo publicado. Assim que sair, aqui vai ter só um botão.</p></div>`}
+   :`<div class="card" style="margin:10px 0"><b>Em breve</b><p class="small">O atalho pronto do DOSE está sendo publicado. Assim que sair, aqui vai ter só um botão.</p><button class="btn sm ghost" style="width:auto" onclick="closeSheet();healthSincronizar(true)">Já tenho o atalho · sincronizar</button></div>`}
    <details style="margin-top:10px"><summary class="small" style="min-height:40px;display:flex;align-items:center;cursor:pointer">Quero que sincronize sozinho todo dia</summary>
     <p class="small">No app <b>Atalhos</b>: aba <b>Automação</b> → <b>+</b> → <b>Hora do Dia</b> (ex.: 9:00, Diariamente) → <b>Executar Imediatamente</b> → escolha <b>${C.ATALHO_NOME}</b>. Funciona depois que você sincronizou pelo DOSE pelo menos uma vez.</p></details>
    <details style="margin-top:4px"><summary class="small" style="min-height:40px;display:flex;align-items:center;cursor:pointer">Deu erro?</summary>
     <p class="small">• "Atalho não encontrado": confira se o nome no app Atalhos é exatamente <b>${C.ATALHO_NOME}</b>.<br>• Nada chegou: abra Ajustes → Saúde → Acesso a Dados → Atalhos e ligue tudo.<br>• Trocou de celular ou acha que a chave vazou: gere outra abaixo e sincronize de novo pelo DOSE.</p>
     <button class="btn sm ghost" style="width:auto" onclick="healthNovaChave()">Gerar nova chave</button></details>`); };
 // Abre o atalho levando a chave; quando a pessoa volta ao DOSE, busca o que chegou.
-window.healthSincronizar=()=>garantirConta(async()=>{ if(!C.ATALHO_URL) return healthSheet(); if(!ehIOS()) return healthSheet();
+window.healthSincronizar=(teste)=>garantirConta(async()=>{ if(!C.ATALHO_URL&&teste!==true) return healthSheet(); if(!ehIOS()) return healthSheet();
   let key=null; try{ key=await C.healthKey(true); }catch(e){ return toast(e.message); } if(!key) return;
   window._saudeEsperando=Date.now();
   location.href=`shortcuts://run-shortcut?name=${encodeURIComponent(C.ATALHO_NOME)}&input=text&text=${encodeURIComponent(key)}`; },"Para conectar a Saúde");
