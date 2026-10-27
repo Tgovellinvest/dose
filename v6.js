@@ -22,15 +22,15 @@ function pilarTreino(){ const hoje=today(), semU=semanaUsuario(), ds=diasDaSeman
   let pct=null; if(plan.length) pct=planAte?Math.min(1,feitos.length/planAte):(feitos.length?1:null); else if(feitos.length) pct=1;
   const falta=Math.max(0,plan.length-feitos.length);
   const leitura=!plan.length?(feitos.length?`${feitos.length} ${feitos.length===1?'dia ativo':'dias ativos'} na semana. Defina seus dias no perfil para medir contra o plano.`:"Nada planejado. Defina seus dias de treino e esporte no perfil.")
-    :falta===0?"Semana de treino fechada. Agora é recuperar.":`${feitos.length} de ${plan.length} dias feitos${pct>=1?', em dia com o plano':''}. ${falta===1?'Falta 1 dia':`Faltam ${falta} dias`} até domingo.`;
+    :falta===0?"Semana de treino fechada. Agora é recuperar.":`Até hoje: ${Math.min(feitos.length,planAte)} de ${planAte} ${planAte===1?'dia planejado':'dias planejados'}${pct>=1?', em dia':''}. Na semana: ${feitos.length} de ${plan.length}; ${falta===1?'falta 1 dia':`faltam ${falta} dias`} até domingo.`;
   const dias=ds.map(o=>{ const fez=o.data<=hoje&&atividadesDe(o.data).length; const pl=plan.some(x=>x.data===o.data); return {l:DN[o.dd],h:fez?1:pl?0.18:0.06,c:fez?'var(--bone)':pl?'transparent':'var(--s3)',borda:pl&&!fez,hoje:o.data===hoje}; });
-  return {k:'treino',nome:'Treino',pct,barra:plan.length?feitos.length/plan.length:pct,valor:plan.length?`${feitos.length} de ${plan.length}`:`${feitos.length} dias`,leitura,dias,ir:"go('progresso',{g:'treino'})",irTxt:'Ver evolução do treino'}; }
+  return {k:'treino',nome:'Treino',pct,barra:pct,valor:plan.length?(planAte?`${Math.min(feitos.length,planAte)} de ${planAte}`:`0 de 0`):`${feitos.length} dias`,leitura,dias,ir:"go('progresso',{g:'treino'})",irTxt:'Ver evolução do treino'}; }
 
 function pilarNutri(){ const hoje=today(), meta=metaKcal(), ds=diasDaSemana();
   let ok=0, reg=0; const dias=ds.map(o=>{ const kc=o.data<=hoje?kcalDia(o.data):0; const dentro=kc>0&&meta&&Math.abs(kc-meta)/meta<=0.1; if(kc>0&&(o.data<hoje||dentro)){ reg++; if(dentro) ok++; } const r=meta&&kc?Math.min(1.3,kc/meta):0; return {l:DN[o.dd],h:kc?Math.max(0.1,r/1.3):0.06,c:kc?(dentro?'var(--bone)':'var(--tx3)'):'var(--s3)',hoje:o.data===hoje}; });
-  const pct=reg?ok/reg:null;
+  const pct=reg?ok/reg:(meta?0:null);
   const leitura=!meta?"Complete peso, altura e objetivo no perfil para ter uma meta de calorias.":!reg?"Registre o que comeu para medir. Um dia já conta.":`${ok} de ${reg} ${reg===1?'dia':'dias'} dentro da meta de ${meta} kcal (±10%).${ok<reg?' A barra apagada é o dia que escapou.':''}`;
-  return {k:'nutri',nome:'Nutrição',pct,valor:reg?`${ok} de ${reg}`:'—',leitura,dias,ir:"go('nutricao')",irTxt:'Abrir o diário'}; }
+  return {k:'nutri',nome:'Nutrição',pct,semDado:!reg,valor:reg?`${ok} de ${reg}`:'—',leitura,dias,ir:"go('nutricao')",irTxt:'Abrir o diário'}; }
 
 function pilarMetas(){ const itens=[];
   const antes=Math.max(0,DIASEM.indexOf(['dom','seg','ter','qua','qui','sex','sab'][new Date().getDay()]));
@@ -48,10 +48,10 @@ window.naDose=()=>{ const pilares=[pilarTreino(),pilarNutri(),pilarMetas()]; con
   const score=av.length?Math.round(av.reduce((a,p)=>a+p.pct,0)/av.length*100):null;
   const estado=score==null?'A semana começa agora':score>=80?'Na dose':score>=55?'Quase na dose':'Abaixo da dose';
   const cor=score==null?'var(--tx2)':score>=80?'var(--ok)':score>=55?'var(--warn)':'var(--tx2)';
-  const bons=av.filter(p=>p.pct>=0.8).map(p=>p.nome), pior=av.filter(p=>p.pct<0.8).sort((a,b)=>a.pct-b.pct)[0];
+  const bons=av.filter(p=>p.pct>=0.8&&!p.semDado).map(p=>p.nome), faltam=av.filter(p=>p.pct<0.8||p.semDado).sort((x,y)=>(x.semDado?-1:0)-(y.semDado?-1:0)||x.pct-y.pct), pior=faltam[0];
   let t,i; if(score==null){ t="Registre um treino ou uma refeição"; i="e o medidor começa a andar."; }
-  else if(!pior){ t="Treino, comida e metas em dia."; i="Semana na dose."; }
-  else { const dica={treino:"falta treino",nutri:"falta a comida",metas:"falta a meta andar"}[pior.k]; t=bons.length?`${bons.join(" e ")} em dia.`:"Semana em andamento."; i=`Agora ${dica}.`; }
+  else if(!pior){ t=`${bons.join(", ").replace(/, ([^,]*)$/,' e $1')} em dia.`; i="Semana na dose."; }
+  else { const dica=pior.semDado?"registre o que comeu para medir a comida":{treino:"falta treino",nutri:"falta acertar a comida",metas:"falta a meta andar"}[pior.k]; t=bons.length?`${bons.join(" e ")} em dia.`:"Semana em andamento."; i=`Agora ${dica}.`; }
   const h=new Date().getHours(); const sub=h>=18&&!kcalDia(today())?"Antes de dormir: registre o que comeu hoje.":h<11?"Bom dia. O treino de hoje está logo abaixo.":"";
   return {score,estado,cor,pilares,frase:{t,i,sub}}; };
 
@@ -68,7 +68,7 @@ window.animarNumeros=(root)=>{ const red=window.matchMedia&&matchMedia('(prefers
 window.ndAbre=(k,b)=>{ const el=document.getElementById('nd-'+k); if(!el) return; const ab=el.hidden; document.querySelectorAll('.pl-det').forEach(x=>{ x.hidden=true; }); document.querySelectorAll('.pl-top').forEach(x=>x.setAttribute('aria-expanded','false')); el.hidden=!ab; if(b) b.setAttribute('aria-expanded',String(ab)); };
 
 // ---------- Energia de hoje (o antigo arco "dose") ----------
-window.V_energiaTile=()=>{ const d=window.doseHoje(); return `<div class="tile" onclick="sheet(V_energiaInfo())"><div class="tl">Energia de hoje</div><div class="tv">${d.score}</div><div class="ts" style="color:${corDose(d.score)};font-weight:700">${d.feitos&&d.feitos.length?`restante · ${d.nivel}`:d.nivel}</div></div>`; };
+window.V_energiaTile=()=>{ const d=window.doseHoje(); return `<div class="tile" onclick="sheet(V_energiaInfo())"><div class="tl">Energia para hoje</div><div class="tv">${d.score}</div><div class="ts" style="color:${corDose(d.score)};font-weight:700">${d.feitos&&d.feitos.length?`restante · ${d.nivel}`:d.nivel}</div></div>`; };
 window.V_energiaInfo=()=>{ const d=window.doseHoje(); const f=window.fraseHoje(planoHoje(),programa(),d);
   return `<h3>Energia de hoje · ${d.score}</h3><p class="serif">${f.t} <i>${f.i}</i></p><p class="small">${esc(f.sub||"")}</p>
    ${d.feitos&&d.feitos.length?`<div class="feitoHoje" style="justify-content:flex-start">${d.feitos.map(x=>`<span class="chip on">${I("check",14)} ${esc(x.nome)}${x.min?` · ${x.min} min`:""}</span>`).join("")}</div><p class="tiny">Começou o dia em ${d.base}. Já gastou ${d.consumo}.</p>`:""}
@@ -142,3 +142,4 @@ const _prog=V.progresso; V.progresso=(p)=>{ let h=_prog(p); const t=p.t||"painel
   if(h!==antes&&!/<canvas/.test(h)){ const g=p.g||"corpo"; const dica={corpo:"Pese-se de manhã (Nutrição › Peso) e faça o check-in: a curva aparece com 2 registros.",treino:"Termine um treino e a evolução aparece aqui.",cardio:"Registre um cardio ou conecte o Strava.",nutri:"Registre refeições no diário para ver os dias na meta."}[g]||""; h+=`<p class="serif" style="margin-top:18px">Ainda sem dado aqui. <i>${dica}</i></p>`; }
   return h; };
 })();
+(function(){ const A=window.AFTER; const _t=A.treino; A.treino=(p)=>{ if(_t) _t(p); if(window.animarNumeros) animarNumeros(document.getElementById('view')); }; })();
