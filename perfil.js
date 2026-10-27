@@ -41,8 +41,14 @@ window.mpSalvar=()=>{ const nome=document.getElementById('mpNome').value.trim();
   try{ if(window.CLOUD&&CLOUD.user()&&!CLOUD.user().anon&&window.GRUPOS&&GRUPOS.api) GRUPOS.api('contatos',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:CLOUD.user().id,instagram:igv||null})}).catch(()=>{}); }catch(e){}
   go('comunidade'); };
 
-// Cartão no topo da Comunidade
-const _vc=V.comunidade; V.comunidade=(p)=>{ const h=_vc(p); return h.replace('<div class="card hero" id="comTopo">',V_meuCard()+'<div class="card hero" id="comTopo">'); };
+// Herói da Comunidade: perfil + anel da semana + números
+window.V_meuHero=()=>{ const esps=Object.keys(S.perfil.esportes||{}).filter(k=>k!=='outro'); const musc=(S.perfil.diasMusc||[]).length; const lista=[...(musc?['Musculação']:[]),...esps.map(nomeE)];
+  const t=window.naDose?naDose().pilares[0]:{}; const pct=Math.max(0,Math.min(1,t.barra??t.pct??0)); const C=2*Math.PI*37; const dias=new Set([...S.logs,...S.bjj,...S.cardio].filter(x=>x.data>=semanaIni()&&x.data<=today()).map(x=>x.data)).size; const logado=window.CLOUD&&CLOUD.user();
+  return `<div class="card hero meuhero"><div class="mp"><button class="avring" onclick="go('meuperfil')" aria-label="Editar meu perfil"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="none" stroke="var(--s3)" stroke-width="3"/><circle class="avring-v" cx="40" cy="40" r="37" fill="none" stroke="var(--ember)" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(pct*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 40 40)"/></svg>${avatarHTML()}</button>
+    <div style="flex:1;min-width:0"><div class="nm">${esc(S.perfil.nome||"Seu perfil")}</div>${ig()?`<a class="ig" href="https://instagram.com/${encodeURIComponent(ig())}" target="_blank" rel="noopener">@${esc(ig())}</a>`:`<button class="lk" style="padding:0;min-height:28px" onclick="go('meuperfil')">+ foto, esportes e @</button>`}
+    <div class="tiny" style="margin-top:2px">${lista.slice(0,3).map(esc).join(" · ")}${lista.length>3?` · +${lista.length-3}`:""}</div></div></div>
+   <div class="stats" id="comStats"><div><b data-count="${dias}">${dias}</b><span>dias na semana</span></div><div><span data-k="pos"><b>—</b></span><span>melhor posição</span></div><div><span data-k="gr"><b>—</b></span><span>grupos</span></div></div>
+   ${logado?"":`<button class="btn em sm" style="margin-top:12px" onclick="garantirConta(()=>route(),'Entrar na Comunidade')">Entrar para competir</button>`}</div>`; };
 // Perfil público: Instagram já vem do Meu perfil
 const _ap=window.AFTER.perfilpub; window.AFTER.perfilpub=async(p)=>{ if(_ap) await _ap(p); const el=document.getElementById('ppIg'); if(el&&!el.value&&ig()) el.value='@'+ig(); };
 })();

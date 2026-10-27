@@ -55,13 +55,16 @@ window.naDose=()=>{ const pilares=[pilarTreino(),pilarNutri(),pilarMetas()]; con
   const h=new Date().getHours(); const sub=h>=18&&!kcalDia(today())?"Antes de dormir: registre o que comeu hoje.":h<11?"Bom dia. O treino de hoje está logo abaixo.":"";
   return {score,estado,cor,pilares,frase:{t,i,sub}}; };
 
-window.V_naDose=()=>{ const n=naDose(); const pl=planoHoje();
-  return `<div class="hero4 nadose"><div class="eyebrow">${DIAS[pl.dia]} · ${fmtDL(today())}</div>
+window.V_naDose=()=>{ const n=naDose(); const pl=planoHoje(); const nome=(S.perfil.nome||"").split(" ")[0];
+  const mini=p=>p.dias&&p.dias.length===7?`<span class="pl-mini" aria-hidden="true">${p.dias.map((d,i)=>`<i style="height:${Math.max(3,Math.round(d.h*22))}px;background:${d.c==='transparent'?'var(--s3)':d.c};animation-delay:${i*60}ms${d.hoje?';outline:1.5px solid var(--ember);outline-offset:1px':''}"></i>`).join("")}</span>`:`<span class="pl-bar"><i style="width:${(p.barra??p.pct)!=null?Math.max(4,Math.round((p.barra??p.pct)*100)):0}%;background:${corPct(p.pct)}"></i></span>`;
+  return `<div class="hero4 nadose"><button class="hoje-eu" onclick="go('meuperfil')" aria-label="Meu perfil">${window.avatarHTML?avatarHTML('sm'):''}<span><b>${nome?`Olá, ${esc(nome)}`:'Seu perfil'}</b><span class="tiny">${DIAS[pl.dia]} · ${fmtDL(today())}</span></span></button>
     <h2 class="nd-q">Você está na dose?</h2>
-    <div class="arco-wrap">${window.arcoSVG(n.score||0,230,n.cor)}<div class="arco-num"><div class="big">${n.score??"—"}</div><div class="arco-lbl" style="color:${n.cor}">${n.estado}</div></div></div>
+    <div class="arco-wrap">${window.arcoSVG(n.score||0,230,n.cor)}<div class="arco-num"><div class="big" ${n.score!=null?`data-count="${n.score}"`:''}>${n.score??"—"}</div><div class="arco-lbl" style="color:${n.cor}">${n.estado}</div></div></div>
     <p class="serif coach" style="text-align:center;margin:4px 0 2px">${esc(n.frase.t)} <i>${esc(n.frase.i)}</i></p>${n.frase.sub?`<div class="tiny" style="text-align:center">${n.frase.sub}</div>`:""}
-    <div class="pilares">${n.pilares.map(p=>`<div class="pilar"><button class="pl-top" onclick="ndAbre('${p.k}',this)" aria-expanded="false" aria-controls="nd-${p.k}"><b>${p.nome}</b><span class="pl-bar"><i style="width:${(p.barra??p.pct)!=null?Math.max(4,Math.round((p.barra??p.pct)*100)):0}%;background:${corPct(p.pct)}"></i></span><span class="pl-v">${p.valor}</span></button>
+    <div class="pilares">${n.pilares.map(p=>`<div class="pilar"><button class="pl-top" onclick="ndAbre('${p.k}',this)" aria-expanded="false" aria-controls="nd-${p.k}"><b>${p.nome}</b>${mini(p)}<span class="pl-v">${p.valor}</span></button>
       <div class="pl-det" id="nd-${p.k}" hidden>${p.dias?`<div class="pl-dias">${p.dias.map(d=>`<div class="pl-d${d.hoje?' hoje':''}"><i style="height:${Math.round(d.h*56)}px;background:${d.c};${d.borda?'border:1.5px dashed var(--tx3)':''}"></i>${d.l?`<span>${d.l}</span>`:""}</div>`).join("")}</div>`:""}<p class="small">${esc(p.leitura)}</p><button class="btn sm ghost" style="width:auto" onclick="${p.ir}">${p.irTxt} ›</button></div></div>`).join("")}</div></div>`; };
+// Números que contam (respeita "reduzir movimento")
+window.animarNumeros=(root)=>{ const red=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches; (root||document).querySelectorAll('[data-count]').forEach(el=>{ const fim=+el.dataset.count; if(!isFinite(fim)) return; if(red){ el.textContent=fim; return; } const t0=performance.now(), D=800; const suf=el.dataset.suf||''; const step=t=>{ const k=Math.min(1,(t-t0)/D), e=1-Math.pow(1-k,3); el.textContent=Math.round(fim*e)+suf; if(k<1) requestAnimationFrame(step); }; el.textContent='0'+suf; requestAnimationFrame(step); }); };
 window.ndAbre=(k,b)=>{ const el=document.getElementById('nd-'+k); if(!el) return; const ab=el.hidden; document.querySelectorAll('.pl-det').forEach(x=>{ x.hidden=true; }); document.querySelectorAll('.pl-top').forEach(x=>x.setAttribute('aria-expanded','false')); el.hidden=!ab; if(b) b.setAttribute('aria-expanded',String(ab)); };
 
 // ---------- Energia de hoje (o antigo arco "dose") ----------
@@ -82,31 +85,30 @@ async function preencheCom(){ const el=document.getElementById('cardComPos'); if
     el.innerHTML=m?`<b class="mono" style="font-size:22px">${m.pos}º</b> de ${m.n} em <b>${esc(m.nome)}</b> na semana${m.acima?` · faltam ${m.acima.dif} pontos para passar ${esc(m.acima.nome)}`:m.pos===1?" · você lidera":""}`:"Seus grupos ainda não têm registros nesta semana."; }
   catch(e){ el.textContent="Não carregou o ranking agora."; } }
 window.preencheCom=preencheCom;
-const _aH=A.hoje; A.hoje=(p)=>{ if(_aH) _aH(p); preencheCom(); };
+const _aH=A.hoje; A.hoje=(p)=>{ if(_aH) _aH(p); preencheCom(); animarNumeros(document.getElementById('view')); };
 
 // ---------- Aba Comunidade ----------
 const MODELOS={
-  '7dias':{nome:"Desafio de 7 dias",desc:"Quem treina mais dias na semana. Começa hoje.",tipo:'dias',meta:5,per:'semana',dur:7,ic:'flag'},
-  'mes':{nome:"Mês sem falhar",desc:"Bater a meta de dias toda semana, por 4 semanas.",tipo:'dias',meta:null,per:'semana',dur:28,ic:'calendar'},
-  '100km':{nome:"100 km em 30 dias",desc:"Corrida, bike ou natação: cada um soma os seus km.",tipo:'km',meta:100,per:'total',dur:30,ic:'heart'}
+  '7dias':{nome:"7 dias",desc:"quem treina mais",tipo:'dias',meta:5,per:'semana',dur:7,ic:'flag'},
+  'mes':{nome:"Mês sem falhar",desc:"4 semanas na meta",tipo:'dias',meta:null,per:'semana',dur:28,ic:'calendar'},
+  '100km':{nome:"100 km",desc:"em 30 dias",tipo:'km',meta:100,per:'total',dur:30,ic:'heart'}
 };
 window.comModelo=k=>{ if(!(window.CLOUD&&CLOUD.user())) return garantirConta(()=>comModelo(k),"Para criar o desafio"); const m=MODELOS[k]; gpNovo();
   setTimeout(()=>{ const $=id=>document.getElementById(id); if(!$('gpNome')) return; $('gpNome').value=m.nome; $('gpDesc').value=m.desc; [...$('gpTipo').children].forEach(c=>c.classList.toggle('on',c.dataset.k===m.tipo));
     const meta=m.meta||Math.max(2,Object.values(semanaUsuario()).filter(u=>u&&(u.musc||(u.esportes||[]).length)).length||4); $('gpMeta').value=meta; $('gpPer').value=m.per; $('gpFim').value=shiftData(today(),m.dur-1); },50); };
 
 V.comunidade=(p)=>{ setTitle("Comunidade"); const logado=window.CLOUD&&CLOUD.user();
-  return `<h1 class="sec">Comunidade</h1><p class="serif coach" style="margin:2px 0 12px">Juntos somos mais fortes. <i>Quem aparece, conta.</i></p>
-   <div class="card hero" id="comTopo"><div class="eyebrow">Sua semana na comunidade</div><div id="comTopoTxt" class="small" style="margin-top:6px">${logado?"carregando…":"Crie um desafio ou entre num grupo. Dá para começar sem cadastro."}</div>${logado?"":`<button class="btn em sm" style="margin-top:10px" onclick="garantirConta(()=>route(),'Entrar na Comunidade')">Entrar · 5 segundos</button>`}</div>
+  return `<h1 class="sec">Comunidade</h1>
+   ${window.V_meuHero?V_meuHero():""}
    <div id="comRegiao">${window.V_regiao?V_regiao():""}</div>
-   <h3>Desafios prontos</h3><div class="list">${Object.entries(MODELOS).map(([k,m])=>`<div class="item" onclick="comModelo('${k}')"><div class="n">${I(m.ic)}</div><div class="t"><b>${m.nome}</b><span>${m.desc}</span></div><span class="arrow">Criar</span></div>`).join("")}</div>
-   <p class="tiny">Ranking premia constância: 10 pontos por dia ativo, +2 no dia duplo, +5 por semana que bate a meta. Ninguém vê sua carga, seu peso ou sua dieta.</p>
-   <h3>Seus grupos</h3><div id="comGrupos">${logado?`<div class="card sub small">carregando…</div>`:`<div class="card sub small">Sem conta, sem grupos.</div>`}</div>
-   <div class="grid2" style="margin-top:8px"><button class="btn sec sm" onclick="gpNovo()">${I("plus")} Criar grupo</button><button class="btn sec sm" onclick="gpEntrar('')">${I("link")} Tenho código</button></div>`; };
-A.comunidade=async()=>{ if(window.A_regiao) A_regiao(); if(!(window.CLOUD&&CLOUD.user())||!window.GRUPOS) return;
+   <div class="row" style="justify-content:space-between;align-items:baseline"><h3>Desafios</h3><button class="lk" onclick="gpComoPontua?gpComoPontua():null">Como pontua?</button></div>
+   <div class="hscroll">${Object.entries(MODELOS).map(([k,m])=>`<button class="dcard" onclick="comModelo('${k}')"><span class="dc-ic">${I(m.ic,26)}</span><b>${m.nome}</b><span>${m.desc}</span><em>Criar ›</em><svg class="dc-curva" viewBox="0 0 120 40" aria-hidden="true"><path d="M2 38C30 36 40 8 70 6s38 0 48 0" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="70" cy="6" r="3" fill="var(--ember)"/></svg></button>`).join("")}</div>
+   <div class="row" style="justify-content:space-between;align-items:baseline"><h3>Seus grupos</h3><span><button class="lk" onclick="gpEntrar('')">Tenho código</button> · <button class="lk" onclick="gpNovo()">Criar</button></span></div>
+   <div id="comGrupos">${logado?`<div class="card sub small">carregando…</div>`:`<div class="card sub small">Crie um desafio ou entre com um código.</div>`}</div>`; };
+A.comunidade=async()=>{ if(window.A_regiao) A_regiao(); animarNumeros(document.getElementById('comStats')); if(!(window.CLOUD&&CLOUD.user())||!window.GRUPOS) return;
   try{ const gs=await GRUPOS.listar(); const pos=await GRUPOS.posicoes(gs).catch(()=>({}));
-    const el=document.getElementById('comGrupos'); if(el) el.innerHTML=gs.length?`<div class="list">${gs.map(g=>{ const q=pos[g.id]; return `<div class="item" onclick="go('grupos',{g:'${g.id}'})"><div class="n">${q?`<b class="mono">${q.pos}º</b>`:I("users")}</div><div class="t"><b>${esc(g.nome)}</b><span>${q?`${q.pos}º de ${q.n} na semana${q.acima?` · faltam ${q.acima.dif} pts para ${esc(q.acima.nome)}`:q.pos===1?' · liderando':''}`:'sem registros na semana'}</span></div><span class="arrow">›</span></div>`; }).join("")}</div>`:`<div class="vazio"><p class="serif">Quem aparece, conta. <i>Chame quem treina com você.</i></p><p class="small">Use um desafio pronto acima ou crie o seu.</p></div>`;
-    const t=document.getElementById('comTopoTxt'); if(t){ const L=Object.values(pos); const dias=new Set([...S.logs,...S.bjj,...S.cardio].filter(x=>x.data>=semanaIni()&&x.data<=today()).map(x=>x.data)).size;
-      t.innerHTML=L.length?`<div class="row" style="gap:14px;align-items:center"><div><div class="mono" style="font-size:34px;font-weight:700;line-height:1">${Math.min(...L.map(x=>x.pos))}º</div><div class="tiny">melhor posição</div></div><div><div class="mono" style="font-size:34px;font-weight:700;line-height:1">${dias}</div><div class="tiny">dias ativos</div></div><div><div class="mono" style="font-size:34px;font-weight:700;line-height:1">${L.length}</div><div class="tiny">${L.length===1?'grupo':'grupos'}</div></div></div>`:`Você treinou ${dias} ${dias===1?'dia':'dias'} nesta semana. Chame alguém para disputar.`; } }
+    const el=document.getElementById('comGrupos'); if(el) el.innerHTML=gs.length?`<div class="list">${gs.map(g=>{ const q=pos[g.id]; return `<div class="item" onclick="go('grupos',{g:'${g.id}'})"><div class="n">${q?`<b class="mono">${q.pos}º</b>`:I("users")}</div><div class="t"><b>${esc(g.nome)}</b><span>${q?`${q.pos}º de ${q.n} na semana${q.acima?` · faltam ${q.acima.dif} pts para ${esc(q.acima.nome)}`:q.pos===1?' · liderando':''}`:'sem registros na semana'}</span></div><span class="arrow">›</span></div>`; }).join("")}</div>`:`<div class="card sub small">Nenhum grupo ainda. Comece por um desafio acima.</div>`;
+    const L=Object.values(pos); const st=document.getElementById('comStats'); if(st){ const mp=L.length?Math.min(...L.map(x=>x.pos)):null; st.querySelector('[data-k="pos"]').innerHTML=mp?`<b data-count="${mp}" data-suf="º">${mp}º</b>`:'<b>—</b>'; st.querySelector('[data-k="gr"]').innerHTML=`<b data-count="${gs.length}">${gs.length}</b>`; animarNumeros(st); } }
   catch(e){ const el=document.getElementById('comGrupos'); if(el) el.innerHTML=`<div class="card"><b>Não carregou</b><p class="small">${esc(e.message)}</p></div>`; } };
 
 // ---------- Check-in enxuto: 4 respostas ----------
