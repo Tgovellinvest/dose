@@ -97,9 +97,8 @@ window.V_conta=function(){ setTimeout(()=>window.ajustaLogin&&ajustaLogin(),0); 
   return `<div class="card"><b>${esc(u.email||u.nome||"Sua conta")}</b><p class="small">Sincronização automática ligada. Último envio: ${last?last.toLocaleString('pt-BR'):"ainda não"}.</p>
     <div class="grid2" style="margin-top:10px"><button class="btn sec" onclick="contaSync('push')">Enviar agora</button><button class="btn sec" onclick="contaSync('pull')">Baixar da conta</button></div>
     <button class="btn ghost" style="margin-top:8px" onclick="contaSair()">Sair (os dados ficam no aparelho)</button></div>
-    <div class="card" id="cardIntegra"><b>Conectar apps</b><p class="small">Relógio, Garmin, Apple Watch e apps de corrida entram pelo Strava. Peso, passos, sono e frequência cardíaca entram pela Saúde do iPhone. Nada sai do DOSE para eles.</p>
+    <div class="card" id="cardIntegra"><b>Conectar apps</b><p class="small">Treinos do relógio e de apps de corrida entram pelo Strava. Passos, sono e batimentos você anota no check-in, olhando no app do seu relógio ou celular. Nada sai do DOSE para eles.</p>
       <div class="row" style="justify-content:space-between;align-items:center;margin-top:8px"><div><b>Strava</b><div class="tiny" id="stravaInfo">verificando…</div></div><div id="stravaBtn"></div></div>
-      <div class="row" style="justify-content:space-between;align-items:center;margin-top:12px"><div><b>Saúde do iPhone</b><div class="tiny" id="healthInfo">${S.saude&&S.saude.ok?'conectada · última vez '+new Date(S.saude.ok).toLocaleDateString('pt-BR'):'peso, passos, sono e batimentos'}</div></div><button class="btn sm sec" onclick="${S.saude&&S.saude.ok?'healthSincronizar()':'healthAbrir()'}">${S.saude&&S.saude.ok?'Sincronizar':'Conectar'}</button></div>
       <button class="btn sm ghost" style="margin-top:10px" onclick="integraSync()">Buscar novidades agora</button></div>
     <div class="card"><b>Privacidade</b><p class="small">Apagar os dados da conta remove o histórico do servidor; o que está neste aparelho continua. Para encerrar a conta por completo, apague os dados e escreva para o e-mail de suporte indicado no site.</p><button class="btn danger sm" onclick="contaApagar()">Apagar meus dados da conta</button></div>`;
 };
@@ -117,7 +116,7 @@ window.integraPintar=async()=>{ const el=document.getElementById('stravaInfo'), 
 window.stravaConectar=async()=>{ try{ await C.stravaConnect(); }catch(e){ toast(e.message); } };
 window.stravaDesconectar=async()=>{ if(!confirm("Desconectar o Strava? Os treinos já importados ficam.")) return; try{ await C.stravaDesconectar(); toast("Strava desconectado"); integraPintar(); }catch(e){ toast(e.message); } };
 window.integraSync=async()=>{ let msg=[]; try{ const st=await C.stravaStatus(); if(st){ const n=await C.stravaSync(); msg.push(n?`${n} treino(s) do Strava`:"Strava: nada novo"); } }catch(e){ msg.push(e.message); }
-  try{ const n=await C.healthSync(); msg.push(n?`${n} dado(s) da Saúde`:"Saúde: nada novo"); }catch(e){ msg.push(e.message); } toast(msg.join(" · ")); integraPintar(); };
+  toast(msg.join(" · ")||"Nada novo"); integraPintar(); };
 // v6.7 · Saúde do iPhone para qualquer pessoa: 1 link para instalar o atalho pronto + 1 botão "Sincronizar".
 // O DOSE abre o atalho já levando a chave da pessoa (nada de copiar e colar). O atalho guarda a chave para rodar sozinho depois.
 C.ATALHO_NOME='Sincronizar DOSE';
@@ -156,7 +155,7 @@ window.healthNovaChave=async()=>{ if(!confirm("Gerar nova chave? A antiga para d
   window.addEventListener('load',()=>{ setTimeout(()=>{ toast(MSG[s]||s); if(s==='ok') integraSync(); },600); }); })();
 // Ao abrir o app com conta: busca silenciosa de novidades (Strava/Saúde), no máximo 1x a cada 6 h.
 window.addEventListener('load',()=>{ setTimeout(async()=>{ if(!C.user()||!navigator.onLine) return; const last=S.cloud&&S.cloud.ultimaIntegra?new Date(S.cloud.ultimaIntegra).getTime():0; if(Date.now()-last<6*3600e3) return;
-  let n=0; try{ if(await C.stravaStatus()) n+=await C.stravaSync(); }catch(e){} try{ n+=await C.healthSync(); }catch(e){} S.cloud=Object.assign({},S.cloud,{ultimaIntegra:new Date().toISOString()}); try{ localStorage.setItem(DB_KEY,JSON.stringify(S)); }catch(e){} if(n){ toast(`${n} novidade(s) dos seus apps`); if(typeof route==='function') route(); } },4000); });
+  let n=0; try{ if(await C.stravaStatus()) n+=await C.stravaSync(); }catch(e){} S.cloud=Object.assign({},S.cloud,{ultimaIntegra:new Date().toISOString()}); try{ localStorage.setItem(DB_KEY,JSON.stringify(S)); }catch(e){} if(n){ toast(`${n} novidade(s) dos seus apps`); if(typeof route==='function') route(); } },4000); });
 window.contaApagar=async()=>{ if(!confirm("Apagar o histórico guardado na conta? O que está neste aparelho continua.")) return; try{ await C.apagarDados(); toast("Dados da conta apagados"); }catch(e){ toast(e.message); } };
 
 window.ajustaLogin=async()=>{ const cfg=await C.provedores(); let n=0; document.querySelectorAll('[data-prov]').forEach(b=>{ const on=!!cfg[b.dataset.prov]; b.hidden=!on; if(on&&b.offsetParent!==null||on) n++; }); document.querySelectorAll('[data-prov-fallback]').forEach(f=>{ if(f.tagName==='DETAILS'){ if(!n) f.open=true; } else f.hidden=!!n; }); };

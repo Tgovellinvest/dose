@@ -1,4 +1,4 @@
-const C='dose-v6.7.2';
+const C='dose-v6.7.3';
 const F=['./','./index.html','./styles.css','./app.js','./views.js','./views2.js','./generator.js','./coach.js','./features.js','./cloud.js','./share.js','./grupos.js','./v3.js','./v4.js','./scanner.js','./personal.js','./planos.js','./v6.js','./regiao.js','./perfil.js','./data/zxing.min.js','./data/v3data.js','./ads.js','./icons.js','./onboard.js','./data/sports2.js','./data/exercises.js','./data/programs.js','./data/foods.js','./data/foods2.js','./data/foods3.js','./data/foods4.js','./data/foods_marcas.js','./data/foods_prezunic.js','./data/foods_japones.js','./data/foods_revisao.js','./manifest.json','./icon.svg','./apple-touch-icon.png','./icon-192.png','./icon-512.png','./termos.html','./privacidade.html','./legal.css'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F).catch(()=>{})).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
