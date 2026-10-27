@@ -89,6 +89,7 @@ V.hoje=()=>{ setTitle("Hoje"); const pl=planoHoje(); const p=programa(); const d
     ${window.V_energiaTile()}
     <div class="tile" onclick="go('nutricao',{t:'peso'})"><div class="tl">Peso · 7 dias</div><div class="tv">${media!=null?String(media).replace('.',','):'—'}<small>${media!=null?' kg':''}</small></div><div class="ts">${ck.sono!=null?`sono ${ck.sono} h`:"registre a pesagem"}</div></div>
   </div>
+  ${window.V_saudeChip?window.V_saudeChip():''}
   ${window.V_cardCom()}
   <div class="card hero" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:flex-start;gap:10px"><div><div class="eyebrow">${pl.sessao?"Hoje":pl.dia==="dom"?"Descanso":"Próxima da rotação"}</div><b style="font-size:20px;display:block;margin-top:2px">${esc(ps.nome)}</b><div class="tiny">${ps.slots.length} exercícios · ${ps.slots.reduce((a,s)=>a+s.sets,0)} séries${ps.cardio?` · cardio ${esc(ps.cardio)}`:""}</div></div></div>
     <div class="grid2" style="margin-top:12px"><button class="btn em" onclick="go('sessao',{s:'${prox}'})">${I("play")} Iniciar</button><button class="btn sec" onclick="sheet(V._trocar())">Trocar ou pular</button></div>

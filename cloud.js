@@ -99,7 +99,7 @@ window.V_conta=function(){ setTimeout(()=>window.ajustaLogin&&ajustaLogin(),0); 
     <button class="btn ghost" style="margin-top:8px" onclick="contaSair()">Sair (os dados ficam no aparelho)</button></div>
     <div class="card" id="cardIntegra"><b>Conectar apps</b><p class="small">Relógio, Garmin, Apple Watch e apps de corrida entram pelo Strava. Peso, passos, sono e frequência cardíaca entram pela Saúde do iPhone. Nada sai do DOSE para eles.</p>
       <div class="row" style="justify-content:space-between;align-items:center;margin-top:8px"><div><b>Strava</b><div class="tiny" id="stravaInfo">verificando…</div></div><div id="stravaBtn"></div></div>
-      <div class="row" style="justify-content:space-between;align-items:center;margin-top:12px"><div><b>Saúde do iPhone</b><div class="tiny" id="healthInfo">via Atalhos, 1 vez por dia</div></div><button class="btn sm sec" onclick="healthAbrir()">Configurar</button></div>
+      <div class="row" style="justify-content:space-between;align-items:center;margin-top:12px"><div><b>Saúde do iPhone</b><div class="tiny" id="healthInfo">${S.saude&&S.saude.ok?'conectada · última vez '+new Date(S.saude.ok).toLocaleDateString('pt-BR'):'peso, passos, sono e batimentos'}</div></div><button class="btn sm sec" onclick="${S.saude&&S.saude.ok?'healthSincronizar()':'healthAbrir()'}">${S.saude&&S.saude.ok?'Sincronizar':'Conectar'}</button></div>
       <button class="btn sm ghost" style="margin-top:10px" onclick="integraSync()">Buscar novidades agora</button></div>
     <div class="card"><b>Privacidade</b><p class="small">Apagar os dados da conta remove o histórico do servidor; o que está neste aparelho continua. Para encerrar a conta por completo, apague os dados e escreva para o e-mail de suporte indicado no site.</p><button class="btn danger sm" onclick="contaApagar()">Apagar meus dados da conta</button></div>`;
 };
@@ -118,24 +118,40 @@ window.stravaConectar=async()=>{ try{ await C.stravaConnect(); }catch(e){ toast(
 window.stravaDesconectar=async()=>{ if(!confirm("Desconectar o Strava? Os treinos já importados ficam.")) return; try{ await C.stravaDesconectar(); toast("Strava desconectado"); integraPintar(); }catch(e){ toast(e.message); } };
 window.integraSync=async()=>{ let msg=[]; try{ const st=await C.stravaStatus(); if(st){ const n=await C.stravaSync(); msg.push(n?`${n} treino(s) do Strava`:"Strava: nada novo"); } }catch(e){ msg.push(e.message); }
   try{ const n=await C.healthSync(); msg.push(n?`${n} dado(s) da Saúde`:"Saúde: nada novo"); }catch(e){ msg.push(e.message); } toast(msg.join(" · ")); integraPintar(); };
-window.healthAbrir=async()=>{ let key=null; try{ key=await C.healthKey(true); }catch(e){ return toast(e.message); } if(!key) return toast("Entre na conta primeiro");
-  const cp=(t,lbl)=>`<button class="btn sm sec" style="width:auto" onclick="navigator.clipboard.writeText('${esc(t)}').then(()=>toast('${lbl} copiado'))">Copiar ${lbl.toLowerCase()}</button>`;
-  const passo=(n,t,d)=>`<div class="hpasso"><span class="hp-n">${n}</span><div><b>${t}</b><div class="small">${d}</div></div></div>`;
-  sheet(`<h3>Saúde do iPhone → DOSE</h3><p class="small">O iPhone só libera a Saúde para apps da loja. Por isso a ponte é um <b>Atalho</b>: ele lê peso e passos e manda para a sua conta todo dia, sozinho.</p>
-   ${C.ATALHO_URL?`<div class="card" style="margin:10px 0;border-color:var(--ember)"><b>Jeito rápido: atalho pronto</b><ol class="small" style="padding-left:18px;line-height:1.55;margin:6px 0"><li>Copie a sua chave (abaixo).</li><li>Toque em <b>Adicionar atalho</b>; quando o iPhone perguntar a chave, cole.</li><li>Faça o passo 7 (automação) da lista abaixo.</li></ol><a class="btn em sm" href="${C.ATALHO_URL}" target="_blank" rel="noopener">Adicionar atalho</a></div>`:""}
-   <div class="card" style="margin:10px 0"><b>Sua chave pessoal</b><div class="mono" style="word-break:break-all;margin:6px 0;font-size:13px">${esc(key)}</div><div class="row" style="gap:8px;flex-wrap:wrap;justify-content:flex-start">${cp(key,'Chave')}${cp(C.healthEndpoint,'Endereço')}<button class="btn sm ghost" style="width:auto" onclick="healthNovaChave()">Gerar nova</button></div><p class="tiny">A chave só envia dados para a sua conta, nunca lê. Se vazar, gere outra.</p></div>
-   <b>Montar o atalho (uma vez, ~5 min)</b>
-   ${passo(1,'Abra o app Atalhos','É um app (ícone com dois quadrados coloridos), não fica nos Ajustes. Procure "Atalhos" deslizando a tela inicial para baixo. Se não tiver, baixe "Atalhos" da Apple na App Store.')}
-   ${passo(2,'Crie um atalho novo','Aba <b>Atalhos</b> → <b>+</b> no canto de cima → toque no nome e escreva <b>DOSE Saúde</b>.')}
-   ${passo(3,'Peso','Toque em <b>Buscar ações</b>, digite <b>amostras</b> e escolha <b>Encontrar Amostras de Saúde</b>. Tipo: <b>Peso</b>. Ordenar por <b>Data de início</b>, <b>Mais recentes primeiro</b>, Limite <b>1</b>.')}
-   ${passo(4,'Passos','Busque <b>amostras</b> de novo: Tipo <b>Passos</b>, filtro <b>Data de início é hoje</b>. Depois busque <b>estatísticas</b> → <b>Calcular Estatísticas</b> → <b>Soma</b>.')}
-   ${passo(5,'Enviar para o DOSE','Busque <b>URL</b> → <b>Obter Conteúdo do URL</b>. No campo do endereço, cole o <b>Endereço</b> (botão acima). Toque em <b>Mostrar Mais</b>: Método <b>POST</b> · Corpo da Solicitação <b>JSON</b>. Em <b>Adicionar novo campo</b>: <b>Texto</b> key = cole a <b>Chave</b>; <b>Número</b> peso = variável <i>Amostras de Saúde</i>; <b>Número</b> passos = variável <i>Estatísticas</i>.')}
-   ${passo(6,'Teste','Toque em ▶. Permita o acesso à Saúde. Se aparecer <span class="mono">"ok":true</span>, deu certo.')}
-   ${passo(7,'Todo dia sozinho','Aba <b>Automação</b> → <b>+</b> → <b>Hora do Dia</b> (ex.: 9:00, Diariamente) → <b>Executar Imediatamente</b> → escolha <b>DOSE Saúde</b>.')}
-   <details style="margin-top:8px"><summary class="small" style="min-height:36px;display:flex;align-items:center;cursor:pointer">Opcional: sono, FC em repouso e HRV</summary><p class="small">Repita o passo 3 com o tipo <b>Análise do Sono</b> (ontem), <b>Frequência Cardíaca em Repouso</b> e <b>Variabilidade da Frequência Cardíaca</b> (Limite 1) e adicione os campos <b>sono</b> (em horas), <b>fcrep</b> e <b>hrv</b> no passo 5.</p></details>
-   <p class="tiny" style="margin-top:8px">Os nomes das ações podem variar um pouco entre versões do iOS; buscar pela palavra-chave (amostras, estatísticas, URL) sempre encontra.</p>
-   <button class="btn em" style="margin-top:8px" onclick="closeSheet();integraSync()">Já configurei, buscar agora</button>`); };
-window.healthNovaChave=async()=>{ if(!confirm("Gerar nova chave? A antiga para de funcionar e você precisa atualizar o Atalho.")) return; try{ const k=await C.healthKeyNova(); const el=document.getElementById('hkTxt'); if(el) el.textContent=k; toast("Nova chave gerada"); }catch(e){ toast(e.message); } };
+// v6.7 · Saúde do iPhone para qualquer pessoa: 1 link para instalar o atalho pronto + 1 botão "Sincronizar".
+// O DOSE abre o atalho já levando a chave da pessoa (nada de copiar e colar). O atalho guarda a chave para rodar sozinho depois.
+C.ATALHO_NOME='Sincronizar DOSE';
+const ehIOS=()=>/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+window.saudeEstado=()=>(S.saude=S.saude||{});
+window.healthAbrir=()=>garantirConta(()=>healthSheet(),"Para conectar a Saúde");
+window.healthSheet=async()=>{ let key=null; try{ key=await C.healthKey(true); }catch(e){ return toast(e.message); } if(!key) return toast("Entre na conta primeiro");
+  const st=saudeEstado(), ios=ehIOS(), pronto=!!C.ATALHO_URL;
+  const passo=(n,t,d,btn,ok)=>`<div class="hpasso${ok?' ok':''}"><span class="hp-n">${ok?'✓':n}</span><div style="flex:1"><b>${t}</b><div class="small">${d}</div>${btn||''}</div></div>`;
+  if(!ios) return sheet(`<h3>Saúde do iPhone</h3><p class="small">Essa conexão funciona no iPhone. Abra o DOSE no Safari do seu iPhone, entre com a mesma conta e toque em <b>Conectar Saúde</b>.</p><p class="small">No Android ou no computador, use o check-in do dia ou conecte o Strava.</p>`);
+  sheet(`<h3>Conectar Saúde</h3><p class="small">Peso, passos, sono e batimentos do iPhone e do Apple Watch entram no DOSE. Leva menos de 1 minuto, uma vez só.</p>
+   ${pronto?`${passo(1,'Instale o atalho do DOSE','Toque abaixo e depois em <b>Adicionar atalho</b>. Volte para cá.',`<a class="btn em sm" style="margin-top:8px;width:auto" href="${C.ATALHO_URL}" target="_blank" rel="noopener" onclick="saudeEstado().instalado=Date.now();save()">Adicionar atalho</a>`,st.instalado)}
+   ${passo(2,'Sincronize','Na primeira vez, o iPhone pergunta se pode ler a Saúde: toque em <b>Permitir</b>. Depois volte para o DOSE.',`<button class="btn ${st.instalado?'em':'sec'} sm" style="margin-top:8px;width:auto" onclick="closeSheet();healthSincronizar()">Sincronizar agora</button>`,st.ok)}`
+   :`<div class="card" style="margin:10px 0"><b>Em breve</b><p class="small">O atalho pronto do DOSE está sendo publicado. Assim que sair, aqui vai ter só um botão.</p></div>`}
+   <details style="margin-top:10px"><summary class="small" style="min-height:40px;display:flex;align-items:center;cursor:pointer">Quero que sincronize sozinho todo dia</summary>
+    <p class="small">No app <b>Atalhos</b>: aba <b>Automação</b> → <b>+</b> → <b>Hora do Dia</b> (ex.: 9:00, Diariamente) → <b>Executar Imediatamente</b> → escolha <b>${C.ATALHO_NOME}</b>. Funciona depois que você sincronizou pelo DOSE pelo menos uma vez.</p></details>
+   <details style="margin-top:4px"><summary class="small" style="min-height:40px;display:flex;align-items:center;cursor:pointer">Deu erro?</summary>
+    <p class="small">• "Atalho não encontrado": confira se o nome no app Atalhos é exatamente <b>${C.ATALHO_NOME}</b>.<br>• Nada chegou: abra Ajustes → Saúde → Acesso a Dados → Atalhos e ligue tudo.<br>• Trocou de celular ou acha que a chave vazou: gere outra abaixo e sincronize de novo pelo DOSE.</p>
+    <button class="btn sm ghost" style="width:auto" onclick="healthNovaChave()">Gerar nova chave</button></details>`); };
+// Abre o atalho levando a chave; quando a pessoa volta ao DOSE, busca o que chegou.
+window.healthSincronizar=()=>garantirConta(async()=>{ if(!C.ATALHO_URL) return healthSheet(); if(!ehIOS()) return healthSheet();
+  let key=null; try{ key=await C.healthKey(true); }catch(e){ return toast(e.message); } if(!key) return;
+  window._saudeEsperando=Date.now();
+  location.href=`shortcuts://run-shortcut?name=${encodeURIComponent(C.ATALHO_NOME)}&input=text&text=${encodeURIComponent(key)}`; },"Para conectar a Saúde");
+window.healthBuscarVolta=async()=>{ const t0=window._saudeEsperando; if(!t0||Date.now()-t0>10*60e3) return; window._saudeEsperando=null;
+  for(let i=0;i<4;i++){ await new Promise(r=>setTimeout(r,i?2000:800)); try{ const n=await C.healthSync(); const r=await fetch(`${URL_}/rest/v1/health_daily?user_id=eq.${C.user().id}&select=atualizado_em&order=atualizado_em.desc&limit=1`,{headers:await AH()}); const j=r.ok?await r.json():[]; const recente=j[0]&&new Date(j[0].atualizado_em).getTime()>t0-60e3;
+    if(recente){ const st=saudeEstado(); st.ok=Date.now(); st.instalado=st.instalado||Date.now(); save(); toast(n?`Saúde sincronizada · ${n} dado(s) novos`:"Saúde sincronizada"); if(typeof route==='function') route(); return; } }catch(e){} }
+  toast("Ainda não chegou nada da Saúde. Toque em Sincronizar de novo ou veja “Deu erro?”"); };
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') healthBuscarVolta(); });
+window.addEventListener('pageshow',()=>healthBuscarVolta());
+// Atalho no Hoje: um toque para sincronizar (só no iPhone, com o atalho já publicado).
+window.V_saudeChip=()=>{ if(!C.ATALHO_URL||!ehIOS()) return ''; const st=saudeEstado(); const hoje=st.ok&&new Date(st.ok).toDateString()===new Date().toDateString();
+  if(hoje) return ''; return `<button class="saude-chip" onclick="${st.ok?'healthSincronizar()':'healthAbrir()'}"><span class="sc-dot"></span>${st.ok?'Sincronizar Saúde e Apple Watch':'Conectar Saúde e Apple Watch'}<span class="sc-go">›</span></button>`; };
+window.healthNovaChave=async()=>{ if(!confirm("Gerar nova chave? A antiga para de funcionar e você precisa atualizar o Atalho.")) return; try{ const k=await C.healthKeyNova(); const el=document.getElementById('hkTxt'); if(el) el.textContent=k; toast("Nova chave gerada. Toque em Sincronizar de novo."); }catch(e){ toast(e.message); } };
 // Volta do Strava (strava-auth redireciona para #mais?t=conta&strava=ok|negado|erro|...)
 (function(){ const m=location.hash.match(/[?&]strava=([a-z]+)/); if(!m) return; const s=m[1]; history.replaceState(null,'',location.pathname+location.search+'#mais?t=conta');
   const MSG={ok:"Strava conectado!",negado:"Você não autorizou o Strava",erro:"Erro ao conectar o Strava",semconfig:"Strava ainda não configurado",sessao:"Sessão expirou. Entre e tente de novo",token:"Strava recusou a autorização"};

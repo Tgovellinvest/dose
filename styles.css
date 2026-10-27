@@ -414,3 +414,10 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 .hpasso{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
 .hpasso:last-of-type{border-bottom:0}
 .hp-n{flex:none;width:26px;height:26px;border-radius:13px;background:var(--ember);color:#0F1012;font-family:var(--num);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+/* v6.7 · Saúde em 1 toque */
+.hpasso.ok .hp-n{background:#30D158;color:#0F1012}
+.saude-chip{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;min-height:48px;padding:10px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card,#17181B);color:inherit;font:inherit;font-size:14px;font-weight:600;text-align:left;cursor:pointer}
+.saude-chip .sc-dot{width:10px;height:10px;border-radius:5px;background:#FF375F;box-shadow:0 0 0 4px rgba(255,55,95,.18);flex:none;animation:scPulse 1.6s ease-in-out infinite}
+.saude-chip .sc-go{margin-left:auto;color:var(--ember);font-size:20px;line-height:1}
+@keyframes scPulse{50%{box-shadow:0 0 0 7px rgba(255,55,95,.05)}}
+@media (prefers-reduced-motion:reduce){.saude-chip .sc-dot{animation:none}}
