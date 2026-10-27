@@ -330,3 +330,19 @@ details.card[open] summary{margin-bottom:4px}
 .menubtn:active{transform:scale(.92);background:var(--s2)}
 .btn.social{background:#fff;color:#1f1f1f;border:1px solid #dadce0;display:flex;align-items:center;justify-content:center;gap:10px;text-transform:none;letter-spacing:0;font-weight:600}
 :root[data-theme="light"] .btn.social{border-color:#c9c9c9}
+/* v6.2 · botão Google (padrão de marca do Google: tema escuro/claro) */
+.gbtn{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:12px;padding:0 18px;border-radius:999px;background:#131314;border:1px solid #8E918F;color:#E3E3E3;font-family:Roboto,"Helvetica Neue",Arial,system-ui,sans-serif;font-weight:500;font-size:15px;letter-spacing:.01em;cursor:pointer;transition:background var(--fast),transform var(--fast) var(--spring)}
+.gbtn:active{transform:scale(.98);background:#1f1f20}
+.gbtn-ic{width:20px;height:20px;display:inline-flex}
+:root[data-theme="light"] .gbtn{background:#fff;border-color:#747775;color:#1F1F1F}
+@media (prefers-color-scheme:light){:root[data-theme="auto"] .gbtn{background:#fff;border-color:#747775;color:#1F1F1F}}
+/* v6.2 · meu perfil */
+.mp{display:flex;gap:14px;align-items:flex-start}
+.avatar{width:64px;height:64px;border-radius:50%;flex:none;background:var(--s2);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:var(--tx);overflow:hidden;letter-spacing:-.02em}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.avatar.lg{width:112px;height:112px;font-size:38px;border-color:var(--ember)}
+.mp .nm{font-weight:900;font-size:19px;letter-spacing:-.02em;line-height:1.1}
+.mp .ig{color:var(--ember);font-weight:700;font-size:14px;text-decoration:none}
+.mp .chips{margin-top:6px}
+.fotoedit{display:flex;flex-direction:column;align-items:center;gap:10px;margin:6px 0 4px}
+[hidden]{display:none!important}
