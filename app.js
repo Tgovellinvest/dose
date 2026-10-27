@@ -184,7 +184,7 @@ let R={r:"hoje",p:{}};
 function go(r,p={}){ R={r,p}; const h=r+(Object.keys(p).length?"?"+new URLSearchParams(p):""); if(location.hash.replace(/^#/,"")===h){ const y=window.scrollY; route(); if(r===(window._lastR||"")) requestAnimationFrame(()=>window.scrollTo(0,y)); } else location.hash=h; window._lastR=r; }
 function applyTheme(){ document.documentElement.dataset.theme=S.perfil.tema||S.tema||"dark"; }
 function route(){ applyTheme(); const [r,q]=location.hash.replace('#','').split('?'); R={r:r||"hoje",p:Object.fromEntries(new URLSearchParams(q||""))};
-  const maisRoutes=['esportes','calendario','gerador','tutorial','mais','grupos']; document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.r===R.r || R.r.startsWith(b.dataset.r) || (b.dataset.r==='mais'&&maisRoutes.includes(R.r)) || (b.dataset.r==='treino'&&(R.r==='sessao'||R.r==='exercicio'||R.r==='ficha'))));
+  const comRoutes=['comunidade','grupos']; document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('on', b.dataset.r===R.r || R.r.startsWith(b.dataset.r) || (b.dataset.r==='comunidade'&&comRoutes.includes(R.r)) || (b.dataset.r==='treino'&&(R.r==='sessao'||R.r==='exercicio'||R.r==='ficha'))));
   document.getElementById('modeBadge').textContent=({completa:"Academia",predio:"Prédio",box:"Box",home:"Home gym",livre:"Pesos livres",kettle:"Kettlebell",hotel:"Hotel",semequip:"Sem equip."})[S.perfil.modo]||"";
   const v=window.VIEWS[R.r]||window.VIEWS.hoje; const html=v(R.p); const el=document.getElementById('view'); el.innerHTML=html; window.scrollTo(0,0);
   if(window.AFTER[R.r]) window.AFTER[R.r](R.p);
@@ -194,4 +194,4 @@ document.getElementById('tabbar').addEventListener('click',e=>{const b=e.target.
 function sheet(html){ const s=document.getElementById('sheet'); document.getElementById('sheetBody').innerHTML=html; s.classList.remove('hidden'); }
 function closeSheet(){ document.getElementById('sheet').classList.add('hidden'); }
 document.getElementById('sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') closeSheet(); });
-window.addEventListener('DOMContentLoaded',()=>{ document.querySelectorAll('.tabbar i[data-i]').forEach(el=>el.innerHTML=I(el.dataset.i)); if(!location.hash) location.hash="hoje"; route(); });
+window.addEventListener('DOMContentLoaded',()=>{ document.querySelectorAll('.tabbar i[data-i], #btnMais i[data-i]').forEach(el=>el.innerHTML=I(el.dataset.i)); if(!location.hash) location.hash="hoje"; route(); });

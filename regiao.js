@@ -1,0 +1,160 @@
+// ================= DOSE · v6.1 — Comunidade da região =================
+// Perfil público opt-in (18+, cidade/bairro digitados, nunca GPS) · treinos abertos com faixa de nível (Playtomic)
+// · ranking da região por esporte que premia constância (Strava Local Legend); km e pace só contam Strava
+// · turma do plano (Runna) · contato só com interesse mútuo depois do treino (Timeleft) · bloquear e denunciar.
+// Sem chat. Peso, carga, dieta e fotos nunca sobem.
+(function(){
+const V=window.VIEWS;
+const G=()=>window.GRUPOS, C=()=>window.CLOUD, U=()=>C()&&C().user();
+const api=(p,o)=>G().api(p,o), rpc=(f,a)=>G().rpc(f,a);
+const norm=s=>String(s||"").normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+const NIVEIS=["Iniciante","Básico","Intermediário","Avançado","Competidor"];
+const RESIST=['corrida','natacao','ciclismo','hyrox','caminhada'];
+const nomeEsp=id=>({musculacao:"Musculação",ciclismo:"Ciclismo",caminhada:"Caminhada",cardio:"Cardio"})[id]||(((window.SPORTS||[]).find(s=>s.id===id)||{}).nome)||id;
+const espCardio=t=>{ const x=norm(t); return /corr|run|esteira/.test(x)?'corrida':/nata|swim/.test(x)?'natacao':/bike|ride|cicl|pedal/.test(x)?'ciclismo':/hyrox/.test(x)?'hyrox':/caminh|walk|passos/.test(x)?'caminhada':'cardio'; };
+const R=window.REGIAO={cache:{perfil:undefined,bloq:null}};
+const iso=d=>d.toISOString();
+const fmtQuando=s=>{ const d=new Date(s); const ds=["dom","seg","ter","qua","qui","sex","sáb"][d.getDay()]; return `${ds} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+const st=()=>{ S.regiao=S.regiao||{esp:null,aba:'treinos',per:'semana',met:'pontos',turma:false}; return S.regiao; };
+
+// ---------- Dados ----------
+R.meuPerfil=async(force)=>{ if(!U()) return null; if(R.cache.perfil!==undefined&&!force) return R.cache.perfil; const r=await api(`perfis_publicos?user_id=eq.${U().id}&select=*`); R.cache.perfil=r&&r[0]||null; return R.cache.perfil; };
+R.bloqueados=async()=>{ if(R.cache.bloq) return R.cache.bloq; const r=await api(`bloqueios?select=para`).catch(()=>[]); R.cache.bloq=new Set((r||[]).map(x=>x.para)); return R.cache.bloq; };
+R.planosMeus=()=>(window.planosAtivos?planosAtivos():[]).map(e=>`${e}:${planoAtivo(e).id}`);
+R.sincronizar=async()=>{ const p=await R.meuPerfil(); if(!p||!p.ativo) return 0; const ini=(()=>{ const d=new Date(); d.setDate(d.getDate()-35); return d.ymd(); })(); const mk=p.mostra||{};
+  const ag={}; const add=(data,esporte,km,min,fonte,plano)=>{ if(!data||data<ini) return; const k=data+'|'+esporte+'|'+fonte; const o=ag[k]||(ag[k]={user_id:U().id,data,esporte,km:0,min:0,sessoes:0,fonte,plano:null}); o.km+=mk.km===false?0:(Number(km)||0); o.min+=Number(min)||0; o.sessoes=Math.min(10,o.sessoes+1); if(plano) o.plano=plano; };
+  (S.cardio||[]).forEach(c=>add(c.data,espCardio(c.tipo),c.dist,c.min,c.fonte==='strava'?'strava':'manual',c.plano&&c.plano.esp?`${c.plano.esp}:${(planoAtivo(c.plano.esp)||{}).id||''}`:null));
+  (S.bjj||[]).forEach(b=>add(b.data,b.esporte||'bjj',b.km||0,b.min,b.fonte==='strava'?'strava':'manual',b.plano&&b.plano.esp?`${b.plano.esp}:${(planoAtivo(b.plano.esp)||{}).id||''}`:null));
+  (S.logs||[]).forEach(l=>add(l.data,'musculacao',0,l.dur||0,'manual',null));
+  const rows=Object.values(ag).map(o=>Object.assign(o,{km:Math.round(o.km*100)/100,min:Math.min(1440,Math.round(o.min))})); if(!rows.length) return 0;
+  await api('atividades_publicas',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(rows)}); return rows.length; };
+
+R.salvarPerfil=async(o)=>{ const body=Object.assign({user_id:U().id,atualizado:new Date().toISOString()},o); await api('perfis_publicos',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(body)}); R.cache.perfil=undefined; return R.meuPerfil(true); };
+
+// ---------- Ranking da região ----------
+function janela(per){ const h=today(); if(per==='mes'){ const d=new Date(); d.setDate(d.getDate()-29); return [d.ymd(),h]; } return [semanaIni(),h]; }
+R.ranking=async(esp,per,met,turma)=>{ const p=await R.meuPerfil(); if(!p) return {L:[],escopo:''}; const [ini,fim]=janela(per); const bloq=await R.bloqueados();
+  const filtra=async(cid)=>{ let q=`perfis_publicos?ativo=eq.true&select=user_id,apelido,bairro,esportes,planos,mostra,cidade&esportes=cs.${encodeURIComponent(JSON.stringify([{id:esp}]))}`; if(cid) q+=`&cidade_norm=eq.${encodeURIComponent(p.cidade_norm)}`; return (await api(q+'&limit=500')).filter(x=>!bloq.has(x.user_id)); };
+  let pessoas=await filtra(true), escopo=p.cidade; if(!turma&&pessoas.length<3){ const todas=await filtra(false); if(todas.length>pessoas.length){ pessoas=todas; escopo="todas as cidades (poucas pessoas na sua ainda)"; } }
+  const meuPlano=R.planosMeus().find(x=>x.startsWith(esp+':')); if(turma&&meuPlano){ pessoas=pessoas.filter(x=>(x.planos||[]).includes(meuPlano)); escopo=`turma ${meuPlano.split(':')[1]} · ${p.cidade}`; }
+  if(!pessoas.some(x=>x.user_id===U().id)) pessoas.push({user_id:U().id,apelido:p.apelido,bairro:p.bairro,mostra:p.mostra});
+  const ids=pessoas.map(x=>x.user_id); const at=ids.length?await api(`atividades_publicas?user_id=in.(${ids.join(',')})&esporte=eq.${esp}&data=gte.${ini}&data=lte.${fim}&select=user_id,data,km,min,fonte&limit=5000`):[];
+  const por={}; pessoas.forEach(x=>por[x.user_id]={x,dias:new Set(),km:0,kmS:0,minS:0,min:0}); at.forEach(a=>{ const o=por[a.user_id]; if(!o) return; o.dias.add(a.data); o.min+=a.min||0; if(a.fonte==='strava'){ o.kmS+=Number(a.km)||0; o.minS+=a.min||0; } });
+  const L=Object.values(por).map(o=>{ const pace=o.kmS>=3&&o.minS?o.minS/o.kmS:null; const v=met==='km'?Math.round(o.kmS*10)/10:met==='pace'?((o.x.mostra||{}).pace===false?null:pace):met==='min'?o.min:o.dias.size*10;
+    return {id:o.x.user_id,nome:o.x.apelido,bairro:o.x.bairro,eu:o.x.user_id===U().id,v,dias:o.dias.size}; }).filter(o=>o.v!=null&&(met!=='pace'||o.v>0)&&(o.v>0||o.eu));
+  L.sort((a,b)=>met==='pace'?a.v-b.v:b.v-a.v); let pos=0,ult=null; L.forEach((o,i)=>{ if(o.v!==ult){ pos=i+1; ult=o.v; } o.pos=pos; }); return {L,escopo}; };
+
+// ---------- Treinos abertos ----------
+R.treinos=async(esp)=>{ const p=await R.meuPerfil(); if(!p) return []; const agora=new Date(Date.now()-47*3600e3); const bloq=await R.bloqueados();
+  const ts=await api(`treinos_abertos?cidade_norm=eq.${encodeURIComponent(p.cidade_norm)}&esporte=eq.${esp}&quando=gte.${iso(agora)}&order=quando.asc&limit=30&select=*,treino_participantes(user_id,status)`);
+  const cri=[...new Set(ts.map(t=>t.criador))]; const nomes=cri.length?await api(`perfis_publicos?user_id=in.(${cri.join(',')})&select=user_id,apelido`):[]; const nm={}; nomes.forEach(n=>nm[n.user_id]=n.apelido);
+  return ts.filter(t=>!bloq.has(t.criador)).map(t=>Object.assign(t,{criadorNome:nm[t.criador]||"alguém"})); };
+R.meuNivel=(esp)=>{ const p=R.cache.perfil; const e=((p&&p.esportes)||[]).find(x=>x.id===esp); return e&&e.nivel!=null?e.nivel:null; };
+
+// ---------- Tela: bloco da região dentro da Comunidade ----------
+window.V_regiao=()=>`<h3>Perto de você</h3><div id="rgBox"><div class="card sub small">${U()?"carregando…":"Entre na conta para ver treinos abertos e o ranking da sua cidade."}</div></div>`;
+window.A_regiao=async()=>{ const box=document.getElementById('rgBox'); if(!box||!U()) return;
+  try{ const p=await R.meuPerfil(true); if(!p||!p.ativo){ box.innerHTML=`<div class="card"><p class="serif" style="margin:0 0 6px">Treine com quem mora perto. <i>Você decide o que aparece.</i></p><p class="small">Ligue o perfil público para entrar em treinos abertos, criar o seu e aparecer no ranking da cidade. Desligado por padrão. Só maiores de 18.</p><button class="btn em sm" onclick="go('perfilpub')">Ligar perfil público</button></div>`; return; }
+    R.sincronizar().catch(()=>{}); const s=st(); const meus=(p.esportes||[]).map(e=>e.id); if(!meus.length){ box.innerHTML=`<div class="card small">Escolha seus esportes no <a href="#perfilpub">perfil público</a>.</div>`; return; } if(!s.esp||!meus.includes(s.esp)) s.esp=meus[0];
+    box.innerHTML=`<div class="small" style="margin:-4px 0 8px;color:var(--tx2)">${esc(p.cidade)}${p.bairro?` · ${esc(p.bairro)}`:""} · <a href="#perfilpub">perfil público</a></div>
+     <div class="chips" style="margin-bottom:8px">${meus.map(e=>`<button class="chip ${e===s.esp?'on':''}" onclick="rgSet('esp','${e}')">${esc(nomeEsp(e))}</button>`).join("")}</div>
+     <div class="seg" style="margin-bottom:10px">${[["treinos","Treinos"],["ranking","Ranking"],["pessoas","Pessoas"]].map(([k,n])=>`<button class="${s.aba===k?'on':''}" onclick="rgSet('aba','${k}')">${n}</button>`).join("")}</div><div id="rgAba"><div class="card sub small">carregando…</div></div>`;
+    const el=document.getElementById('rgAba'); el.innerHTML=s.aba==='ranking'?await abaRanking(s):s.aba==='pessoas'?await abaPessoas(s):await abaTreinos(s); }
+  catch(e){ box.innerHTML=`<div class="card"><b>Não carregou</b><p class="small">${esc(e.message)}</p></div>`; } };
+window.rgSet=(k,v)=>{ st()[k]=v; save(); A_regiao(); };
+
+async function abaTreinos(s){ const ts=await R.treinos(s.esp); const eu=U().id; const meuN=R.meuNivel(s.esp);
+  const passados=ts.filter(t=>new Date(t.quando)<new Date()&&(t.criador===eu||(t.treino_participantes||[]).some(x=>x.user_id===eu&&x.status==='confirmado')));
+  const futuros=ts.filter(t=>new Date(t.quando)>=new Date());
+  const card=t=>{ const conf=(t.treino_participantes||[]).filter(x=>x.status==='confirmado'); const ped=(t.treino_participantes||[]).filter(x=>x.status==='pedido'); const meu=(t.treino_participantes||[]).find(x=>x.user_id===eu); const dono=t.criador===eu; const lot=conf.length+1>=t.vagas+1;
+    const faixa=t.nivel_min===0&&t.nivel_max===4?"todos os níveis":t.nivel_min===t.nivel_max?NIVEIS[t.nivel_min]:`${NIVEIS[t.nivel_min]} a ${NIVEIS[t.nivel_max]}`;
+    return `<div class="card" style="padding:14px"><div class="row" style="justify-content:space-between;align-items:flex-start;gap:8px"><div><b>${fmtQuando(t.quando)}</b><div class="small">${esc(t.ponto)}${t.bairro?` · ${esc(t.bairro)}`:""}</div><div class="tiny">${esc(t.criadorNome)} · ${faixa} · ${conf.length+1}/${t.vagas+1} pessoas</div>${t.descricao?`<div class="tiny" style="margin-top:4px">${esc(t.descricao)}</div>`:""}</div><span class="chip ${t.tipo==='pontos'?'on':''}" style="flex:none">${t.tipo==='pontos'?'vale pontos':'amistoso'}</span></div>
+     <div class="grid2" style="margin-top:10px">${dono?`<button class="btn sm sec" onclick="rgCompart('${t.id}')">${I("share")} Chamar gente</button><button class="btn sm ghost" onclick="rgApagar('${t.id}')">Cancelar treino</button>`:meu?`<button class="btn sm sec" disabled>${meu.status==='pedido'?'Pedido enviado':'Você vai ✓'}</button><button class="btn sm ghost" onclick="rgSair('${t.id}')">Sair</button>`:lot?`<button class="btn sm sec" disabled>Lotado</button><span></span>`:`<button class="btn sm em" onclick="rgEntrar('${t.id}',${t.nivel_min},${t.nivel_max})">${meuN!=null&&(meuN<t.nivel_min||meuN>t.nivel_max)?'Pedir vaga':'Entrar'}</button><button class="btn sm ghost" onclick="rgDenunciar('${t.criador}','${t.id}')">Denunciar</button>`}</div>
+     ${dono&&ped.length?`<div class="tiny" style="margin-top:8px">${ped.length} ${ped.length===1?'pedido':'pedidos'} de fora da faixa de nível: <button class="btn sm ghost" style="width:auto" onclick="rgPedidos('${t.id}')">ver</button></div>`:""}</div>`; };
+  const contatos=await rpc('contatos_mutuos',{}).catch(()=>[]);
+  return `${futuros.length?futuros.map(card).join(""):`<div class="vazio"><p class="serif">Nenhum treino aberto de ${esc(nomeEsp(s.esp))} por aqui. <i>Seja o primeiro.</i></p></div>`}
+   <button class="btn em" style="margin-top:8px" onclick="rgNovo()">${I("plus")} Criar treino aberto</button>
+   ${passados.length?`<h3>Treinou junto?</h3>${passados.map(t=>`<div class="card" style="padding:12px 14px"><b>${fmtQuando(t.quando)}</b> <span class="tiny">· ${esc(t.ponto)}</span><p class="small" style="margin:6px 0">Marque com quem treinaria de novo. Se for mútuo, vocês veem o Instagram um do outro.</p><button class="btn sm sec" style="width:auto" onclick="rgDeNovo('${t.id}')">Treinaria de novo com…</button></div>`).join("")}`:""}
+   ${(contatos||[]).length?`<h3>Seus contatos de treino</h3><div class="list">${contatos.map(c=>`<div class="item"><div class="t"><b>${esc(c.apelido)}</b><span>${c.instagram?`@${esc(String(c.instagram).replace(/^@/,''))}`:"sem Instagram cadastrado"}</span></div>${c.instagram?`<a class="arrow" href="https://instagram.com/${encodeURIComponent(String(c.instagram).replace(/^@/,''))}" target="_blank" rel="noopener">Abrir ›</a>`:""}</div>`).join("")}</div>`:""}
+   <p class="tiny" style="margin-top:8px">Ponto de encontro sempre público. Sem chat: o contato só aparece quando os dois marcam "treinaria de novo".</p>`; }
+
+async function abaRanking(s){ const res=RESIST.includes(s.esp); const mets=res?[["pontos","Constância"],["km","Km (Strava)"],["pace","Pace (Strava)"]]:[["pontos","Constância"],["min","Minutos"]]; if(!mets.some(m=>m[0]===s.met)) s.met='pontos';
+  const meuPlano=R.planosMeus().find(x=>x.startsWith(s.esp+':'));
+  const {L,escopo}=await R.ranking(s.esp,s.per,s.met,s.turma&&!!meuPlano);
+  const fmt=o=>s.met==='pace'?`${Math.floor(o.v)}:${String(Math.round((o.v%1)*60)).padStart(2,'0')}/km`:s.met==='km'?`${String(o.v).replace('.',',')} km`:s.met==='min'?`${o.v} min`:`${o.v} pts`;
+  const eu=L.find(o=>o.eu); const acima=eu&&L.filter(o=>o.pos<eu.pos).slice(-1)[0];
+  return `<div class="chips" style="margin-bottom:6px">${mets.map(([k,n])=>`<button class="chip ${s.met===k?'on':''}" onclick="rgSet('met','${k}')">${n}</button>`).join("")}</div>
+   <div class="chips" style="margin-bottom:10px"><button class="chip ${s.per==='semana'?'on':''}" onclick="rgSet('per','semana')">Semana</button><button class="chip ${s.per==='mes'?'on':''}" onclick="rgSet('per','mes')">30 dias</button>${meuPlano?`<button class="chip ${s.turma?'on':''}" onclick="rgSet('turma',${!s.turma})">Turma do plano</button>`:""}</div>
+   ${eu?`<p class="serif coach" style="margin:0 0 8px">${eu.pos}º ${s.per==='semana'?'na semana':'em 30 dias'}. <i>${!acima&&L.filter(o=>o.pos===1).length>1?'Empate na frente.':acima?(s.met==='pace'?`Faltam ${Math.round((eu.v-acima.v)*60)} s/km para passar ${esc(acima.nome)}.`:`Faltam ${s.met==='pontos'?((acima.v-eu.v)/10===1?'1 dia':(acima.v-eu.v)/10+' dias'):fmt({v:Math.round((acima.v-eu.v)*10)/10})} para passar ${esc(acima.nome)}.`):L.length>1?'Você lidera.':'Chame alguém para disputar.'}</i></p>`:""}
+   ${!eu&&s.met==='pace'?`<p class="tiny" style="margin:0 0 8px">Seu pace está oculto (perfil público) ou você não tem 3 km do Strava no período.</p>`:""}
+   ${L.length?`<div class="card" style="padding:0;overflow:hidden">${L.slice(0,30).map((o,i)=>`<div class="rkrow${o.eu?' eu':''}" style="display:flex;align-items:center;gap:10px;padding:11px 14px;${i?'border-top:1px solid var(--line);':''}${o.eu?'background:var(--s2);':''}"><span class="mono" style="width:26px;color:var(--tx3);font-weight:700">${o.pos}</span><div style="flex:1"><b>${esc(o.nome)}${o.eu?' (você)':''}</b><div class="tiny">${esc(o.bairro||'')}${o.dias?` · ${o.dias} ${o.dias===1?'dia':'dias'}`:''}</div></div><span class="mono" style="font-weight:700">${fmt(o)}</span></div>`).join("")}</div>`:`<div class="card sub small">Ninguém pontuou ainda neste período.</div>`}
+   <p class="tiny">${esc(escopo)} · ${s.met==='km'||s.met==='pace'?'Só atividades do Strava contam em km e pace. Registro manual conta em constância.':'Constância = 10 pontos por dia com esse esporte. Premia quem aparece, não quem é mais rápido.'}</p>`; }
+
+async function abaPessoas(s){ const p=await R.meuPerfil(); const bloq=await R.bloqueados();
+  const L=(await api(`perfis_publicos?ativo=eq.true&cidade_norm=eq.${encodeURIComponent(p.cidade_norm)}&esportes=cs.${encodeURIComponent(JSON.stringify([{id:s.esp}]))}&select=user_id,apelido,bairro,esportes,horarios,mostra&limit=100`)).filter(x=>x.user_id!==U().id&&!bloq.has(x.user_id));
+  return L.length?`<div class="list">${L.map(x=>{ const e=(x.esportes||[]).find(y=>y.id===s.esp)||{}; const m=x.mostra||{}; return `<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;gap:8px"><div><b>${esc(x.apelido)}</b><div class="tiny">${esc(x.bairro||'')}${m.nivel!==false&&e.nivel!=null?` · ${NIVEIS[e.nivel]}`:''}</div>${m.horarios!==false&&x.horarios?`<div class="small" style="margin-top:4px">Costuma treinar: ${esc(x.horarios)}</div>`:""}</div></div>
+    <div class="grid2" style="margin-top:10px"><button class="btn sm sec" onclick="rgNovo('${esc(x.apelido)}')">Chamar para treinar</button><button class="btn sm ghost" onclick="rgMenu('${x.user_id}','${esc(x.apelido)}')">Bloquear ou denunciar</button></div></div>`; }).join("")}</div><p class="tiny">"Chamar para treinar" cria um treino aberto e gera o link para mandar no WhatsApp ou Instagram.</p>`
+   :`<div class="vazio"><p class="serif">Ainda ninguém de ${esc(nomeEsp(s.esp))} com perfil público em ${esc(p.cidade)}. <i>Traga quem treina com você.</i></p><button class="btn sm sec" style="width:auto" onclick="rgConvidarApp()">${I("share")} Convidar para a DOSE</button></div>`; }
+
+// ---------- Ações ----------
+window.rgNovo=(para)=>{ const s=st(); const p=R.cache.perfil; const d=new Date(); d.setDate(d.getDate()+1); d.setHours(7,0,0,0); const loc=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  sheet(`<h3>Treino aberto · ${esc(nomeEsp(s.esp))}</h3><label for="taQ">Quando</label><input id="taQ" type="datetime-local" value="${loc}">
+   <label for="taP">Ponto de encontro (lugar público)</label><input id="taP" maxlength="120" placeholder="Ex.: Parque Villa-Lobos, portão 1">
+   <label for="taB">Bairro</label><input id="taB" maxlength="60" value="${esc(p&&p.bairro||'')}">
+   <div class="grid2"><div><label for="taN1">Nível de</label><select id="taN1">${NIVEIS.map((n,i)=>`<option value="${i}">${n}</option>`).join("")}</select></div><div><label for="taN2">até</label><select id="taN2">${NIVEIS.map((n,i)=>`<option value="${i}" ${i===4?'selected':''}>${n}</option>`).join("")}</select></div></div>
+   <div class="grid2"><div><label for="taV">Vagas</label><input id="taV" type="number" min="1" max="30" value="${para?1:5}"></div><div><label>Tipo</label><div class="seg" id="taT"><button class="on" data-k="amistoso" onclick="[...taT.children].forEach(c=>c.classList.remove('on'));this.classList.add('on')">Amistoso</button><button data-k="pontos" onclick="[...taT.children].forEach(c=>c.classList.remove('on'));this.classList.add('on')">Vale pontos</button></div></div></div>
+   <label for="taD">Descrição (opcional)</label><input id="taD" maxlength="200" value="${para?`Convite para ${esc(para)}`:''}" placeholder="Ex.: rodagem leve de 8 km, pace 6:00">
+   <button class="btn em" style="margin-top:12px" onclick="rgCriar()">Criar e gerar link</button><p class="tiny">Quem estiver fora da faixa de nível pode pedir vaga; você aceita ou não.</p>`); };
+window.rgCriar=async()=>{ const s=st(), p=R.cache.perfil; const q=taQ.value, ponto=taP.value.trim(); if(!q) return toast("Escolha dia e hora"); if(ponto.length<3) return toast("Diga o ponto de encontro"); if(new Date(q)<new Date()) return toast("Escolha um horário futuro");
+  let n1=+taN1.value, n2=+taN2.value; if(n1>n2) [n1,n2]=[n2,n1];
+  try{ const r=await api('treinos_abertos',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({criador:U().id,esporte:s.esp,cidade_norm:p.cidade_norm,bairro:taB.value.trim()||null,ponto,quando:new Date(q).toISOString(),nivel_min:n1,nivel_max:n2,vagas:Math.max(1,Math.min(30,+taV.value||5)),tipo:(document.querySelector('#taT .on')||{}).dataset?.k||'amistoso',descricao:taD.value.trim()||null})});
+    closeSheet(); toast("Treino criado"); s.aba='treinos'; save(); await A_regiao(); if(r&&r[0]) rgCompart(r[0].id); }catch(e){ toast(e.message); } };
+window.rgCompart=async(id)=>{ const link=`${location.origin}${location.pathname}#comunidade?t=${id}`; const text=`Bora treinar junto? Abri um treino na DOSE: ${link}`; try{ if(navigator.share) await navigator.share({title:"DOSE · treino aberto",text}); else { await navigator.clipboard.writeText(text); toast("Link copiado"); } }catch(e){} };
+window.rgEntrar=async(id,n1,n2)=>{ const n=R.meuNivel(st().esp); const status=n!=null&&(n<n1||n>n2)?'pedido':'confirmado';
+  try{ await api('treino_participantes',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({treino_id:id,user_id:U().id,status})}); toast(status==='pedido'?"Pedido enviado. Quem criou decide.":"Você está dentro"); A_regiao(); }catch(e){ toast(e.message); } };
+window.rgSair=async(id)=>{ try{ await api(`treino_participantes?treino_id=eq.${id}&user_id=eq.${U().id}`,{method:'DELETE'}); toast("Você saiu do treino"); A_regiao(); }catch(e){ toast(e.message); } };
+window.rgApagar=async(id)=>{ try{ await api(`treinos_abertos?id=eq.${id}`,{method:'DELETE'}); toast("Treino cancelado"); A_regiao(); }catch(e){ toast(e.message); } };
+window.rgPedidos=async(id)=>{ const ps=await api(`treino_participantes?treino_id=eq.${id}&status=eq.pedido&select=user_id`); const ids=ps.map(x=>x.user_id); const nm=ids.length?await api(`perfis_publicos?user_id=in.(${ids.join(',')})&select=user_id,apelido,esportes`):[];
+  sheet(`<h3>Pedidos de vaga</h3>${nm.length?`<div class="list">${nm.map(x=>{ const e=(x.esportes||[]).find(y=>y.id===st().esp)||{}; return `<div class="item"><div class="t"><b>${esc(x.apelido)}</b><span>${e.nivel!=null?NIVEIS[e.nivel]:'nível não informado'}</span></div><button class="btn sm em" style="width:auto" onclick="rgAceitar('${id}','${x.user_id}')">Aceitar</button><button class="btn sm ghost" style="width:auto" onclick="rgRecusar('${id}','${x.user_id}')">Recusar</button></div>`; }).join("")}</div>`:`<p class="small">Sem pedidos.</p>`}`); };
+window.rgAceitar=async(t,u)=>{ try{ await api(`treino_participantes?treino_id=eq.${t}&user_id=eq.${u}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:'confirmado'})}); closeSheet(); toast("Aceito"); A_regiao(); }catch(e){ toast(e.message); } };
+window.rgRecusar=async(t,u)=>{ try{ await api(`treino_participantes?treino_id=eq.${t}&user_id=eq.${u}`,{method:'DELETE'}); closeSheet(); toast("Pedido recusado"); A_regiao(); }catch(e){ toast(e.message); } };
+window.rgDeNovo=async(id)=>{ const t=(await api(`treinos_abertos?id=eq.${id}&select=criador,treino_participantes(user_id,status)`))[0]; if(!t) return; const ids=[t.criador,...(t.treino_participantes||[]).filter(x=>x.status==='confirmado').map(x=>x.user_id)].filter(x=>x!==U().id);
+  const nm=ids.length?await api(`perfis_publicos?user_id=in.(${ids.join(',')})&select=user_id,apelido`):[]; const ja=new Set(((await api(`interesses?select=para`))||[]).map(x=>x.para));
+  sheet(`<h3>Treinaria de novo com…</h3><p class="small">Só a própria pessoa saberá se também marcar você. Aí os dois veem o Instagram.</p>${nm.length?`<div class="list">${nm.map(x=>`<div class="item"><div class="t"><b>${esc(x.apelido)}</b></div><button class="btn sm ${ja.has(x.user_id)?'sec':'em'}" style="width:auto" ${ja.has(x.user_id)?'disabled':''} onclick="rgInteresse('${x.user_id}',this)">${ja.has(x.user_id)?'Marcado ✓':'Treinaria'}</button></div>`).join("")}</div>`:`<p class="small">Ninguém mais confirmou presença neste treino.</p>`}`); };
+window.rgInteresse=async(u,b)=>{ try{ await api('interesses',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify({de:U().id,para:u})}); if(b){ b.textContent='Marcado ✓'; b.disabled=true; } toast("Marcado. Se for mútuo, o contato aparece."); }catch(e){ toast(e.message); } };
+window.rgMenu=(u,nome)=>sheet(`<h3>${esc(nome)}</h3><div class="col"><button class="btn sec" onclick="rgBloquear('${u}')">Bloquear</button><button class="btn ghost" onclick="rgDenunciar('${u}')">Denunciar</button></div><p class="tiny">Bloquear tira a pessoa das suas listas e corta o contato dos dois lados. Ela não é avisada.</p>`);
+window.rgBloquear=async(u)=>{ try{ await api('bloqueios',{method:'POST',headers:{Prefer:'resolution=ignore-duplicates,return=minimal'},body:JSON.stringify({de:U().id,para:u})}); R.cache.bloq=null; closeSheet(); toast("Bloqueado"); A_regiao(); }catch(e){ toast(e.message); } };
+window.rgDenunciar=(u,t)=>sheet(`<h3>Denunciar</h3><label for="dnM">O que aconteceu</label><textarea id="dnM" rows="3" maxlength="500" placeholder="Conte em poucas linhas"></textarea><button class="btn em" style="margin-top:10px" onclick="rgDenOk('${u}','${t||''}')">Enviar denúncia</button><p class="tiny">A equipe DOSE lê cada denúncia. Em risco imediato, ligue 190.</p>`);
+window.rgDenOk=async(u,t)=>{ const m=(dnM.value||"").trim(); if(m.length<3) return toast("Descreva o que aconteceu"); try{ await api('denuncias',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({de:U().id,alvo:u,treino_id:t||null,motivo:m})}); closeSheet(); toast("Denúncia enviada"); }catch(e){ toast(e.message); } };
+window.rgConvidarApp=async()=>{ const text=`Tô usando a DOSE para treinar e achar gente para treinar junto. Vem: ${location.origin}${location.pathname}`; try{ if(navigator.share) await navigator.share({title:"DOSE",text}); else { await navigator.clipboard.writeText(text); toast("Convite copiado"); } }catch(e){} };
+window.rgAbrirTreino=async(id)=>{ try{ const t=(await api(`treinos_abertos?id=eq.${id}&select=*`))[0]; if(!t) return toast("Treino não encontrado ou já passou"); st().esp=t.esporte; st().aba='treinos'; save(); A_regiao(); }catch(e){} };
+
+// ---------- Tela: perfil público ----------
+V.perfilpub=()=>{ setTitle("Perfil público"); if(!U()) return `<button class="btn sm ghost" onclick="go('comunidade')">‹ Comunidade</button><h1 class="sec">Perfil público</h1><div class="card"><p class="small">Entre na conta para ligar o perfil público.</p><button class="btn em sm" onclick="go('mais',{t:'conta'})">Entrar na conta</button></div>`;
+  return `<button class="btn sm ghost" onclick="go('comunidade')">‹ Comunidade</button><h1 class="sec">Perfil público</h1><p class="serif coach" style="margin:2px 0 12px">Desligado por padrão. <i>Você escolhe</i> o que a região vê.</p><div id="ppBox"><div class="card sub small">carregando…</div></div>`; };
+window.AFTER.perfilpub=async()=>{ const box=document.getElementById('ppBox'); if(!box) return; const p=await R.meuPerfil(true).catch(()=>null)||{}; const m=p.mostra||{esportes:true,horarios:true,nivel:true,km:true,pace:false};
+  const meusEsp=[...new Set([...(Object.keys(S.perfil.esportes||{}).filter(k=>k!=='outro')),...((S.perfil.diasMusc||[]).length?['musculacao']:[]),...((p.esportes||[]).map(e=>e.id))])];
+  const todos=[...new Set([...meusEsp,'corrida','musculacao','ciclismo','natacao',...(window.SPORTS||[]).map(s=>s.id)])];
+  const nv=id=>((p.esportes||[]).find(e=>e.id===id)||{}).nivel;
+  box.innerHTML=`<div class="card"><label class="row" style="justify-content:space-between;margin:0"><span><b>Aparecer em "Perto de você"</b><div class="tiny">e no ranking da cidade</div></span><input id="ppAtivo" type="checkbox" ${p.ativo?'checked':''} style="width:auto;transform:scale(1.3)"></label></div>
+   <div class="card"><div class="grid2"><div><label for="ppCid">Cidade</label><input id="ppCid" maxlength="60" value="${esc(p.cidade||'')}" placeholder="São Paulo"></div><div><label for="ppBai">Bairro</label><input id="ppBai" maxlength="60" value="${esc(p.bairro||'')}" placeholder="Pinheiros"></div></div><p class="tiny">Escrito por você. O app nunca usa GPS para isso.</p>
+    <label for="ppApe">Como você aparece</label><input id="ppApe" maxlength="30" value="${esc(p.apelido||G().apelido())}">
+    <label for="ppHor">Dias e horários que costuma treinar</label><input id="ppHor" maxlength="120" value="${esc(p.horarios||'')}" placeholder="Ex.: ter e qui 6h · sáb de manhã">
+    <label for="ppIg">Instagram (só aparece com interesse mútuo)</label><input id="ppIg" maxlength="40" placeholder="@seuusuario"></div>
+   <div class="card"><b>Esportes e nível</b><p class="tiny">Marque os que você quer praticar com gente da região.</p><div class="list" id="ppEsp">${todos.map(id=>`<div class="item" style="gap:8px"><label class="row" style="margin:0;flex:1;gap:8px"><input type="checkbox" data-e="${id}" ${(p.esportes||[]).some(e=>e.id===id)||(!p.esportes&&meusEsp.includes(id))?'checked':''} style="width:auto"> <span>${esc(nomeEsp(id))}</span></label><select data-n="${id}" style="width:auto;margin:0">${NIVEIS.map((n,i)=>`<option value="${i}" ${nv(id)===i||(nv(id)==null&&i===2)?'selected':''}>${n}</option>`).join("")}</select></div>`).join("")}</div></div>
+   <div class="card"><b>O que a região vê</b>${[["horarios","Dias e horários"],["nivel","Nível em cada esporte"],["km","Km e dias ativos no ranking"],["pace","Pace e tempos no ranking"]].map(([k,n])=>`<label class="row" style="justify-content:space-between;margin:8px 0 0"><span>${n}</span><input type="checkbox" data-m="${k}" ${m[k]!==false?'checked':''} style="width:auto"></label>`).join("")}<div class="row" style="justify-content:space-between;margin-top:8px;color:var(--tx3)"><span>Peso, carga, dieta, fotos</span><span class="tiny">nunca</span></div></div>
+   <div class="card"><label class="row" style="gap:8px;margin:0;align-items:flex-start"><input id="pp18" type="checkbox" ${p.maior18?'checked':''} style="width:auto;margin-top:3px"> <span class="small">Tenho 18 anos ou mais e li os <a href="termos.html" target="_blank" rel="noopener">termos</a> da Comunidade.</span></label></div>
+   <button class="btn em" onclick="ppSalvar()">Salvar</button><p class="tiny" style="margin-top:8px">Desligar tira você da região na hora: perfil, treinos e ranking somem para os outros.</p>`;
+  api(`contatos?user_id=eq.${U().id}&select=instagram`).then(r=>{ const el=document.getElementById('ppIg'); if(el&&r&&r[0]) el.value=r[0].instagram||""; }).catch(()=>{}); };
+window.ppSalvar=async()=>{ const ativo=ppAtivo.checked; const cid=ppCid.value.trim(); if(ativo&&!pp18.checked) return toast("Confirme que tem 18 anos ou mais"); if(cid.length<2) return toast("Diga sua cidade");
+  const mostra={esportes:true}; document.querySelectorAll('[data-m]').forEach(c=>mostra[c.dataset.m]=c.checked);
+  const esportes=[...document.querySelectorAll('[data-e]')].filter(c=>c.checked).map(c=>{ const id=c.dataset.e; const n=+document.querySelector(`[data-n="${id}"]`).value; return mostra.nivel?{id,nivel:n}:{id}; });
+  if(ativo&&!esportes.length) return toast("Marque pelo menos um esporte");
+  if(!ativo&&!R.cache.perfil){ toast("Perfil público continua desligado"); return go('comunidade'); }
+  try{ await R.salvarPerfil({apelido:ppApe.value.trim()||G().apelido(),cidade:cid,cidade_norm:norm(cid),bairro:ppBai.value.trim()||null,esportes,planos:R.planosMeus(),horarios:mostra.horarios?(ppHor.value.trim()||null):null,mostra,maior18:pp18.checked||!!(R.cache.perfil&&R.cache.perfil.maior18),ativo});
+    const ig=ppIg.value.trim().replace(/^@/,''); await api('contatos',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({user_id:U().id,instagram:ig||null})});
+    if(ativo) await R.sincronizar().catch(()=>{}); toast(ativo?"Perfil público ligado":"Perfil público desligado"); go('comunidade'); }catch(e){ toast(e.message); } };
+
+// Deep link de treino aberto: #comunidade?t=ID
+const _aC=window.AFTER.comunidade; window.AFTER.comunidade=async(p)=>{ if(_aC) await _aC(p); if(p&&p.t) setTimeout(()=>rgAbrirTreino(p.t),300); };
+})();

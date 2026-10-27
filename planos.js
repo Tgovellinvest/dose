@@ -170,6 +170,8 @@ const _hoje=V.hoje; V.hoje=(p)=>{ let h=_hoje(p); const at=planosAtivos(); if(!a
 const _fr=window.fraseHoje; window.fraseHoje=function(pl,p,d){ const at=planosAtivos(); const semMusc=!(S.perfil.diasMusc||[]).length; const fts=d.feitos||[];
   if(semMusc&&at.length&&!fts.length){ const ps=proximaSessaoPlano(at[0]); if(ps){ const nm=((window.SPORTS||[]).find(x=>x.id===at[0])||{}).nome||at[0]; return {t:`${esc(nm)}: ${esc(ps.titulo)}.`,i:d.nivel==="leve"||d.nivel==="reduzida"?"Dose baixa hoje: faça em intensidade baixa ou troque pelo descanso.":({baixa:"Intensidade baixa: dá para conversar.",media:"Intensidade média: frases curtas.",alta:"Intensidade alta: dia de qualidade."})[ps.intens],sub:`Semana ${ps.w} · ${esc(ps.passos.slice(0,1).join(""))}`}; } }
   return _fr(pl,p,d); };
+// v6: progresso do plano para o medidor "Você está na dose?"
+window.planoProgresso=esp=>{ const st=planoAtivo(esp); if(!st) return null; const d=defDe(esp,st.id); const ss=sessoes(esp,st.semana); const f=feitasW(esp,st.semana); const pct=Math.min(1,((st.semana-1)+f.length/Math.max(1,ss.length))/d.sem); const nm=((window.SPORTS||[]).find(x=>x.id===esp)||{}).nome||esp; return {pct,nome:d.nome,esporte:nm,semana:st.semana,total:d.sem,feitasSem:f.length,sessSem:ss.length}; };
 })();
 // Cadastro: quem não marca musculação termina na escolha do plano do esporte principal
 (function(){ const _fin=window.obFinalizar; if(!_fin) return; window.obFinalizar=function(){ const p=S.perfil; const semMusc=!(p.diasMusc||[]).length; const esp=Object.keys(p.esportes||{}).find(k=>k!=='outro'); const r=_fin.apply(this,arguments); if(semMusc&&esp&&!p.temPersonal&&!planoAtivo(esp)) setTimeout(()=>{ go('esportes',{id:esp}); toast("Escolha o plano do seu esporte"); },60); return r; }; })();
@@ -178,3 +180,4 @@ const _fr=window.fraseHoje; window.fraseHoje=function(pl,p,d){ const at=planosAt
   const nomes=sem.map(k=>((window.SPORTS||[]).find(s=>s.id===k)||{}).nome||k);
   const card=`<div class="card" id="cardPlanoSug" style="margin-top:12px"><div class="row" style="justify-content:space-between;align-items:center"><b>Plano para ${esc(nomes.join(", ").replace(/, ([^,]*)$/," e $1"))}</b><button class="btn sm ghost" style="width:auto;padding:4px 10px" aria-label="Dispensar hoje" onclick="S.planosDispensado={[today()]:1};save();route()">${I("x")}</button></div><p class="tiny" style="margin-top:4px">Treino de cada dia, progressão semana a semana e evolução do seu esporte.</p><div class="chips" style="margin-top:8px">${sem.map((k,i)=>`<button class="chip on" onclick="go('esportes',{id:'${k}'})">${esc(nomes[i])} ›</button>`).join("")}</div></div>`;
   return h.replace('<div class="quick">',card+'<div class="quick">'); }; })();
+

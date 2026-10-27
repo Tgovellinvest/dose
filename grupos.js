@@ -117,8 +117,9 @@ window.gpPostarSheet=async(tipo,resumo)=>{ try{ const gs=G.cache.grupos||await G
 window.gpPostarEm=async(gid)=>{ const p=window._gpPost; if(!p) return; try{ await G.postar(gid,p.tipo,p.resumo); const g=(G.cache.grupos||[]).find(x=>x.id===gid); if(g) await G.sincronizar(gid,g.desafio); closeSheet(); toast("Postado"); }catch(e){ toast(e.message); } };
 G.posicoes=async(gs)=>{ if(!gs.length) return {}; const u=C().user(); const ids=gs.map(g=>g.id).join(','); const si=semanaDe(today());
   const [m,d]=await Promise.all([api(`grupo_membros?grupo_id=in.(${ids})&select=grupo_id,user_id,apelido`),api(`grupo_dias?grupo_id=in.(${ids})&data=gte.${si}&select=grupo_id,user_id,data,treinos,km,min&limit=5000`)]);
-  const out={}; gs.forEach(g=>{ const det={g:Object.assign({criado_em:g.criado_em||today()},g),membros:m.filter(x=>x.grupo_id===g.id),dias:d.filter(x=>x.grupo_id===g.id)}; const r=ranking(det,'semana','pontos'); const eu=r.L.find(o=>o.m.user_id===u.id); if(eu) out[g.id]={pos:eu.pos,n:r.L.length}; }); return out; };
+  const out={}; gs.forEach(g=>{ const det={g:Object.assign({criado_em:g.criado_em||today()},g),membros:m.filter(x=>x.grupo_id===g.id),dias:d.filter(x=>x.grupo_id===g.id)}; const r=ranking(det,'semana','pontos'); const eu=r.L.find(o=>o.m.user_id===u.id); if(eu){ const ac=r.L.filter(o=>o.pontos>eu.pontos).sort((a,b)=>a.pontos-b.pontos)[0]; out[g.id]={pos:eu.pos,n:r.L.length,pontos:eu.pontos,nome:g.nome,acima:ac?{nome:ac.m.apelido,dif:ac.pontos-eu.pontos}:null}; } }); return out; };
 G.temGrupos=()=>!!(G.cache.grupos&&G.cache.grupos.length);
+G.api=api; G.rpc=rpc; G.apelido=apelido;
 window.GRUPOS=G;
 // Ao abrir com conta: sincroniza dias dos grupos (silencioso, 1x por abertura)
 window.addEventListener('load',()=>{ setTimeout(()=>{ if(C().user()&&navigator.onLine) G.listar().then(()=>G.sincronizarTodos()).catch(()=>{}); },6000); });

@@ -296,3 +296,32 @@ body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
 /* v5.2: alternar kg / placas no cabeçalho das séries */
 .set-row .unid{background:var(--s2);border:1px solid var(--line);color:var(--tx2);border-radius:999px;font-family:var(--num);font-weight:700;font-size:12px;padding:4px 6px;white-space:nowrap}
 .set-row .unid:active{transform:scale(.96)}
+
+/* ===== v6.0 · Você está na dose? + Comunidade ===== */
+.tabbar button span{letter-spacing:.02em;white-space:nowrap}
+@media (max-width:370px){.tabbar button span{font-size:9px;letter-spacing:.01em}}
+.iconbtn{width:40px;height:40px;border-radius:20px;background:var(--s2);border:1px solid var(--line);color:var(--tx);display:inline-flex;align-items:center;justify-content:center;margin-left:8px;cursor:pointer}
+.iconbtn i{font-style:normal;display:flex}
+.nadose .nd-q{font-family:var(--disp,inherit);font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:24px;line-height:1.05;margin:6px 0 2px;text-align:center}
+.pilares{display:flex;flex-direction:column;gap:8px;margin-top:14px;text-align:left}
+.pilar{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.pl-top{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;color:var(--tx);font-family:inherit;padding:13px 14px;min-height:48px;cursor:pointer;text-align:left}
+.pl-top b{width:84px;flex:none;font-size:14px}
+.pl-bar{flex:1;height:8px;border-radius:4px;background:var(--s3);overflow:hidden;display:block}
+.pl-bar i{display:block;height:100%;border-radius:4px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.pl-v{width:62px;flex:none;text-align:right;font-family:var(--num);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.pl-top[aria-expanded="true"]{border-bottom:1px solid var(--line)}
+.pl-det{padding:12px 14px 14px}
+.pl-det .small{margin:8px 0 10px;color:var(--tx2)}
+.pl-dias{display:flex;align-items:flex-end;gap:8px;height:74px}
+.pl-d{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.pl-d i{display:block;width:100%;border-radius:4px;box-sizing:border-box}
+.pl-d span{font-family:var(--num);font-size:11px;color:var(--tx3)}
+.pl-d.hoje span{color:var(--ember);font-weight:700}
+.card.com{margin-top:12px}
+.lk{background:none;border:0;color:var(--tx2);font-family:inherit;font-size:13px;cursor:pointer;min-height:36px;padding:0 4px}
+.seg.ck{margin:6px 0 4px}
+.seg.ck button{text-transform:none;font-size:13px;letter-spacing:0;min-height:40px}
+details.card summary{cursor:pointer;min-height:32px;display:flex;align-items:center;gap:6px;list-style:none}
+details.card summary::-webkit-details-marker{display:none}
+details.card[open] summary{margin-bottom:4px}
