@@ -29,7 +29,7 @@ function montar(nome,marca,qtd,k100,p100,c100,g100,servG,fonte,code){ let n=(nom
 async function buscar(code){ code=String(code).replace(/\D/g,''); if(code.length<8) return null;
   const v=[code,code.replace(/^0+/,''),code.padStart(13,'0')];
   const m=meus().find(x=>x.code&&v.includes(x.code)); if(m) return Object.assign({fonte:"Meus alimentos",coerente:true},m);
-  try{ await loadScript('data/barcodes.js?v=4.8.1'); }catch(e){}
+  try{ await loadScript('data/barcodes.js?v=6.5'); }catch(e){}
   const B=window.BARCODES||{}; const hit=v.map(c=>B[c]).find(Boolean); if(hit){ const [n,b,q,k,p,c,g]=hit; return montar(n,b,q,k,p,c,g,null,"Open Food Facts (índice do DOSE)",code); }
   if(!navigator.onLine) return {offline:true};
   for(const host of ['https://world.openfoodfacts.org','https://br.openfoodfacts.org']){ try{ const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),7000);

@@ -45,7 +45,7 @@ window.fraseHoje=function(pl,p,d){ const hoje=today(); const feitoHoje=S.logs.fi
 // ---- Adicionar alimento: busca sem acento, categorias e recentes
 const norm=t=>String(t).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 const recentes=()=>{ const vist=new Set(), out=[]; (S.diario||[]).slice().reverse().forEach(x=>{ if(vist.has(x.nome)) return; vist.add(x.nome); const f=window.FOODS.find(y=>y.n===x.nome); if(f) out.push(f); }); return out.slice(0,8); };
-const linhaF=f=>`<div class="item" onclick="pickFood('${esc(f.n).replace(/'/g,"\\'")}')"><div class="t"><b>${esc(f.n)}</b><span>${esc(f.u)} · ${f.k} kcal · P ${f.p} · C ${f.c} · G ${f.g}</span></div><span class="arrow">+</span></div>`;
+const linhaF=f=>`<div class="item" onclick="pickFood('${esc(f.n).replace(/'/g,"\\'")}')"><div class="t"><b>${esc(f.n)}</b><span>${esc(f.u)} · ${f.k} kcal · P ${f.p} · C ${f.c} · G ${f.g}${f.loja?` · <em class="loja">${esc(f.loja)}</em>`:""}</span></div><span class="arrow">+</span></div>`;
 V._addFood=(d)=>{ const rec=recentes(); return `<h2>Adicionar</h2><input id="fdQ" placeholder="Buscar entre ${window.FOODS.length} alimentos (ex.: frango, pão, açaí)" oninput="filtraFood()" autocomplete="off">
   <div class="chips" id="fdCat" style="margin-top:8px;flex-wrap:nowrap;overflow-x:auto">${["Recentes","Marcas",...window.FOOD_CATS.filter(c=>!/^Marcas/.test(c))].map((c,i)=>`<button class="chip ${i===0&&rec.length?'on':''}" data-c="${esc(c)}" onclick="[...fdCat.children].forEach(x=>x.classList.toggle('on',x===this&&!this.classList.contains('on')));filtraFood()">${esc(c)}</button>`).join("")}</div>
   <div class="chips" id="fdSub" style="margin-top:6px;flex-wrap:nowrap;overflow-x:auto;display:none"></div>
