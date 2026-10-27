@@ -34,7 +34,7 @@ SH.draw={};
 SH.draw.sessao=async(fmt,log)=>{ const b=base(fmt),x=b.x; const done=log.sets.filter(s=>s.done); const ton=done.reduce((a,s)=>a+(s.peso||0)*(s.reps||0),0); const exs=new Set(done.map(s=>s.ex)).size;
   const semana=S.logs.filter(l=>l.data>=semanaIni()).length; const kcal=log.dur?SH.kcal("musc",log.dur):null;
   eyebrow(x,`Sessão · ${fmtData(log.data)}`,b.top); let y=h1(x,quebra(log.nome||"Treino",14),b.top+120,fmt==='story'?110:96);
-  y=kpis(x,[{v:done.length,l:"séries feitas"},{v:exs,l:"exercícios"},{v:ton>=1000?(Math.round(ton/100)/10).toFixed(1).replace('.',',')+" t":Math.round(ton)+" kg",l:"carga movida"},{v:log.dur?log.dur+" min":"—",l:"duração"}],y+40,b.W);
+  const plc=done.reduce((a,s)=>a+(s.placas&&!s.peso?(s.placas||0)*(s.reps||0):0),0); y=kpis(x,[{v:done.length,l:"séries feitas"},{v:exs,l:"exercícios"},ton>0||!plc?{v:ton>=1000?(Math.round(ton/100)/10).toFixed(1).replace('.',',')+" t":Math.round(ton)+" kg",l:plc?"carga movida (kg)":"carga movida"}:{v:plc,l:"placas × reps"},{v:log.dur?log.dur+" min":"—",l:"duração"}],y+40,b.W);
   if(kcal){ x.fillStyle=COR.mute; x.font="600 28px Archivo, Arial"; x.fillText(`≈ ${kcal} kcal (estimativa MET, Ainsworth 2011)`,84,y+30); }
   fecho(x,`${semana}ª sessão de força da semana. ${log.rpe>=8?"Pesada.":log.rpe<=5?"Leve, de propósito.":"Na dose."}`,y+(kcal?110:60),b); return b.c; };
 SH.draw.cardio=async(fmt,c)=>{ const b=base(fmt),x=b.x; const BG=fmt==='story'?260:220, KH=fmt==='story'?200:150; const pace=c.dist&&c.min?c.min/c.dist:null; const kcal=c.min?SH.kcal(c.tipo,c.min,c.dist):null;
@@ -74,12 +74,14 @@ let cur={tipo:null,arg:null,fmt:'feed',blob:null};
 SH.abrir=async(tipo,arg)=>{ cur={tipo,arg,fmt:cur.fmt||'feed',blob:null};
   sheet(`<h3>Compartilhar</h3><p class="small">Gerado no seu aparelho. Nada sobe para servidor até você escolher onde postar.</p>
    <div class="seg" style="margin:8px 0"><button class="${cur.fmt==='feed'?'on':''}" onclick="SHARE.fmt('feed')">Feed 4:5</button><button class="${cur.fmt==='story'?'on':''}" onclick="SHARE.fmt('story')">Story 9:16</button></div>
+   ${tipo==='sessao'||tipo==='cardio'?`<div class="row" style="align-items:center;gap:10px;margin:0 0 8px"><label for="shDur" style="margin:0;flex:none">Duração</label><input id="shDur" type="number" inputmode="numeric" min="1" max="600" placeholder="min" value="${(tipo==='sessao'?arg.dur:arg.min)||''}" onchange="SHARE.setDur(this.value)" style="max-width:110px;margin:0"><span class="tiny">min · edite e o card atualiza</span></div>`:""}
    <div id="shPrev" style="border-radius:16px;overflow:hidden;background:#000;aspect-ratio:${cur.fmt==='story'?'9/16':'4/5'};max-height:52dvh;margin:0 auto"></div>
    <div class="grid2" style="margin-top:12px"><button class="btn em" onclick="SHARE.compartilhar()">${I("share")} Compartilhar</button><button class="btn sec" onclick="SHARE.baixar()">Baixar PNG</button></div>
    ${window.GRUPOS&&window.CLOUD&&CLOUD.user()?`<button class="btn sec" style="margin-top:8px" onclick="SHARE.postarGrupo()">${I("users")} Postar no grupo</button>`:""}
    <button class="btn sm ghost" style="margin-top:8px" onclick="closeSheet()">Agora não</button>`);
   await SH.render(); };
 SH.fmt=async f=>{ cur.fmt=f; await SH.abrir(cur.tipo,cur.arg); };
+SH.setDur=async v=>{ const n=Math.max(0,Math.min(600,Math.round(num(v)||0)))||null; const a=cur.arg; if(!a) return; if(cur.tipo==='sessao'){ a.dur=n; const l=S.logs.find(x=>x.id===a.id); if(l) l.dur=n; } else if(cur.tipo==='cardio'){ a.min=n; const c=S.cardio.find(x=>x.id===a.id); if(c) c.min=n; } save(); await SH.render(); toast('Duração atualizada'); };
 SH.render=async()=>{ await fontsOk(); const c=await SH.draw[cur.tipo](cur.fmt,cur.arg); const el=document.getElementById('shPrev'); if(el){ el.innerHTML=""; const im=new Image(); im.style.cssText="width:100%;height:100%;object-fit:contain;display:block"; im.src=c.toDataURL("image/png"); el.appendChild(im); }
   cur.blob=await new Promise(r=>c.toBlob(r,"image/png")); return cur.blob; };
 const nome=()=>`dose-${cur.tipo}-${today()}.png`;

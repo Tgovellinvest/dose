@@ -67,8 +67,16 @@ function planoHoje(){
 }
 
 // ---------- Progressão (double progression) ----------
+// Unidade por exercício: kg ou placas (máquinas com placa sem peso marcado). Placas ficam em campo próprio (s.placas) e não entram em contas de kg.
+window.unDe=exId=>((S.unEx||{})[exId])||((S.pesos[exId]||{}).un==='placa'?'placa':'kg');
+window.trocaUn=(exId,sess)=>{ if(sess) saveDraft(sess); S.unEx=S.unEx||{}; S.unEx[exId]=unDe(exId)==='placa'?'kg':'placa'; save(); route(); toast(S.unEx[exId]==='placa'?'Este exercício agora em placas':'Este exercício agora em kg'); };
 function sugestaoCarga(exId, repsFaixa){
   const last=S.pesos[exId]; if(!last) return null;
+  if(unDe(exId)==='placa'){ if(last.un!=='placa'||last.placas==null) return null; const pl=n=>`${n} placa${n===1?"":"s"}`; const [mn,mx]=(repsFaixa||"").replace(/\/.*$/,'').split(/[–-]/).map(x=>parseInt(x));
+    if(mx&&last.reps>=mx&&last.allTop) return {placas:last.placas+1,txt:`Bateu ${mx}/${mx} → sobe 1 placa (${pl(last.placas+1)})`,up:true};
+    if(mn&&last.reps<mn) return {placas:last.placas,txt:`Ficou abaixo de ${mn} → tire 1 placa ou mantenha e revise fadiga`,down:true};
+    return {placas:last.placas,txt:`Mantém ${pl(last.placas)} e busca +1 rep (última ${last.reps})`}; }
+  if(last.un==='placa') return null;
   const [mn,mx]=(repsFaixa||"").replace(/\/.*$/,'').split(/[–-]/).map(x=>parseInt(x)); if(!mx) return {peso:last.peso, txt:`Última: ${last.peso} kg × ${last.reps}`};
   if(last.reps>=mx && last.allTop) return {peso:last.peso, txt:`Bateu ${mx}/${mx} → sobe carga (+2–2,5 kg ou 1 placa)`, up:true};
   if(last.reps<mn) return {peso:last.peso, txt:`Ficou abaixo de ${mn} → ajuste a carga para baixo ou mantenha e revise fadiga`, down:true};

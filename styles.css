@@ -293,3 +293,6 @@ body.onboarding .tabbar{display:none}body.onboarding #view{padding-bottom:32px}
 
 /* v5.1: aviso (toast) nunca bloqueia toque */
 .toast{pointer-events:none}
+/* v5.2: alternar kg / placas no cabeçalho das séries */
+.set-row .unid{background:var(--s2);border:1px solid var(--line);color:var(--tx2);border-radius:999px;font-family:var(--num);font-weight:700;font-size:12px;padding:4px 6px;white-space:nowrap}
+.set-row .unid:active{transform:scale(.96)}
