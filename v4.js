@@ -106,7 +106,7 @@ A.hoje=()=>{ const a=document.querySelector('.arco-v'); if(a){ const off=a.getAt
 window.addFoodManual=(d)=>{ const nm=(document.getElementById('fdNome')||{}).value, k=num((document.getElementById('fdK')||{}).value); if(!nm||!k) return toast("Nome e kcal são obrigatórios");
   S.diario.push({id:uid(),data:d,per:S._per||"almoco",nome:nm,qtd:"manual",k,p:num(fdP.value)||0,c:num(fdC.value)||0,g:num(fdG.value)||0}); save(); window._fdAdd=[...(window._fdAdd||[]),nm]; go('nutricao',{d}); fdReabrir(d); };
 // ================= Intensidade em 3 níveis (v4.8) =================
-// Linguagem DOSE em vez de nota 1–10. Medida: teste da fala (Foster/Persinger 2004; Reed & Pipe 2014) + o que você fez no treino.
+// Linguagem DOSE em vez de nota 1–10. Medida: teste da fala (Persinger et al. 2004) + o que você fez no treino.
 // Cada nível vira um RPE de referência para a carga (min × RPE): baixa 4 · média 6 · alta 8.
 window.INTENS=[
  {k:"baixa",n:"Baixa",rpe:4,fala:"Conversa normal, sem pausa.",sinal:"Respiração tranquila; daria para fazer de novo agora."},
