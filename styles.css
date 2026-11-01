@@ -1,7 +1,7 @@
 /* DOSE · design tokens v2 (brand book v1 + revisão de UX 2026-10-25). Escuro é o padrão; claro para rua e documento. */
 :root{
   --bg:#0F1012; --s1:#17181B; --s2:#1E2024; --s3:#262930; --line:#272A2F;
-  --tx:#F2F1EC; --tx2:#A3A5A8; --tx3:#73767B; --bone:#D8D2C2;
+  --tx:#F2F1EC; --tx2:#A3A5A8; --tx3:#85888E; --bone:#D8D2C2;
   --ember:#E4572E; --ember-tx:#F0704C; --ember-soft:#3A2219; --ok:#6FAE8A; --warn:#D9A066; --stop:#E07A6A;
   --gold:#C9A24A; --silver:#A8A9AD; --bronze:#9C6B3C;
   --r:16px; --r2:12px; --tab:64px; --gap:12px;
