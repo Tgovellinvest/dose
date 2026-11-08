@@ -30,11 +30,11 @@ html,body{height:100%;background:var(--graphite);color:var(--ink);font-family:Ar
   <span class="ds-mark">DOSE<i>.</i><small>DESIGN SYSTEM</small></span>
   <div class="ds-tabs">
     <a href="#overview" id="tOverview" aria-current="page">Overview</a>
-    <a href="#components" id="tComponents" aria-disabled="true" title="Abre depois da aprovação do Overview">Components</a>
+    <a href="#components" id="tComponents">Components</a>
   </div>
 </nav>
 <main class="ds-view" id="overview"><iframe src="overview.html" title="DOSE · Overview (dados de demonstração)"></iframe></main>
-<main class="ds-view" id="components"></main>
+<main class="ds-view" id="components"><iframe src="components.html" title="DOSE · Components" loading="lazy"></iframe></main>
 <script>
 (function(){
   function show(){ var h=location.hash==='#components'&&document.getElementById('tComponents').getAttribute('aria-disabled')!=='true'?'components':'overview';

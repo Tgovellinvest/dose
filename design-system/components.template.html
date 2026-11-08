@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>DOSE · Components</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800;900&family=Archivo+Narrow:wght@500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+/* ---------- casca do catálogo (não faz parte do app) ---------- */
+body{display:block;min-height:100%}
+.ds{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:100vh}
+.ds-side{position:sticky;top:0;height:100vh;overflow:auto;padding:24px 16px;border-right:1px solid var(--line)}
+.ds-side b{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3);margin:18px 0 6px}
+.ds-side a{display:block;color:var(--tx2);text-decoration:none;font-size:14px;font-weight:600;padding:8px 10px;border-radius:10px;min-height:40px}
+.ds-side a:hover,.ds-side a.on{color:var(--tx);background:var(--s1)}
+.ds-side a.novo::after{content:"proposta";font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ember);margin-left:6px;vertical-align:2px}
+.ds-main{padding:28px 32px 120px;max-width:980px}
+.grp{margin:0 0 72px;scroll-margin-top:20px}
+.grp>h2{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--tx3);margin:0 0 6px;font-weight:700}
+.grp>.lead{font-size:28px;font-weight:900;letter-spacing:-.04em;line-height:1.05;text-transform:uppercase;margin:0 0 20px}
+.grp>.lead i{font-style:normal;color:var(--ember)}
+.spec{border-top:1px solid var(--line);padding:22px 0;display:grid;grid-template-columns:180px minmax(0,1fr);gap:24px;align-items:start}
+.spec-meta b{display:block;font-size:14px}
+.spec-meta code{display:block;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--tx3);margin-top:4px;word-break:break-all}
+.spec-meta p{font-size:12.5px;color:var(--tx2);margin:6px 0 0;line-height:1.45}
+.spec-live{min-width:0}
+.phone{max-width:430px}
+.phone .view{padding:0;animation:none;max-width:none}
+.replay{margin-top:10px;background:none;border:1px solid var(--line);color:var(--tx2);border-radius:999px;padding:7px 14px;font:700 11px/1 var(--display);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;min-height:36px}
+.replay:hover{color:var(--tx);border-color:var(--tx3)}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw div{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--s1)}
+.sw i{display:block;height:64px}
+.sw span{display:block;padding:8px 10px;font-size:12px;line-height:1.35;color:var(--tx2)}
+.sw span b{display:block;color:var(--tx);font-size:13px}
+.ty{display:grid;grid-template-columns:150px minmax(0,1fr) 80px;gap:16px;align-items:center;border-top:1px solid var(--line);padding:16px 0}
+.ty .r{font-family:var(--num);color:var(--tx3);font-size:13px;text-align:right}
+.ty .l{font-size:12.5px;color:var(--tx2)}
+.ty .l b{display:block;color:var(--tx);font-size:13px}
+.nav-sheet{position:relative;inset:auto;display:block;background:none}
+.nav-sheet .sheet-card{position:relative;transform:none;margin:0;max-width:430px}
+.tabbar.demo{position:relative;max-width:430px;border-radius:18px;border:1px solid var(--line)}
+.top.demo{position:relative;max-width:430px;border-radius:18px}
+.tag-novo{display:inline-block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);border:1px solid var(--ember);border-radius:999px;padding:3px 8px;margin-left:8px;vertical-align:4px}
+@media (max-width:760px){.ds{grid-template-columns:1fr}.ds-side{position:sticky;top:0;height:auto;z-index:3;background:var(--bg);display:flex;gap:4px;overflow-x:auto;padding:10px 12px;border-right:0;border-bottom:1px solid var(--line)}.ds-side b{display:none}.ds-side a{white-space:nowrap;flex:none}.ds-main{padding:20px 16px 100px}.spec{grid-template-columns:1fr;gap:12px}.ty{grid-template-columns:1fr 60px}.ty .l{grid-column:1/-1}}
+
+/* =================== MOTION v2 · proposta para aprovar =================== */
+/* Regras: sem bounce, sem rotação, sem loop decorativo, sem glow; ember uma vez por peça; reduzir movimento = corte seco. */
+:root{--expo:cubic-bezier(.16,1,.3,1);--settle:cubic-bezier(.22,1.12,.36,1)}
+
+/* 1 · Ponteiro na dose: a agulha varre, passa do ponto e assenta no meio (amortecido, sem quicar) */
+.m-gauge{position:relative;width:min(340px,100%);margin:0 auto}
+.m-gauge svg{width:100%;height:auto;overflow:visible}
+.m-gauge .tick{stroke:var(--s3);stroke-width:2;stroke-linecap:round;transition:stroke .2s}
+.m-gauge .tick.on{stroke:var(--bone)}
+.m-gauge .tick.mid{stroke:var(--ember)}
+.m-gauge .needle{transform-origin:110px 118px;transform:rotate(-90deg)}
+.m-gauge.run .needle{animation:needle 1.6s var(--expo) forwards}
+@keyframes needle{0%{transform:rotate(-90deg)}55%{transform:rotate(14deg)}78%{transform:rotate(-4deg)}100%{transform:rotate(0deg)}}
+.m-gauge .lbl{text-align:center;margin-top:6px}
+.odo{display:inline-flex;font-family:var(--num);font-weight:700;font-size:64px;line-height:1;letter-spacing:-.04em;height:1em;overflow:hidden;font-variant-numeric:tabular-nums}
+.odo span{display:block;transition:transform 1.4s var(--expo)}
+.odo span i{display:block;font-style:normal;height:1em}
+.m-gauge .cap{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--tx2);font-weight:700;margin-top:6px}
+
+/* 2 · Tipografia cinética: palavras sobem da máscara, o ponto ember cai por último */
+.m-kin{font-weight:900;text-transform:uppercase;letter-spacing:-.06em;line-height:.88;font-size:clamp(52px,11vw,120px)}
+.m-kin .w{display:block;overflow:hidden}
+.m-kin .w span{display:inline-block;transform:translateY(105%)}
+.m-kin.run .w span{animation:wup .9s var(--expo) forwards}
+.m-kin.run .w:nth-child(2) span{animation-delay:.09s}
+.m-kin.run .w:nth-child(3) span{animation-delay:.18s}
+.m-kin .dot{color:var(--ember);display:inline-block;transform:translateY(-120%);opacity:0}
+.m-kin.run .dot{animation:dotdrop .5s var(--expo) .62s forwards}
+@keyframes wup{to{transform:none}}
+@keyframes dotdrop{to{transform:none;opacity:1}}
+.m-kin-sub{font-family:var(--serif);font-size:24px;color:var(--bone);margin-top:14px;opacity:0;transform:translateY(8px)}
+.m-kin.run+.m-kin-sub{animation:fadeup .8s var(--expo) .9s forwards}
+@keyframes fadeup{to{opacity:1;transform:none}}
+
+/* 3 · Curva dose-resposta: desenha, achata, e o ponto para no "ponto certo" */
+.m-curve svg{width:100%;max-width:560px;height:auto;overflow:visible}
+.m-curve .axis{stroke:var(--line);stroke-width:1}
+.m-curve .c{fill:none;stroke:var(--bone);stroke-width:3;stroke-linecap:round;stroke-dasharray:640;stroke-dashoffset:640}
+.m-curve.run .c{animation:draw 1.8s var(--expo) forwards}
+.m-curve .zone{fill:#E4572E;fill-opacity:.12;opacity:0}
+.m-curve.run .zone{animation:fadein .6s ease 1.1s forwards}
+.m-curve .pt{fill:var(--ember);opacity:0;transform-box:fill-box;transform-origin:center;transform:scale(0)}
+.m-curve.run .pt{animation:pop .45s var(--expo) 1.5s forwards}
+.m-curve text{fill:var(--tx2);font:700 11px var(--display);letter-spacing:.14em;text-transform:uppercase}
+.m-curve .t-ok{fill:var(--ember);opacity:0}
+.m-curve.run .t-ok{animation:fadein .5s ease 1.7s forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes pop{to{opacity:1;transform:scale(1)}}
+
+/* 4 · Fichas em leque: as fichas saem empilhadas e se abrem */
+.m-deck{position:relative;height:250px;max-width:430px;overflow:hidden}
+.m-deck .fc{position:absolute;left:50%;top:10px;width:46%;height:220px;margin-left:-23%;border-radius:20px;background:var(--s1);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;justify-content:space-between;transition:transform 1s var(--expo),opacity .6s;opacity:0;transform:translateY(30px) scale(.94)}
+.m-deck .fc b{font-weight:900;font-size:26px;letter-spacing:-.04em;text-transform:uppercase}
+.m-deck .fc .tiny{color:var(--tx2)}
+.m-deck .fc .bar{height:4px;border-radius:2px;background:var(--s3);overflow:hidden}
+.m-deck .fc .bar i{display:block;height:100%;background:var(--bone);width:0;transition:width 1.2s var(--expo) .5s}
+.m-deck .fc.hl .bar i{background:var(--ember)}
+.m-deck.run .fc{opacity:1}
+.m-deck.run .fc:nth-child(1){transform:translateX(-52%) translateY(14px) scale(.86)}
+.m-deck.run .fc:nth-child(2){transform:none;z-index:2}
+.m-deck.run .fc:nth-child(3){transform:translateX(52%) translateY(14px) scale(.86)}
+.m-deck.run .fc .bar i{width:var(--w)}
+
+/* 5 · Toque com preenchimento: o botão comprime e o ember varre da esquerda */
+.m-press{position:relative;overflow:hidden;border:0;border-radius:16px;background:var(--s3);color:var(--tx);font:800 15px var(--display);letter-spacing:.02em;padding:18px 22px;min-height:56px;width:100%;max-width:360px;cursor:pointer;transition:transform .14s var(--ease)}
+.m-press::before{content:"";position:absolute;inset:0;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--expo)}
+.m-press span{position:relative}
+.m-press:active{transform:scale(.97)}
+.m-press.done::before{transform:scaleX(1)}
+.m-press.done{color:#0F1012}
+
+/* 6 · Semana fechando + selo "Semana na dose." */
+.m-week{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.m-week svg{width:132px;height:132px}
+.m-week .rbg{fill:none;stroke:var(--s3);stroke-width:10}
+.m-week .rv{fill:none;stroke:var(--bone);stroke-width:10;stroke-linecap:round;stroke-dasharray:345.6;stroke-dashoffset:345.6;transform:rotate(-90deg);transform-origin:66px 66px}
+.m-week.run .rv{animation:ringclose 1.4s var(--expo) forwards}
+.m-week .seal{font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:30px;line-height:.95;opacity:0;transform:scale(1.25);filter:blur(3px)}
+.m-week.run .seal{animation:stamp .5s var(--expo) 1.25s forwards}
+.m-week .seal i{font-style:normal;color:var(--ember)}
+@keyframes ringclose{to{stroke-dashoffset:0}}
+@keyframes stamp{to{opacity:1;transform:none;filter:none}}
+
+/* 7 · Grão de filme: textura crua sobre superfícies de capa (estática, sem loop) */
+.m-grain{position:relative;border-radius:22px;overflow:hidden;background:#141518;min-height:220px;display:flex;align-items:flex-end;padding:22px;isolation:isolate}
+.m-grain::after{content:"";position:absolute;inset:-50%;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");opacity:.16;mix-blend-mode:overlay;pointer-events:none;z-index:1}
+.m-grain .light{position:absolute;inset:0;background:radial-gradient(60% 80% at 80% 10%,rgba(228,87,46,.20),transparent 60%);z-index:0}
+.m-grain h3{position:relative;z-index:2;font-weight:900;text-transform:uppercase;letter-spacing:-.05em;line-height:.9;font-size:44px;margin:0}
+.m-grain h3 em{font-family:var(--serif);font-style:italic;text-transform:none;font-weight:400;letter-spacing:-.01em;color:var(--bone)}
+
+/* 8 · Revelar ao rolar (onde o navegador suportar; senão aparece direto) */
+@supports (animation-timeline: view()){
+  .m-scroll .row-r{animation:sreveal linear both;animation-timeline:view();animation-range:entry 0% cover 35%}
+}
+@keyframes sreveal{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.m-scroll .row-r{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding:16px 2px;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.m-scroll .row-r span{font-family:var(--num);font-size:26px}
+.m-scroll .row-r.e span{color:var(--ember)}
+
+@media (prefers-reduced-motion:reduce){
+  .m-gauge.run .needle,.m-kin.run .w span,.m-kin.run .dot,.m-curve.run *,.m-week.run *,.m-kin.run+.m-kin-sub{animation-duration:.01s!important;animation-delay:0s!important}
+  .odo span,.m-deck .fc,.m-deck .fc .bar i,.m-press::before{transition-duration:.01s!important}
+}
+</style>
+</head>
+<body>
+<div class="ds">
+<nav class="ds-side" aria-label="Grupos">
+  <b>Fundamentos</b>
+  <a href="#cores">Cores</a><a href="#tipografia">Tipografia</a><a href="#superficies">Superfícies</a><a href="#motion">Motion</a>
+  <b>Componentes</b>
+  <a href="#navegacao">Navegação</a><a href="#acoes">Ações</a><a href="#medidor">Medidor</a><a href="#treino">Treino</a><a href="#dados">Dados</a><a href="#comunidade">Comunidade</a><a href="#listas">Listas e formulários</a><a href="#sheet">Sheet</a>
+  <b>Motion v2</b>
+  <a href="#motion-v2" class="novo">8 movimentos</a>
+</nav>
+<main class="ds-main">
+
+<section class="grp" id="cores"><h2>Fundamentos</h2><p class="lead">Cores<i>.</i></p>
+  <div class="sw">
+    <div><i style="background:#0F1012;border-bottom:1px solid var(--line)"></i><span><b>Fundo</b>#0F1012 · --bg</span></div>
+    <div><i style="background:#17181B"></i><span><b>Superfície</b>#17181B · --s1 · cards</span></div>
+    <div><i style="background:#1E2024"></i><span><b>Superfície 2</b>#1E2024 · --s2 · trilhas, seg</span></div>
+    <div><i style="background:#262930"></i><span><b>Superfície 3</b>#262930 · --s3 · botão secundário</span></div>
+    <div><i style="background:#272A2F"></i><span><b>Borda</b>#272A2F · --line</span></div>
+    <div><i style="background:#F2F1EC"></i><span><b>Texto</b>#F2F1EC · --tx</span></div>
+    <div><i style="background:#A3A5A8"></i><span><b>Texto de apoio</b>#A3A5A8 · --tx2</span></div>
+    <div><i style="background:#73767B"></i><span><b>Texto 3</b>#73767B · --tx3 · rótulos</span></div>
+    <div><i style="background:#D8D2C2"></i><span><b>Osso</b>#D8D2C2 · --bone · barras neutras</span></div>
+    <div><i style="background:#E4572E"></i><span><b>Ember</b>#E4572E · --ember · um acento por tela</span></div>
+    <div><i style="background:#3A2219"></i><span><b>Ember suave</b>#3A2219 · --ember-soft</span></div>
+    <div><i style="background:#6FAE8A"></i><span><b>Ok</b>#6FAE8A · --ok · estado</span></div>
+    <div><i style="background:#D9A066"></i><span><b>Atenção</b>#D9A066 · --warn · estado</span></div>
+    <div><i style="background:#E07A6A"></i><span><b>Pare</b>#E07A6A · --stop · estado</span></div>
+    <div><i style="background:linear-gradient(90deg,#9C6B3C 33%,#A8A9AD 33% 66%,#C9A24A 66%)"></i><span><b>Medalhas</b>bronze · prata · ouro</span></div>
+  </div>
+</section>
+
+<section class="grp" id="tipografia"><p class="lead">Tipografia<i>.</i></p>
+  <div class="ty"><div class="l"><b>Título de tela</b>Archivo 800</div><h1 class="sec" style="margin:0">Treino</h1><div class="r">28px</div></div>
+  <div class="ty"><div class="l"><b>Pergunta-manchete</b>Archivo 900</div><h2 class="nd-q" style="margin:0">Você está na dose?</h2><div class="r">h2</div></div>
+  <div class="ty"><div class="l"><b>Número grande</b>Archivo Narrow 700</div><div class="big">25</div><div class="r">44–72px</div></div>
+  <div class="ty"><div class="l"><b>Subtítulo</b>Archivo 800</div><h2 style="margin:0">Sessões avulsas</h2><div class="r">21px</div></div>
+  <div class="ty"><div class="l"><b>Rótulo</b>Archivo 700 · caixa-alta</div><div class="eyebrow" style="text-align:left">Seu plano</div><div class="r">11px</div></div>
+  <div class="ty"><div class="l"><b>Manifesto</b>Instrument Serif</div><p class="serif" style="margin:0">Nem de menos, <i>nem demais.</i></p><div class="r">23–26px</div></div>
+  <div class="ty"><div class="l"><b>Texto</b>Archivo 400</div><p class="small" style="margin:0">Treino de cada dia, progressão semana a semana e evolução do seu esporte.</p><div class="r">14px</div></div>
+  <div class="ty"><div class="l"><b>Microtexto</b>Archivo 400</div><p class="tiny" style="margin:0">Fecha a semana e avança. Sessão leve feita em alta sugere repetir.</p><div class="r">12px</div></div>
+</section>
+
+<section class="grp" id="superficies"><p class="lead">Superfícies<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Card</b><code>.card</code></div><div class="spec-live phone"><div class="card"><b>Card padrão</b><p class="tiny">Borda fina, raio 16, superfície 1.</p></div></div></div>
+  <div class="spec"><div class="spec-meta"><b>Card de destaque</b><code>.card.hero</code></div><div class="spec-live phone">{{heroTreino}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Card secundário</b><code>.card.sub</code></div><div class="spec-live phone"><div class="card sub small">Informação de apoio dentro de outro card.</div></div></div>
+  <div class="spec"><div class="spec-meta"><b>Tiles</b><code>.tiles .tile</code></div><div class="spec-live phone">{{tiles}}</div></div>
+</section>
+
+<section class="grp" id="motion"><p class="lead">Motion<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Tempos e curvas</b><code>--fast 140ms · --base 260ms · --slow 700ms</code><p>Curva padrão --ease cubic-bezier(.2,.8,.2,1). Entrada de tela sobe 10px em 260ms.</p></div>
+    <div class="spec-live"><div class="sw">
+      <div><i style="background:var(--s2);position:relative"><b class="mv" style="position:absolute;left:10px;top:24px;width:16px;height:16px;border-radius:8px;background:var(--bone);transition:left 140ms var(--ease)"></b></i><span><b>Toque · 140ms</b>check, chip, aba</span></div>
+      <div><i style="background:var(--s2);position:relative"><b class="mv" style="position:absolute;left:10px;top:24px;width:16px;height:16px;border-radius:8px;background:var(--bone);transition:left 260ms var(--ease)"></b></i><span><b>Base · 260ms</b>tela, sheet</span></div>
+      <div><i style="background:var(--s2);position:relative"><b class="mv" style="position:absolute;left:10px;top:24px;width:16px;height:16px;border-radius:8px;background:var(--ember);transition:left 700ms var(--ease)"></b></i><span><b>Lento · 700ms</b>anéis, barras, gráficos</span></div>
+    </div><button class="replay" onclick="document.querySelectorAll('.mv').forEach(b=>{b.style.left=b.style.left==='calc(100% - 26px)'?'10px':'calc(100% - 26px)'})">Mover</button></div></div>
+</section>
+
+<section class="grp" id="navegacao"><h2>Componentes</h2><p class="lead">Navegação<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Topo</b><code>.top .brand</code></div><div class="spec-live">{{top}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Barra de abas</b><code>.tabbar</code><p>Aba ativa em texto claro com ícone ember.</p></div><div class="spec-live">{{tabbar}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Segmentado</b><code>.seg</code></div><div class="spec-live phone">{{seg}}</div></div>
+</section>
+
+<section class="grp" id="acoes"><p class="lead">Ações<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Botões</b><code>.btn.em · .btn.sec · .btn.ghost · .btn.sm</code><p>Um botão ember por tela.</p></div><div class="spec-live phone"><div class="grid2"><button class="btn em">Principal</button><button class="btn sec">Secundário</button></div><div class="grid2" style="margin-top:8px"><button class="btn ghost">Fantasma</button><button class="btn sm ghost" style="width:auto">Pequeno</button></div></div></div>
+  <div class="spec"><div class="spec-meta"><b>Atalhos</b><code>.quick</code></div><div class="spec-live phone">{{quick}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Chips</b><code>.chips .chip(.on)</code></div><div class="spec-live phone"><div class="chips"><button class="chip on">Open</button><button class="chip">Pro</button><button class="chip">Corrida</button><button class="chip">Hyrox</button></div></div></div>
+</section>
+
+<section class="grp" id="medidor"><p class="lead">Medidor<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Você está na dose?</b><code>.hero4.nadose · .arco · .pilares</code><p>Arco de 0 a 100, ponto ember no valor, pilares Treino, Nutrição e Metas com barras em cascata.</p></div><div class="spec-live phone" data-replay>{{nadose}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Semana</b><code>.semana4</code></div><div class="spec-live phone" data-replay>{{semana}}</div></div>
+</section>
+
+<section class="grp" id="treino"><p class="lead">Treino<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Fichas</b><code>.fichas .fcard</code><p>Corpo com os músculos-alvo em ember.</p></div><div class="spec-live phone">{{fichas}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Local de treino</b><code>.ltiles .ltile</code></div><div class="spec-live phone">{{ltiles}}</div></div>
+</section>
+
+<section class="grp" id="dados"><p class="lead">Dados<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Barras da evolução</b><code>.barras</code><p>A barra ember é a semana atual.</p></div><div class="spec-live phone" data-replay>{{evol}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Indicadores</b><code>.grid3</code></div><div class="spec-live phone">{{grid3}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Leitura</b><code>p.serif.coach</code></div><div class="spec-live phone">{{coach}}</div></div>
+</section>
+
+<section class="grp" id="comunidade"><p class="lead">Comunidade<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Meu perfil</b><code>.card.hero.meuhero</code></div><div class="spec-live phone" data-replay>{{meuhero}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Desafios</b><code>.hscroll .dcard</code></div><div class="spec-live phone">{{hscroll}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Card da comunidade</b><code>.card.com</code></div><div class="spec-live phone">{{com}}</div></div>
+</section>
+
+<section class="grp" id="listas"><p class="lead">Listas e formulários<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Lista</b><code>.list .item</code></div><div class="spec-live phone">{{maisList}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Campo</b><code>.card input</code></div><div class="spec-live phone">{{perfilCard}}</div></div>
+</section>
+
+<section class="grp" id="sheet"><p class="lead">Sheet<i>.</i></p>
+  <div class="spec"><div class="spec-meta"><b>Sheet</b><code>.sheet .sheet-card</code><p>Sobe de baixo em 260ms; alça no topo.</p></div><div class="spec-live">{{sheet}}</div></div>
+</section>
+
+<section class="grp" id="motion-v2"><h2>Motion v2 <span class="tag-novo">proposta para aprovar</span></h2><p class="lead">O ponto certo<i>,</i> em movimento<i>.</i></p>
+  <p class="small" style="max-width:640px">Oito movimentos novos, todos contando a mesma ideia: chegar no ponto e parar. Nada pisca em loop, nada quica e o ember aparece uma vez por peça. Toque em "Rodar" para ver de novo.</p>
+
+  <div class="spec"><div class="spec-meta"><b>1 · Ponteiro na dose</b><p>A agulha varre, passa do meio e assenta, enquanto o número rola como um odômetro. Para o medidor da tela Hoje.</p></div>
+    <div class="spec-live"><div class="m-gauge" id="g1"><svg viewBox="0 0 220 128" aria-hidden="true"><g id="ticks"></g><g class="needle"><line x1="110" y1="118" x2="110" y2="40" stroke="var(--tx)" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="118" r="7" fill="var(--ember)"/></g></svg><div class="lbl"><div class="odo" id="odo"></div><div class="cap">Na dose</div></div></div><button class="replay" data-run="g1">Rodar</button></div></div>
+
+  <div class="spec"><div class="spec-meta"><b>2 · Tipografia cinética</b><p>As palavras sobem de uma máscara e o ponto ember cai por último. Para capas, boas-vindas e Reels.</p></div>
+    <div class="spec-live"><div class="m-kin" id="k1"><span class="w"><span>Vida</span></span><span class="w"><span>na</span></span><span class="w"><span>dose<b class="dot">.</b></span></span></div><p class="m-kin-sub">Nem de menos, nem demais.</p><button class="replay" data-run="k1">Rodar</button></div></div>
+
+  <div class="spec"><div class="spec-meta"><b>3 · Curva da dose</b><p>A curva dose-resposta se desenha, achata, e o ponto ember para na zona certa. Para a área Ciência e o onboarding.</p></div>
+    <div class="spec-live"><div class="m-curve" id="c1"><svg viewBox="0 0 560 240" aria-hidden="true"><line class="axis" x1="20" y1="210" x2="540" y2="210"/><line class="axis" x1="20" y1="20" x2="20" y2="210"/><rect class="zone" x="250" y="40" width="120" height="170" rx="8"/><path class="c" d="M20 205 C120 200 170 120 230 80 S340 42 400 40 S500 38 540 38"/><circle class="pt" cx="310" cy="52" r="9"/><text x="24" y="232">Estímulo</text><text x="470" y="232">Excesso</text><text class="t-ok" x="310" y="30" text-anchor="middle">O ponto certo</text></svg></div><button class="replay" data-run="c1">Rodar</button></div></div>
+
+  <div class="spec"><div class="spec-meta"><b>4 · Fichas em leque</b><p>As fichas saem empilhadas e se abrem, com a barra de progresso enchendo. Para a tela Treino.</p></div>
+    <div class="spec-live"><div class="m-deck" id="d1"><div class="fc"><span class="tiny">Ficha A</span><b>Upper</b><div><div class="bar" style="--w:60%"><i></i></div><span class="tiny">feito há 3 dias</span></div></div><div class="fc hl"><span class="tiny">Hoje</span><b>Lower</b><div><div class="bar" style="--w:100%"><i></i></div><span class="tiny">7 exercícios</span></div></div><div class="fc"><span class="tiny">Ficha C</span><b>Full</b><div><div class="bar" style="--w:30%"><i></i></div><span class="tiny">feito há 6 dias</span></div></div></div><button class="replay" data-run="d1">Rodar</button></div></div>
+
+  <div class="spec"><div class="spec-meta"><b>5 · Toque com preenchimento</b><p>O botão comprime no toque e o ember varre da esquerda ao confirmar. Para "Série feita" e "Salvar".</p></div>
+    <div class="spec-live"><button class="m-press" id="p1" onclick="this.classList.toggle('done');this.querySelector('span').textContent=this.classList.contains('done')?'Série feita ✓':'Concluir série'"><span>Concluir série</span></button></div></div>
+
+  <div class="spec"><div class="spec-meta"><b>6 · Semana fechando</b><p>O anel fecha e o selo "Semana na dose." é carimbado. Para o card da semana e o compartilhamento.</p></div>
+    <div class="spec-live"><div class="m-week" id="w1"><svg viewBox="0 0 132 132" aria-hidden="true"><circle class="rbg" cx="66" cy="66" r="55"/><circle class="rv" cx="66" cy="66" r="55"/></svg><div class="seal">Semana<br>na dose<i>.</i></div></div><button class="replay" data-run="w1">Rodar</button></div></div>
+
+  <div class="spec"><div class="spec-meta"><b>7 · Grão de filme</b><p>Textura crua e luz quente pontual sobre capas, como as fotos da marca. Estática.</p></div>
+    <div class="spec-live phone"><div class="m-grain"><span class="light"></span><h3>Treinar cedo<br>ou <em>dormir mais?</em></h3></div></div></div>
+
+  <div class="spec"><div class="spec-meta"><b>8 · Revelar ao rolar</b><p>Linhas aparecem conforme a pessoa rola, ligadas ao próprio scroll. Onde o navegador não suporta, aparecem direto.</p></div>
+    <div class="spec-live phone m-scroll"><div class="row-r">Treinos <span>4</span></div><div class="row-r">Km <span>21,4</span></div><div class="row-r">Sono médio <span>7,4 h</span></div><div class="row-r e">Semana <span>na dose</span></div></div></div>
+</section>
+
+</main>
+</div>
+<script>
+(function(){
+  // ticks do ponteiro
+  var g=document.getElementById('ticks'), n=21, html='';
+  for(var i=0;i<n;i++){ var a=Math.PI*(1-i/(n-1)), r1=92, r2=i%5===0?78:84; var x1=110+r1*Math.cos(a), y1=118-r1*Math.sin(a), x2=110+r2*Math.cos(a), y2=118-r2*Math.sin(a);
+    html+='<line class="tick'+(i===10?' mid':'')+'" data-i="'+i+'" x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>'; }
+  g.innerHTML=html;
+  // odômetro: 0 → 50
+  var odo=document.getElementById('odo'); var col=function(){ var s='<span>'; for(var d=0;d<10;d++) s+='<i>'+d+'</i>'; return s+'</span>'; }; odo.innerHTML=col()+col();
+  function setOdo(v){ var ds=String(v).padStart(2,'0').split(''); [].forEach.call(odo.children,function(sp,k){ sp.style.transform='translateY(-'+(+ds[k])+'em)'; }); }
+  function run(id){ var el=document.getElementById(id); if(!el) return; el.classList.remove('run'); void el.offsetWidth; el.classList.add('run');
+    if(id==='g1'){ setOdo(0); var t=g.querySelectorAll('.tick'); [].forEach.call(t,function(x){x.classList.remove('on')}); setTimeout(function(){ setOdo(50); },120); [].forEach.call(t,function(x,i){ if(i<=10) setTimeout(function(){ x.classList.add('on') },120+i*70); }); } }
+  document.querySelectorAll('[data-run]').forEach(function(b){ b.addEventListener('click',function(){ run(b.dataset.run); }); });
+  // roda cada peça quando entra na tela
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ run(e.target.id); io.unobserve(e.target); } }); },{threshold:.4});
+  ['g1','k1','c1','d1','w1'].forEach(function(id){ var el=document.getElementById(id); if(el) io.observe(el); });
+  // replay dos componentes reais (reinsere para reiniciar as animações CSS do app)
+  document.querySelectorAll('[data-replay]').forEach(function(box){ var b=document.createElement('button'); b.className='replay'; b.textContent='Rodar'; b.onclick=function(){ var h=box.innerHTML; box.innerHTML=''; void box.offsetWidth; box.innerHTML=h; box.appendChild(b); }; box.appendChild(b); });
+  // navegação lateral ativa
+  var links=[].slice.call(document.querySelectorAll('.ds-side a')); var so=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){ a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id); }); } }); },{rootMargin:'-40% 0px -55% 0px'});
+  document.querySelectorAll('.grp').forEach(function(s){ so.observe(s); });
+})();
+</script>
+</body>
+</html>

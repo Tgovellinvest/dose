@@ -7,7 +7,7 @@ description: Publicar uma nova versão do app DOSE no GitHub Pages com versão, 
 
 1. Escolha a próxima versão (ex.: 6.9). Troque `?v=` em todas as tags de `index.html` e `const C='dose-v6.9'` em `sw.js`.
    Arquivo novo de JS ou CSS entra na lista `F` do `sw.js`.
-2. Rode `python3 build.py` e depois `python3 tools/ds_build.py`.
+2. Rode `python3 build.py`, `python3 tools/ds_build.py` e `node tools/ds_components.js`.
 3. Teste com Playwright no perfil iPhone 15 Pro Max e fuso `America/Sao_Paulo`:
    abra `index.html`, passe pelas telas mexidas, registre `pageerror` e confirme lista vazia.
 4. `git add -A`, commit em português dizendo o que mudou, `git push` em `main`.

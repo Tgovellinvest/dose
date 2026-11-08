@@ -30,7 +30,7 @@ O dono é o Tiago. Fale com ele em português do Brasil, resposta primeiro e det
 
 ## Publicar (skill `dose-deploy`)
 1. Subir a versão: `?v=X` em todas as tags de `index.html` e `const C='dose-vX'` em `sw.js`. Arquivo novo entra na lista do `sw.js`.
-2. `python3 build.py` (gera `dist/guia-treino.html`) e `python3 tools/ds_build.py` (atualiza o design system).
+2. `python3 build.py` (gera `dist/guia-treino.html`), `python3 tools/ds_build.py` (Overview) e `node tools/ds_components.js` (Components, precisa do Playwright).
 3. Testar com Playwright (iPhone 15 Pro Max, fuso America/Sao_Paulo) e checar zero erros de página.
 4. Commit em português com o que mudou, push em `main`; o GitHub Pages publica em ~1 min.
 5. Conferir `https://tgovellinvest.github.io/dose/sw.js` com a versão nova.
