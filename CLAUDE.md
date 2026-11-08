@@ -17,7 +17,7 @@ O dono é o Tiago. Fale com ele em português do Brasil, resposta primeiro e det
 - Relação entre pessoas = "comunidade DOSE". "Grupo", nunca "turma".
 - Comunidade fala só de treino. Não mencionar romance, nem para permitir nem para proibir.
 - Sem promessa de corpo, sem antes e depois, sem "sem desculpas", "sua melhor versão", emoji como pontuação.
-- Não usar mais "A dose certa" nem "Registrado, não prometido." em peças públicas.
+- "Vida na dose." vem antes de "A dose certa" (apoio). Cortar de vez "A dose certa" e "Registrado, não prometido." é proposta ainda pendente do Tiago.
 
 ## Arquitetura
 - HTML + CSS + JS puros, sem build de framework. Estado global `S` em localStorage (`guia-treino-v1`).

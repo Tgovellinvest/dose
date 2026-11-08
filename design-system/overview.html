@@ -455,6 +455,65 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 @keyframes scPulse{50%{box-shadow:0 0 0 7px rgba(255,55,95,.05)}}
 @media (prefers-reduced-motion:reduce){.saude-chip .sc-dot{animation:none}}
 
+/* =================== v6.9 · Motion v2 (aprovado em 08/11/2026) =================== */
+:root{--expo:cubic-bezier(.16,1,.3,1)}
+/* 1 · ponteiro na dose + odômetro */
+.nadose .arco{overflow:visible}
+.m2-tick{stroke:var(--s3);stroke-width:2;stroke-linecap:round;transition:stroke .25s}
+.m2-tick.on{stroke:var(--bone)}
+.m2-ptr{transform-origin:110px 118px;transform:rotate(var(--a))}
+.m2-run .m2-ptr{animation:m2ptr 1.5s var(--expo) both}
+@keyframes m2ptr{0%{transform:rotate(-90deg)}58%{transform:rotate(calc(var(--a) + 9deg))}80%{transform:rotate(calc(var(--a) - 3deg))}100%{transform:rotate(var(--a))}}
+.m2-odo{display:inline-flex;height:1em;line-height:1;overflow:hidden;vertical-align:top}
+.m2-col{display:block;transition:transform 1.3s var(--expo)}
+.m2-col i{display:block;height:1em;font-style:normal}
+/* 2 · tipografia cinética */
+.m2-kin{font-size:52px;font-weight:900;text-transform:uppercase;letter-spacing:-.06em;line-height:.9;margin:0}
+.m2-kin .w{display:block;overflow:hidden}
+.m2-kin .w>span{display:inline-block;animation:m2up .9s var(--expo) both}
+.m2-kin .m2-dot{color:var(--ember);display:inline-block;animation:m2drop .5s var(--expo) .6s both}
+@keyframes m2up{from{transform:translateY(105%)}}
+@keyframes m2drop{from{transform:translateY(-120%);opacity:0}}
+/* 3 · curva da dose (Ciência) */
+.m2-curva{margin:6px 0 14px}
+.m2-curva svg{width:100%;height:auto;overflow:visible}
+.m2-curva .ax{stroke:var(--line)}
+.m2-curva .c{fill:none;stroke:var(--bone);stroke-width:3;stroke-linecap:round;stroke-dasharray:640;animation:m2draw 1.8s var(--expo) both}
+.m2-curva .zona{fill:#E4572E;fill-opacity:.12;animation:m2in .6s ease 1.1s both}
+.m2-curva .pt{fill:var(--ember);transform-box:fill-box;transform-origin:center;animation:m2pop .45s var(--expo) 1.5s both}
+.m2-curva text{fill:var(--tx2);font:700 11px var(--display);letter-spacing:.14em;text-transform:uppercase}
+.m2-curva .ok{fill:var(--ember);animation:m2in .5s ease 1.7s both}
+@keyframes m2draw{from{stroke-dashoffset:640}}
+@keyframes m2in{from{opacity:0}}
+@keyframes m2pop{from{opacity:0;transform:scale(0)}}
+/* 4 · fichas em leque */
+.fichas .fcard{animation:m2fan .8s var(--expo) both}
+.fichas .fcard:nth-child(2){animation-delay:70ms}.fichas .fcard:nth-child(3){animation-delay:140ms}.fichas .fcard:nth-child(4){animation-delay:210ms}.fichas .fcard:nth-child(5){animation-delay:280ms}.fichas .fcard:nth-child(n+6){animation-delay:340ms}
+@keyframes m2fan{from{opacity:0;transform:translateY(26px) scale(.92)}}
+/* 5 · toque com preenchimento na série */
+.set-row .ck{position:relative;overflow:hidden;isolation:isolate}
+.set-row .ck::before{content:"";position:absolute;inset:0;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--expo);z-index:-1}
+.set-row .ck.done{background:var(--s2)}
+.set-row .ck.done::before{transform:scaleX(1)}
+.set-row .ck:active{transform:scale(.94)}
+.btn:active{transform:scale(.97)}
+/* 6 · semana fechando + selo */
+.semana4 .dia{animation:m2pop2 .5s var(--expo) both}
+@keyframes m2pop2{from{opacity:0;transform:translateY(8px)}}
+.m2-selo{margin:10px 2px 0;font-weight:900;text-transform:uppercase;letter-spacing:-.04em;font-size:24px;line-height:1;animation:m2stamp .5s var(--expo) .45s both}
+.m2-selo i{font-style:normal;color:var(--ember)}
+@keyframes m2stamp{from{opacity:0;transform:scale(1.25);filter:blur(3px)}}
+/* 7 · grão de filme nas capas */
+.m2-grao{position:relative;isolation:isolate}
+.m2-grao::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;opacity:.14;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.m2-grao>*{position:relative;z-index:1}
+/* 8 · revelar ao rolar (onde o navegador suporta) */
+@supports (animation-timeline: view()){
+  .view > .card:nth-child(n+4), .view > h3, .view > .list{animation:m2rev linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
+}
+@keyframes m2rev{from{opacity:0;transform:translateY(24px)}}
+@media (prefers-reduced-motion:reduce){.m2-col,.set-row .ck::before{transition:none!important}.m2-ptr{animation:none!important}}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <!-- Google Analytics 4 (propriedade "DOSE app", stream "DOSE web") -->
@@ -4005,6 +4064,57 @@ const _e=V._esporte; V._esporte=(p)=>{ let h=_e(p); const extra=(p.id==='hyrox'?
  {t:"Ritmo de treino a partir de um teste (VDOT)",cat:"Esportes",oque:"O tempo de uma prova ou teste estima o índice de condicionamento de corrida (VDOT); dele saem os ritmos de cada tipo de treino.",regra:"Teste de 3 ou 5 km → ritmos fácil (59–74% do VDOT), maratona (~82%), limiar (88%) e intervalado (98%) aparecem em cada sessão de corrida.",ref:"Daniels & Gilbert, Oxygen Power (1979); Daniels' Running Formula, 4ª ed. (2022)",url:"https://getfitcraft.com/tools/vdot-calculator",status:"verificado"},
  {t:"Hyrox: cargas e formato oficiais",cat:"Esportes",oque:"8 × (1 km + estação). Open: sled push 152/102 kg e sled pull 103/78 kg com o trenó, farmer 2 × 24/2 × 16 kg, lunges 20/10 kg, wall ball 6/4 kg (masc./fem.). Pro sobe cada carga um degrau.",regra:"Os treinos de estação mostram a carga da sua categoria e do seu sexo, em % da carga de prova.",ref:"Red Bull, HYROX weights overview; hyranking.com (divisões)",url:"https://www.redbull.com/gb-en/hyrox-weights-overview",status:"verificado"}
 );
+})();
+
+</script>
+<script>
+// ================= DOSE · v6.9 — Motion v2 (aprovado pelo Tiago em 08/11/2026) =================
+// Oito movimentos, uma ideia: chegar no ponto e parar. Sem loop decorativo, ember uma vez por peça.
+// Quem pede "reduzir movimento" no aparelho vê o estado final, sem animação (CSS em styles.css).
+(function(){
+const V=window.VIEWS, A=window.AFTER;
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const dig=n=>{ let s='<span class="m2-col">'; for(let d=0;d<10;d++) s+=`<i>${d}</i>`; return s+'</span>'; };
+
+// 1 · Ponteiro na dose + odômetro (medidor da Hoje)
+const odoHTML=v=>{ const t=String(Math.max(0,Math.min(100,Math.round(v)))); return `<span class="m2-odo" data-odo="${t}" aria-label="${t}">${t.split('').map(()=>dig()).join('')}</span>`; };
+const _vh=V.hoje; V.hoje=(p)=>{ let h=_vh(p);
+  h=h.replace(/<div class="big" data-count="(\d+)">\d+<\/div>/,(m,v)=>`<div class="big">${odoHTML(+v)}</div>`);
+  return h; };
+function ponteiro(){ const svg=document.querySelector('.nadose .arco'); if(!svg||svg.dataset.m2) return; svg.dataset.m2=1;
+  const dot=svg.querySelector('.arco-dot'); const odo=document.querySelector('.nadose .m2-odo'); const v=odo?+odo.dataset.odo:0; const pct=Math.max(0,Math.min(100,v))/100;
+  // marcas do arco: acendem até o valor
+  let t=''; const n=21; for(let i=0;i<n;i++){ const a=Math.PI*(1-i/(n-1)), r1=82, r2=i%5===0?70:75; t+=`<line class="m2-tick${i===n-1?' fim':''}" x1="${(110+r1*Math.cos(a)).toFixed(1)}" y1="${(118-r1*Math.sin(a)).toFixed(1)}" x2="${(110+r2*Math.cos(a)).toFixed(1)}" y2="${(118-r2*Math.sin(a)).toFixed(1)}"/>`; }
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g'); g.setAttribute('class','m2-ticks'); g.innerHTML=t; svg.insertBefore(g,svg.firstChild);
+  // ponteiro: o ponto ember vira a ponta de um ponteiro que gira até o valor e assenta
+  if(dot){ dot.remove(); const p=document.createElementNS('http://www.w3.org/2000/svg','g'); p.setAttribute('class','m2-ptr'); p.style.setProperty('--a',(-90+180*pct)+'deg');
+    p.innerHTML='<line x1="110" y1="36" x2="110" y2="14" stroke="var(--tx)" stroke-width="3" stroke-linecap="round"/><circle cx="110" cy="26" r="6" fill="var(--ember)"/>'; svg.appendChild(p); }
+  const ticks=[...svg.querySelectorAll('.m2-tick')]; const ate=Math.round(pct*(n-1));
+  if(reduz()){ ticks.forEach((x,i)=>x.classList.toggle('on',i<=ate)); if(odo) setOdo(odo); return; }
+  requestAnimationFrame(()=>{ svg.classList.add('m2-run'); if(odo) setTimeout(()=>setOdo(odo),80); ticks.forEach((x,i)=>{ if(i<=ate) setTimeout(()=>x.classList.add('on'),120+i*55); }); }); }
+function setOdo(o){ const ds=o.dataset.odo.split(''); [...o.children].forEach((c,k)=>{ c.style.transform=`translateY(-${+ds[k]}em)`; }); }
+
+// 6 · Semana fechando: dias entram em cascata; semana cumprida ganha o selo
+function semana(){ const s=document.querySelector('.semana4'); if(!s||s.dataset.m2) return; s.dataset.m2=1;
+  const dias=[...s.querySelectorAll('.dia')]; dias.forEach((d,i)=>d.style.animationDelay=(i*50)+'ms');
+  const plan=dias.filter(d=>d.classList.contains('feito')||d.querySelector('i.m,i.e')).length, feitos=dias.filter(d=>d.classList.contains('feito')).length;
+  if(plan&&feitos>=plan){ const selo=document.createElement('div'); selo.className='m2-selo'; selo.innerHTML='Semana na dose<i>.</i>'; s.insertAdjacentElement('afterend',selo); } }
+
+// 7 · Grão de filme nas capas (classe; textura em CSS, estática)
+function grao(){ document.querySelectorAll('.view .hero4.nadose, .view .meuhero').forEach(e=>e.classList.add('m2-grao')); }
+
+const _ah=A.hoje; A.hoje=(p)=>{ if(_ah) _ah(p); ponteiro(); semana(); grao(); };
+const _ac=A.comunidade; A.comunidade=(p)=>{ const r=_ac?_ac(p):null; grao(); return r; };
+
+// 2 · Tipografia cinética nas boas-vindas
+const kin=txt=>`<h1 class="m2-kin" aria-label="${txt}">${txt.replace(/\.$/,'').split(' ').map((w,i,a)=>`<span class="w"><span style="animation-delay:${i*90}ms">${w}${i===a.length-1?'<b class="m2-dot">.</b>':''}</span></span>`).join('')}</h1>`;
+const _ob=V.onboard; if(_ob) V.onboard=(p)=>{ const h=_ob(p); return h.replace('<h1 style="font-size:44px">A dose certa.</h1>',kin('Vida na dose.')+'<p class="tiny" style="margin-top:6px">A dose certa, para treino, comida, sono e gente.</p>'); };
+
+// 3 · Curva da dose no topo da Ciência
+const curva=`<div class="m2-curva" aria-hidden="true"><svg viewBox="0 0 560 220"><line class="ax" x1="20" y1="190" x2="540" y2="190"/><rect class="zona" x="250" y="34" width="120" height="156" rx="8"/><path class="c" d="M20 186 C120 182 170 108 230 72 S340 38 400 36 S500 34 540 34"/><circle class="pt" cx="310" cy="47" r="8"/><text x="22" y="212">Estímulo</text><text x="538" y="212" text-anchor="end">Excesso</text><text class="ok" x="310" y="24" text-anchor="middle">O ponto certo</text></svg></div>`;
+const _ci=V._ciencia; if(_ci) V._ciencia=()=>curva+_ci();
+
+// 4 · Fichas em leque: a pilha se abre (CSS) — 5 · toque com preenchimento (CSS em .ck) — 8 · revelar ao rolar (CSS)
 })();
 
 </script>
