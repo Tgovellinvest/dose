@@ -16,7 +16,7 @@
     logs:[], bjj:[], checkins:[{data:d(7),peso:79.6,cintura:84,sono:7},{data:d(0),peso:79.1,cintura:83.5,sono:7.5}],
     cardio:[{id:'c1',data:d(1),tipo:'Corrida',dist:6,min:33,intens:'baixa'},{id:'c2',data:d(3),tipo:'Corrida',dist:5,min:24,intens:'alta'},{id:'c3',data:d(5),tipo:'Corrida',dist:10,min:58,intens:'baixa'}],
     vdot:{v:41.8,data:d(5),km:3,min:13.5}};
-  fake.setItem('guia-treino-v1',JSON.stringify(S));
+  fake.setItem('dsdemo-guia-treino-v1',JSON.stringify(S));
 })();
 </script>
 <meta charset="utf-8">
@@ -1619,7 +1619,7 @@ document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==
 // Guia de Treino — núcleo: estado, armazenamento local, roteamento, cálculos
 // Todos os dados pessoais ficam SÓ neste aparelho (localStorage). Nada vai para o repositório.
 const EX = Object.fromEntries(window.EXERCISES.map(e=>[e.id,e]));
-const DB_KEY = 'guia-treino-v1';
+const DB_KEY = 'dsdemo-guia-treino-v1';
 const DEFAULT = {
   perfil:{nome:"", sexo:"m", idade:null, altura:null, peso:null, bf:null, atividade:"mod", objetivo:"manter", programa:"ul_4", modo:"completa", esporteFoco:"", cotovelo:false, joelho:false, experiencia:"intermediario", pesoAlvo:null, bfAlvo:null, metaEsporte:"", esportes:{}, diasMusc:[], dores:{}, enfaseEsporte:true, prioridades:[], protocoloCoach:{kcal:null,p:null,c:null,g:null,fonte:""}},
   rotacao:{ppl2:0, predio:0},
@@ -2285,7 +2285,7 @@ window.obFinalizar=()=>{ const p=S.perfil; const k=n('obK'),pr=n('obP'),c=n('obC
 (function(){
 const URL_='https://typfaauucqkztdhmbhqb.supabase.co';
 const KEY='sb_publishable_MwvaO9YLPu_PwR_MqVQm-Q_QCAEPJHI'; // chave pública (publishable): segura para o cliente, protegida por RLS
-const AK='dose-auth-v1';
+const AK='dsdemo-auth-v1';
 const H=()=>({'apikey':KEY,'Content-Type':'application/json'});
 let sess=null; try{ sess=JSON.parse(localStorage.getItem(AK)); }catch(e){}
 const setSess=s=>{ sess=s; try{ s?localStorage.setItem(AK,JSON.stringify(s)):localStorage.removeItem(AK); }catch(e){} };
@@ -2343,7 +2343,7 @@ C.healthSync=async()=>{ const u=C.user(); if(!u) return 0; const r=await fetch(`
 C.healthEndpoint=`${FN}/health-sync`;
 
 // ---------- v6.1: entrar sem cadastro, Google e Apple (PKCE; o app usa # para rotas) ----------
-const PK='dose-pkce-v1';
+const PK='dsdemo-pkce-v1';
 const b64u=buf=>btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 async function pkce(){ const a=new Uint8Array(48); crypto.getRandomValues(a); const ver=b64u(a); const ch=b64u(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(ver))); return {ver,ch}; }
 let _cfg=null; C.provedores=async()=>{ if(_cfg) return _cfg; try{ const r=await fetch(`${URL_}/auth/v1/settings`,{headers:H()}); const j=await r.json(); const ex=j.external||{}; _cfg={google:!!ex.google,apple:!!ex.apple,anon:!!(ex.anonymous_users||j.anonymous_users_enabled)}; }catch(e){ _cfg={google:false,apple:false,anon:false}; } return _cfg; };

@@ -23,6 +23,10 @@ iso = r"""<script>
 })();
 </script>"""
 app = re.sub(r'<script async src="https://www\.googletagmanager\.com/gtag/js\?id=[^"]+"></script>', '', app)
+# segunda trava: mesmo se o navegador não deixar trocar o localStorage, as chaves do app real não são tocadas
+for a, b in (("'guia-treino-v1'", "'dsdemo-guia-treino-v1'"), ("'dose-auth-v1'", "'dsdemo-auth-v1'"), ("'dose-pkce-v1'", "'dsdemo-pkce-v1'")):
+    app = app.replace(a, b)
+iso = iso.replace("fake.setItem('guia-treino-v1'", "fake.setItem('dsdemo-guia-treino-v1'")
 app = app.replace('<head>', '<head>\n' + iso, 1)
 app = app.replace('<title>', '<meta name="robots" content="noindex"><title>DS Overview · ', 1)
 (root / 'design-system' / 'overview.html').write_text(app)
