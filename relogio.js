@@ -17,9 +17,12 @@ window.lerResumo=function(txt){
   const perto=tempos.find(m=>/tempo|dura[cç]/.test(T.slice(Math.max(0,m.index-60),m.index)))||tempos.find(m=>m[3]!==undefined)||null;
   if(perto){ const a=+perto[1],b=+perto[2],c=perto[3]!==undefined?+perto[3]:null; const min=c!==null?a*60+b+c/60:a+b/60; if(min>0&&min<600) out.min=Math.round(min); }
   const km=T.match(/(\d+[.,]\d+|\d+)\s*km\b(?!\s*\/\s*h)/); if(km){ const v=num(km[1]); if(v>0&&v<400) out.km=v; }
-  const bpm=[...T.matchAll(/(\d{2,3})\s*bpm/g)].map(m=>+m[1]).filter(v=>v>=40&&v<=230);
-  if(bpm.length){ const lm=T.match(/m[aá]x[^\n\d]*?(\d{2,3})\s*bpm/); out.fcMed=bpm.length>1?Math.min(...bpm):bpm[0]; if(bpm.length>1) out.fcMax=lm?+lm[1]:Math.max(...bpm); }
-  else { const fm=T.match(/(?:fc|frequ[eê]ncia card[ií]aca)\s*m[eé]dia\D{0,20}(\d{2,3})/); if(fm) out.fcMed=+fm[1]; const fx=T.match(/(?:fc|frequ[eê]ncia card[ií]aca)\s*m[aá]x\w*\D{0,20}(\d{2,3})/); if(fx) out.fcMax=+fx[1]; }
+  // FC: primeiro pelo rótulo da linha (mais seguro), depois pela unidade, tolerando erros comuns de leitura ("bom", "bprn")
+  const FC=/(?:\bfc\b|frequ[eê]ncia card[ií]aca|batimentos)/, N=l=>{ const m=l.match(/\b(\d{2,3})\b(?![.,:]\d)/); const v=m?+m[1]:null; return v&&v>=40&&v<=230?v:null; };
+  T.split('\n').forEach(l=>{ if(!FC.test(l)) return; if(/m[aá]x/.test(l)){ const v=N(l.replace(/^[^\d]*?m[aá]x\w*/,'')); if(v&&out.fcMax==null) out.fcMax=v; } else if(/m[eé]d/.test(l)){ const v=N(l.replace(/^[^\d]*?m[eé]di\w*/,'')); if(v&&out.fcMed==null) out.fcMed=v; } });
+  const bpm=[...T.matchAll(/(\d{2,3})\s*(?:bpm|bom|b0m|bprn|8pm)\b/g)].map(m=>+m[1]).filter(v=>v>=40&&v<=230);
+  if(out.fcMed==null&&bpm.length) out.fcMed=bpm.length>1?Math.min(...bpm):bpm[0];
+  if(out.fcMax==null&&bpm.length>1) out.fcMax=Math.max(...bpm);
   const ca=T.match(/calorias\s+ativas\D{0,30}?(\d{2,4})|(\d{2,4})\s*(?:k?cal)\b/); const cl=T.match(/calorias\D{0,20}?(\d{2,4})/);
   const kcalA=[...T.matchAll(/(\d{2,4})\s*k?cal\b/g)].map(m=>+m[1]);
   if(kcalA.length) out.kcal=Math.min(...kcalA); else if(cl) out.kcal=+cl[1];
