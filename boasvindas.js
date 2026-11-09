@@ -11,7 +11,8 @@ const _ob=V.onboard; if(_ob) V.onboard=(p)=>{ let h=_ob(p); if(!h.includes(ICONE
   if(!reduz()) h=h.replace('class="m2-kin"','class="m2-kin m4-espera"').replace(/animation-delay:(\d+)ms/g,(m,d)=>`animation-delay:${+d+2300}ms`);
   return h; };
 
-function rodar(){ const box=document.querySelector('.view .m4-exc'); if(!box||box.dataset.ok) return; box.dataset.ok=1;
+function rodar(){ const box=document.querySelector('.view .m4-exc'); if(box) window.excessoDose(box); }
+window.excessoDose=function(box){ if(!box||box.dataset.ok) return; box.dataset.ok=1;
   const cv=box.querySelector('canvas'), x=cv.getContext('2d'); const W=box.clientWidth, H=box.clientHeight, D=Math.min(2,window.devicePixelRatio||1);
   cv.width=W*D; cv.height=H*D; x.setTransform(D,0,0,D,0,0);
   const curva=u=>{ const p0=[.04,.86],p1=[.30,.84],p2=[.40,.22],p3=[.96,.16]; const a=(1-u)**3,b=3*(1-u)**2*u,c=3*(1-u)*u*u,d=u**3;
@@ -27,7 +28,7 @@ function rodar(){ const box=document.querySelector('.view .m4-exc'); if(!box||bo
     for(const p of P){ const k=Math.max(0,Math.min(1,(t-.4-p.d)/1.8)), e=ease(k); x.globalAlpha=p.a*(.55+.45*e); x.fillRect(p.ox+(p.tx-p.ox)*e,p.oy+(p.ty-p.oy)*e,p.s,p.s); }
     x.globalAlpha=1; const kd=Math.max(0,Math.min(1,(t-2.4)/.6)); if(kd>0){ const [dx,dy]=curva(.62); const rr=8*(kd<.7?kd/.7*1.15:1.15-(kd-.7)/.3*.15); x.fillStyle=ember; x.beginPath(); x.arc(dx,dy,rr,0,Math.PI*2); x.fill(); }
     if(t<3.2) requestAnimationFrame(frame); }
-  requestAnimationFrame(frame); }
+  requestAnimationFrame(frame); };
 
 const _a=A.onboard; A.onboard=(p)=>{ if(_a) _a(p); rodar(); };
 })();

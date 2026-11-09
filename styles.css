@@ -524,11 +524,11 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 /* v7.2 · nova Hoje: ficha em leque e semana em barras (rodada 2 do DOSE Studio) */
 .ficha4{position:relative;margin:18px 4px 26px}
 .ficha4 .f4{border-radius:18px;border:1px solid var(--line)}
-.ficha4 .f4b,.ficha4 .f4c{position:absolute;inset:0;transform-origin:50% 100%}
+.ficha4 .f4b,.ficha4 .f4c{position:absolute;inset:0;transform-origin:0 100%}
 .ficha4 .f4c{background:var(--s2);animation:f4c .9s var(--expo) .1s both}
 .ficha4 .f4b{background:var(--s3);animation:f4b .9s var(--expo) .2s both}
-@keyframes f4c{from{transform:none}to{transform:rotate(-6deg) translate(-8px,6px)}}
-@keyframes f4b{from{transform:none}to{transform:rotate(-3deg) translate(-3px,2px)}}
+@keyframes f4c{from{transform:none}to{transform:rotate(-3.5deg) translate(4px,6px)}}
+@keyframes f4b{from{transform:none}to{transform:rotate(-1.8deg) translate(2px,3px)}}
 .ficha4 .f4a{position:relative;min-width:0;overflow:hidden;background:var(--tx);color:var(--bg);padding:20px 18px 18px;animation:f4a .7s var(--ease) both}
 @keyframes f4a{from{transform:translateY(14px);opacity:0}}
 .ficha4 .f4a .eyebrow{color:var(--tx3);text-align:left}
@@ -558,4 +558,13 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 .sem4-falta{border:2px solid var(--ember);color:var(--ember);font-weight:900;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:8px;transform:rotate(-4deg);animation:carimbo .5s var(--expo) .8s both}
 @keyframes carimbo{from{transform:rotate(-4deg) scale(1.5);opacity:0}to{transform:rotate(-4deg)}}
 .pl-sono{cursor:default}
-@media (prefers-reduced-motion:reduce){.ficha4 .f4,.semana4.barras .dia,.sem4-falta{animation:none!important}.ficha4 .f4c{transform:rotate(-6deg) translate(-8px,6px)}.ficha4 .f4b{transform:rotate(-3deg) translate(-3px,2px)}}
+@media (prefers-reduced-motion:reduce){.ficha4 .f4,.semana4.barras .dia,.sem4-falta{animation:none!important}.ficha4 .f4c{transform:rotate(-3.5deg) translate(4px,6px)}.ficha4 .f4b{transform:rotate(-1.8deg) translate(2px,3px)}}
+
+/* v7.3 · a página nunca arrasta para o lado no iPhone */
+html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
+.view{overflow-x:clip}
+/* v7.3 · abertura do dia para membros */
+.abertura{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 20px);transition:opacity .4s var(--ease)}
+.abertura.sai{opacity:0;pointer-events:none}
+.abertura .ab-in{width:100%;max-width:420px}
+.abertura .m4-exc{height:240px;margin:0 0 18px}

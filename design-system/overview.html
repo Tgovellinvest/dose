@@ -557,11 +557,11 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 /* v7.2 · nova Hoje: ficha em leque e semana em barras (rodada 2 do DOSE Studio) */
 .ficha4{position:relative;margin:18px 4px 26px}
 .ficha4 .f4{border-radius:18px;border:1px solid var(--line)}
-.ficha4 .f4b,.ficha4 .f4c{position:absolute;inset:0;transform-origin:50% 100%}
+.ficha4 .f4b,.ficha4 .f4c{position:absolute;inset:0;transform-origin:0 100%}
 .ficha4 .f4c{background:var(--s2);animation:f4c .9s var(--expo) .1s both}
 .ficha4 .f4b{background:var(--s3);animation:f4b .9s var(--expo) .2s both}
-@keyframes f4c{from{transform:none}to{transform:rotate(-6deg) translate(-8px,6px)}}
-@keyframes f4b{from{transform:none}to{transform:rotate(-3deg) translate(-3px,2px)}}
+@keyframes f4c{from{transform:none}to{transform:rotate(-3.5deg) translate(4px,6px)}}
+@keyframes f4b{from{transform:none}to{transform:rotate(-1.8deg) translate(2px,3px)}}
 .ficha4 .f4a{position:relative;min-width:0;overflow:hidden;background:var(--tx);color:var(--bg);padding:20px 18px 18px;animation:f4a .7s var(--ease) both}
 @keyframes f4a{from{transform:translateY(14px);opacity:0}}
 .ficha4 .f4a .eyebrow{color:var(--tx3);text-align:left}
@@ -591,7 +591,16 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 .sem4-falta{border:2px solid var(--ember);color:var(--ember);font-weight:900;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:8px;transform:rotate(-4deg);animation:carimbo .5s var(--expo) .8s both}
 @keyframes carimbo{from{transform:rotate(-4deg) scale(1.5);opacity:0}to{transform:rotate(-4deg)}}
 .pl-sono{cursor:default}
-@media (prefers-reduced-motion:reduce){.ficha4 .f4,.semana4.barras .dia,.sem4-falta{animation:none!important}.ficha4 .f4c{transform:rotate(-6deg) translate(-8px,6px)}.ficha4 .f4b{transform:rotate(-3deg) translate(-3px,2px)}}
+@media (prefers-reduced-motion:reduce){.ficha4 .f4,.semana4.barras .dia,.sem4-falta{animation:none!important}.ficha4 .f4c{transform:rotate(-3.5deg) translate(4px,6px)}.ficha4 .f4b{transform:rotate(-1.8deg) translate(2px,3px)}}
+
+/* v7.3 · a página nunca arrasta para o lado no iPhone */
+html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
+.view{overflow-x:clip}
+/* v7.3 · abertura do dia para membros */
+.abertura{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 20px);transition:opacity .4s var(--ease)}
+.abertura.sai{opacity:0;pointer-events:none}
+.abertura .ab-in{width:100%;max-width:420px}
+.abertura .m4-exc{height:240px;margin:0 0 18px}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -4304,7 +4313,8 @@ const _ob=V.onboard; if(_ob) V.onboard=(p)=>{ let h=_ob(p); if(!h.includes(ICONE
   if(!reduz()) h=h.replace('class="m2-kin"','class="m2-kin m4-espera"').replace(/animation-delay:(\d+)ms/g,(m,d)=>`animation-delay:${+d+2300}ms`);
   return h; };
 
-function rodar(){ const box=document.querySelector('.view .m4-exc'); if(!box||box.dataset.ok) return; box.dataset.ok=1;
+function rodar(){ const box=document.querySelector('.view .m4-exc'); if(box) window.excessoDose(box); }
+window.excessoDose=function(box){ if(!box||box.dataset.ok) return; box.dataset.ok=1;
   const cv=box.querySelector('canvas'), x=cv.getContext('2d'); const W=box.clientWidth, H=box.clientHeight, D=Math.min(2,window.devicePixelRatio||1);
   cv.width=W*D; cv.height=H*D; x.setTransform(D,0,0,D,0,0);
   const curva=u=>{ const p0=[.04,.86],p1=[.30,.84],p2=[.40,.22],p3=[.96,.16]; const a=(1-u)**3,b=3*(1-u)**2*u,c=3*(1-u)*u*u,d=u**3;
@@ -4320,7 +4330,7 @@ function rodar(){ const box=document.querySelector('.view .m4-exc'); if(!box||bo
     for(const p of P){ const k=Math.max(0,Math.min(1,(t-.4-p.d)/1.8)), e=ease(k); x.globalAlpha=p.a*(.55+.45*e); x.fillRect(p.ox+(p.tx-p.ox)*e,p.oy+(p.ty-p.oy)*e,p.s,p.s); }
     x.globalAlpha=1; const kd=Math.max(0,Math.min(1,(t-2.4)/.6)); if(kd>0){ const [dx,dy]=curva(.62); const rr=8*(kd<.7?kd/.7*1.15:1.15-(kd-.7)/.3*.15); x.fillStyle=ember; x.beginPath(); x.arc(dx,dy,rr,0,Math.PI*2); x.fill(); }
     if(t<3.2) requestAnimationFrame(frame); }
-  requestAnimationFrame(frame); }
+  requestAnimationFrame(frame); };
 
 const _a=A.onboard; A.onboard=(p)=>{ if(_a) _a(p); rodar(); };
 })();
@@ -4389,6 +4399,29 @@ const _h=V.hoje; V.hoje=(p)=>{ const html=_h(p);
     const out=document.createElement('div'); out.appendChild(r); return out.innerHTML;
   }catch(e){ return html; }
 };
+})();
+
+</script>
+<script>
+// ================= DOSE · v7.3 — abertura "Do excesso à dose" para quem já é membro =================
+// Primeira vez que o app abre no dia: a nuvem de grão vira a curva, o ponto assenta e entra "Vida na dose.".
+// Dura uns 3,5 s; um toque em qualquer lugar pula. Não aparece no cadastro (lá já existe) nem com "reduzir movimento".
+(function(){
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+function hojeStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function abrir(){
+  try{ if(typeof S==='undefined'||!S.onboarded||reduz()||!window.excessoDose) return; if(/^#onboard/.test(location.hash)) return;
+    let ult=null; try{ ult=localStorage.getItem('dose-abertura'); }catch(e){}
+    const dia=hojeStr(); if(ult===dia) return; try{ localStorage.setItem('dose-abertura',dia); }catch(e){}
+    const ov=document.createElement('div'); ov.className='abertura'; ov.setAttribute('role','presentation');
+    ov.innerHTML=`<div class="ab-in"><div class="m4-exc"><canvas></canvas></div>
+      <h1 class="m2-kin m4-espera" aria-label="Vida na dose."><span class="w"><span style="animation-delay:2300ms">Vida</span></span><span class="w"><span style="animation-delay:2390ms">na</span></span><span class="w"><span style="animation-delay:2480ms">dose<b class="m2-dot">.</b></span></span></h1></div>`;
+    document.body.appendChild(ov); requestAnimationFrame(()=>window.excessoDose(ov.querySelector('.m4-exc')));
+    let fechou=false; const fecha=()=>{ if(fechou) return; fechou=true; ov.classList.add('sai'); setTimeout(()=>ov.remove(),420); };
+    ov.addEventListener('pointerdown',fecha); setTimeout(fecha,3900);
+  }catch(e){}
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(abrir,0)); else setTimeout(abrir,0);
 })();
 
 </script>
