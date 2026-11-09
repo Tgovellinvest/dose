@@ -87,7 +87,7 @@ window.cardSemana=async function(){
   kpi(720, sess.length+bjj, "sessões (" + sess.length + " força · " + bjj + " tatame" + (card?" · "+card+" min cardio":"") + ")");
   kpi(960, Math.round(series), "séries na semana");
   kpi(1200, tonel>=1000?Math.round(tonel/1000)+"t":Math.round(tonel)+"kg", best?`melhor série: ${best.ex} ${best.peso} kg × ${best.reps}`:"tonelagem");
-  x.fillStyle="#E4572E"; x.fillRect(90,1290,900,6); x.fillStyle="#D8D2C2"; x.font="500 28px Archivo, Arial"; x.fillText("A dose certa. Registrado, não prometido.", 90, 1335);
+  x.fillStyle="#E4572E"; x.fillRect(90,1290,900,6); x.fillStyle="#D8D2C2"; x.font="500 28px Archivo, Arial"; x.fillText("Vida na dose. A dose certa.", 90, 1335);
   const url=c.toDataURL("image/png"); const a=document.createElement('a'); a.href=url; a.download=`dose-semana-${semanaIni()}.png`; document.body.appendChild(a); a.click(); a.remove(); toast("Card gerado");
 };
 

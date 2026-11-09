@@ -5,6 +5,7 @@ def inline_js(m):
     p=m.group(1); return '<script>\n'+(root/p).read_text()+'\n</script>'
 html=re.sub(r'<script src="((?:data/)?[\w\.\-]+\.js)(?:\?v=[\w.]+)?"></script>',inline_js,html)
 html=re.sub(r'<link rel="stylesheet" href="styles\.css(?:\?v=[\w.]+)?">',lambda m:'<style>\n'+(root/'styles.css').read_text()+'\n</style>',html)
+html=html.replace('href="fonts/fontes.css"','href="../fonts/fontes.css"')  # dist/ e design-system/ ficam um nível abaixo
 html=re.sub(r'<link rel="stylesheet" href="silencio\.css(?:\?v=[\w.]+)?">',lambda m:'<style>\n'+(root/'silencio.css').read_text()+'\n</style>',html)
 html=re.sub(r'<script>\nif \(\'serviceWorker\'.*?</script>','',html,flags=re.S)
 html=html.replace('<link rel="manifest" href="manifest.json">','')

@@ -1,5 +1,5 @@
 // ================= DOSE · cards para compartilhar (sessão, cardio, semana, mês, medalha, objetivo) =================
-// Linguagem do Guia de Voz: registrado, não prometido. Número grande, motivo curto, sem hype.
+// Linguagem do Guia de Voz (o rodapé "Registrado, não prometido." saiu em 09/11/2026, decisão do Tiago). Número grande, motivo curto, sem hype.
 // Tudo desenhado em canvas no aparelho; nada sobe para servidor. Feed 1080×1350 · Story 1080×1920.
 (function(){
 const SH={}; SH.URL="tgovellinvest.github.io/dose"; // trocar quando o domínio dose.app.br estiver no ar
@@ -18,7 +18,7 @@ const rr=(x,X,Y,W,H,r)=>{ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+W,Y,X+W,Y+H,
 function base(fmt){ const W=1080,H=fmt==='story'?1920:1350; const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
   x.fillStyle=COR.g; x.fillRect(0,0,W,H); const gr=x.createRadialGradient(W*0.85,0,0,W*0.85,0,W*0.9); gr.addColorStop(0,"rgba(228,87,46,.18)"); gr.addColorStop(1,"rgba(228,87,46,0)"); x.fillStyle=gr; x.fillRect(0,0,W,H);
   const top=fmt==='story'?250:84; x.fillStyle=COR.ink; x.font="900 56px Archivo, Arial"; x.textBaseline="alphabetic"; x.fillText("DOSE",84,top+50); x.fillStyle=COR.em; x.fillText(".",84+x.measureText("DOSE").width,top+50);
-  const bot=fmt==='story'?H-220:H-70; x.fillStyle=COR.mute; x.font="600 26px 'Archivo Narrow', Archivo, Arial"; x.fillText(SH.URL.toUpperCase(),84,bot); x.textAlign="right"; x.fillText("REGISTRADO, NÃO PROMETIDO.",W-84,bot); x.textAlign="left";
+  const bot=fmt==='story'?H-220:H-70; x.fillStyle=COR.mute; x.font="600 26px 'Archivo Narrow', Archivo, Arial"; x.fillText(SH.URL.toUpperCase(),84,bot); x.textAlign="right"; x.fillText("VIDA NA DOSE.",W-84,bot); x.textAlign="left";
   return {c,x,W,H,top:top+120,bot:bot-80}; }
 const eyebrow=(x,t,y)=>{ x.fillStyle=COR.em; x.font="700 28px 'Archivo Narrow', Archivo, Arial"; x.fillText(t.toUpperCase().split("").join(String.fromCharCode(8202)),84,y); };
 const big=(x,v,y,size=230)=>{ x.fillStyle=COR.ink; x.font=`700 ${size}px 'Archivo Narrow', Archivo, Arial`; x.fillText(String(v),78,y); return x.measureText(String(v)).width; };

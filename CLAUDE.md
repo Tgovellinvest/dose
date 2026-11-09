@@ -17,7 +17,7 @@ O dono é o Tiago. Fale com ele em português do Brasil, resposta primeiro e det
 - Relação entre pessoas = "comunidade DOSE". "Grupo", nunca "turma".
 - Comunidade fala só de treino. Não mencionar romance, nem para permitir nem para proibir.
 - Sem promessa de corpo, sem antes e depois, sem "sem desculpas", "sua melhor versão", emoji como pontuação.
-- "Vida na dose." vem antes de "A dose certa" (apoio). "A dose certa" fica (decisão do Tiago em 09/11/2026). Cortar "Registrado, não prometido." continua pendente.
+- "Vida na dose." vem antes de "A dose certa" (apoio). "A dose certa" fica e "Registrado, não prometido." saiu (decisões do Tiago em 09/11/2026).
 
 ## Arquitetura
 - HTML + CSS + JS puros, sem build de framework. Estado global `S` em localStorage (`guia-treino-v1`).
@@ -25,6 +25,7 @@ O dono é o Tiago. Fale com ele em português do Brasil, resposta primeiro e det
 - Muitos arquivos são IIFE: helpers que outros arquivos usam precisam ir para `window`.
 - Novas funções entram em arquivo próprio que envolve a função antiga (`const _x=V.x; V.x=(p)=>...`).
 - Ordem de carga em `index.html` importa: arquivo que envolve outro vem depois dele.
+- Fontes servidas pelo próprio site em `fonts/` (Fontsource, OFL), sem Google Fonts (09/11/2026).
 - Backend: Supabase (projeto `typfaauucqkztdhmbhqb`, plano grátis). A chave publicável fica no código; nenhuma outra.
 - Strava e Saúde do iPhone desligados em 09/11/2026: funções `health-sync`, `strava-auth` e `strava-sync` respondem 410; código original em `supabase/arquivo-2026-11-09/`.
 - Planos por esporte: `planos.js` (base) + `treino2.js` (Hyrox e corrida ampliados, ritmo VDOT, playlist).

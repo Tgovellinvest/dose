@@ -34,7 +34,7 @@ jobs:
           checa "Supabase · login" "$SB/auth/v1/health" "Authorization: Bearer $KEY"
           checa "Supabase · banco (mantém o projeto acordado)" "$SB/rest/v1/grupos?select=id&limit=1" "Authorization: Bearer $KEY"
           checa "Mapa · OpenFreeMap" "https://tiles.openfreemap.org/styles/positron"
-          checa "Fontes · Google Fonts" "https://fonts.googleapis.com/css2?family=Archivo:wght@900&display=swap"
+          checa "Fontes · no próprio site" "https://tgovellinvest.github.io/dose/fonts/archivo-latin-900-normal.woff2"
           checa "Código de barras · Open Food Facts" "https://world.openfoodfacts.org/api/v2/product/3017620422003.json?fields=code"
           checa "Reserva · cdnjs (Chart.js)" "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
           checa "Reserva · jsDelivr (MapLibre)" "https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"

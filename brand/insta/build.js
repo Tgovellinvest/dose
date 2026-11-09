@@ -61,7 +61,7 @@ const POS=[
  {id:'p07-cool-e-registrar',html:`<div class="post"><div class="grain"></div><div class="wm">DOSE<i>.</i></div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:40px"><div class="eyebrow">Comunidade</div><h1 style="font-size:150px">Cool é<br>registrar.</h1>
    <p class="serif" style="font-size:48px;max-width:900px">Treino, km, séries, medalhas, % até a meta. Cada registro vira um card para postar — com a sua cara e a nossa linguagem.</p>
-   <div style="display:flex;gap:16px;flex-wrap:wrap"><span class="chip on">#dose</span><span class="chip">#adosecerta</span><span class="chip">#registradonaoprometido</span></div></div>${foot()}</div>`},
+   <div style="display:flex;gap:16px;flex-wrap:wrap"><span class="chip on">#dose</span><span class="chip">#adosecerta</span><span class="chip">#vidanadose</span></div></div>${foot()}</div>`},
  {id:'p08-compartilhe-o-feito',html:`<div class="post"><div class="grain"></div><div style="display:flex;justify-content:space-between;align-items:flex-start"><div class="wm">DOSE<i>.</i></div><div class="eyebrow" style="margin-top:12px">Compartilhar</div></div>
   <div style="flex:1;display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:40px;align-items:center;margin-top:30px">
    <div style="display:flex;flex-direction:column;gap:34px"><h1 style="font-size:84px">Poste o<br>que fez.<br>Não o que<br>prometeu.</h1><p class="serif" style="font-size:36px">Depois de cada treino, corrida ou medalha, o DOSE monta o card. Feed ou story, em um toque.</p></div>
