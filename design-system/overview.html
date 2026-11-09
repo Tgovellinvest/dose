@@ -514,6 +514,41 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 @keyframes m2rev{from{opacity:0;transform:translateY(24px)}}
 @media (prefers-reduced-motion:reduce){.m2-col,.set-row .ck::before{transition:none!important}.m2-ptr{animation:none!important}}
 
+/* v7.0 · Motion por botão (aprovado em 08/11/2026) — toque 120 ms, ease da marca, sem bounce, rotação, loop ou glow */
+.btn{position:relative;transition:transform 120ms var(--ease),filter 120ms var(--ease),background 120ms var(--ease),border-color 120ms var(--ease)}
+.btn:active{transform:scale(.97);filter:brightness(.9)}
+.btn.ghost:active{border-color:var(--tx);background:var(--s2);filter:none}
+.btn.danger:active{filter:brightness(.82)}
+.btn .m3-risca{position:absolute;left:14px;right:14px;bottom:7px;height:2px;border-radius:2px;background:currentColor;transform:scaleX(0);transform-origin:left;animation:m3risca .5s var(--expo) forwards;pointer-events:none}
+@keyframes m3risca{60%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+.chip{position:relative;overflow:hidden;isolation:isolate}
+.chip.m3-fill{background:var(--s2)!important;transition:none}
+.chip.m3-fill::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--m3c);clip-path:circle(0 at var(--m3x) var(--m3y));animation:m3fill .26s var(--ease) forwards}
+@keyframes m3fill{to{clip-path:circle(150% at var(--m3x) var(--m3y))}}
+.seg{position:relative}
+.seg .m3-ind{position:absolute;top:4px;bottom:4px;border-radius:9px;background:var(--s1);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .24s var(--ease),width .24s var(--ease);z-index:0;pointer-events:none}
+.seg button{position:relative;z-index:1}
+.seg.m3-mov button.on{background:none;box-shadow:none}
+.set-row .ck.m3-conf{animation:m3conf .32s var(--ease)}
+@keyframes m3conf{40%{transform:scale(1.06)}100%{transform:none}}
+.set-row .ck.m3-conf svg path{stroke-dasharray:24;animation:m3check .22s var(--ease) .06s both}
+@keyframes m3check{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+.tabbar button{position:relative}
+.tabbar button.m3-tab i{animation:m3pousa .36s var(--expo) both}
+@keyframes m3pousa{from{transform:translateY(-7px);opacity:.3}}
+@media (prefers-reduced-motion:reduce){.btn,.chip,.seg .m3-ind{transition:none!important}.btn:active,.set-row .ck.m3-conf{transform:none;animation:none}.btn .m3-risca,.chip.m3-fill::before,.tabbar button.m3-tab i{animation:none!important}}
+
+/* v7.0 · mapa dos músculos, ícones e medalhas em movimento */
+.m3-sil{animation:m3sil .5s var(--ease) var(--d,0ms) both}
+@keyframes m3sil{from{opacity:0}}
+.m3-mu{transform-box:fill-box;transform-origin:center;animation:m3mu .6s var(--expo) var(--d,0ms) both}
+@keyframes m3mu{from{opacity:0;transform:scale(.35)}}
+.m3-mu.m3-rec{animation:m3mu .6s var(--expo) var(--d,0ms) both,m3conf .32s var(--ease) calc(var(--d,0ms) + 620ms)}
+.m3-tr{stroke-dasharray:1;stroke-dashoffset:1;animation:m3tr .55s var(--ease) var(--d,0ms) forwards}
+@keyframes m3tr{to{stroke-dashoffset:0}}
+.m3-anel{stroke-dasharray:1;stroke-dashoffset:1;transform:rotate(-90deg);transform-origin:32px 32px;animation:m3tr .6s var(--expo) var(--d,0ms) forwards}
+@media (prefers-reduced-motion:reduce){.m3-sil,.m3-mu,.m3-tr,.m3-anel{animation:none!important;stroke-dashoffset:0}}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <!-- Google Analytics 4 (propriedade "DOSE app", stream "DOSE web") -->
@@ -4115,6 +4150,99 @@ const curva=`<div class="m2-curva" aria-hidden="true"><svg viewBox="0 0 560 220"
 const _ci=V._ciencia; if(_ci) V._ciencia=()=>curva+_ci();
 
 // 4 · Fichas em leque: a pilha se abre (CSS) — 5 · toque com preenchimento (CSS em .ck) — 8 · revelar ao rolar (CSS)
+})();
+
+</script>
+<script>
+// ================= DOSE · v7.0 — Motion por botão (aprovado pelo Tiago em 08/11/2026) =================
+// Regras do Brand Book §7: toque 120 ms, ease (.2,.8,.2,1), confirmar = ember + escala 1,06 + vibração curta.
+// Nada de bounce, rotação, loop ou glow. Nunca atrasa a navegação: a animação acompanha, não segura.
+// Quem pede "reduzir movimento" no aparelho não vê nenhuma destas (CSS em styles.css).
+(function(){
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const vib=ms=>{ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }; // Android; o Safari do iPhone ignora
+let alvo=null; // o que foi tocado, para reencontrar se a tela redesenhar
+
+// Reencontra o elemento depois de um clique (a tela pode ter sido redesenhada pelo route()).
+function depois(achar, fazer){ let n=0; const tenta=()=>{ const el=achar(); if(el){ fazer(el); return; } if(++n<20) requestAnimationFrame(tenta); }; requestAnimationFrame(()=>requestAnimationFrame(tenta)); }
+const chave=el=>(el.textContent||'').trim().slice(0,40);
+
+document.addEventListener('pointerdown',e=>{
+  if(reduz()) return;
+  const chip=e.target.closest('.chip'); const seg=e.target.closest('.seg button'); const btn=e.target.closest('.btn');
+  if(chip){ const r=chip.getBoundingClientRect(); alvo={tipo:'chip',k:chave(chip),x:((e.clientX-r.left)/r.width*100).toFixed(0)+'%',y:((e.clientY-r.top)/r.height*100).toFixed(0)+'%',era:chip.classList.contains('on')}; return; }
+  if(seg){ const s=seg.closest('.seg'); const on=s.querySelector('button.on'); const rs=s.getBoundingClientRect();
+    alvo={tipo:'seg',k:[...s.querySelectorAll('button')].map(chave).join('|'),de:on?{l:on.getBoundingClientRect().left-rs.left,w:on.offsetWidth}:null}; return; }
+  if(btn) alvo={tipo:'btn',el:btn};
+},true);
+
+document.addEventListener('click',e=>{
+  if(reduz()||!alvo) return; const a=alvo; alvo=null;
+  // 1 · Primário (ember): uma risca marfim corre embaixo do rótulo e para no fim. "Chegar no ponto e parar."
+  if(a.tipo==='btn'&&a.el.classList.contains('em')&&a.el.isConnected){ const r=document.createElement('span'); r.className='m3-risca'; a.el.appendChild(r); setTimeout(()=>r.remove(),520); return; }
+  // 2 · Chip: ao ligar, a cor preenche a partir do ponto do toque.
+  if(a.tipo==='chip'&&!a.era){ depois(()=>[...document.querySelectorAll('.chip.on')].find(c=>chave(c)===a.k), c=>{
+      c.style.setProperty('--m3x',a.x); c.style.setProperty('--m3y',a.y); c.style.setProperty('--m3c',getComputedStyle(c).backgroundColor);
+      c.classList.remove('m3-fill'); void c.offsetWidth; c.classList.add('m3-fill'); setTimeout(()=>c.classList.remove('m3-fill'),320); }); return; }
+  // 3 · Segmento: o trilho desliza da opção antiga para a nova.
+  if(a.tipo==='seg'&&a.de){ depois(()=>[...document.querySelectorAll('.seg')].find(s=>[...s.querySelectorAll('button')].map(chave).join('|')===a.k), s=>{
+      const on=s.querySelector('button.on'); if(!on) return; const rs=s.getBoundingClientRect(); const para={l:on.getBoundingClientRect().left-rs.left,w:on.offsetWidth};
+      if(Math.abs(para.l-a.de.l)<2) return;
+      const ind=document.createElement('span'); ind.className='m3-ind'; ind.style.cssText=`left:${a.de.l}px;width:${a.de.w}px`;
+      s.classList.add('m3-mov'); s.appendChild(ind); requestAnimationFrame(()=>{ ind.style.left=para.l+'px'; ind.style.width=para.w+'px'; });
+      setTimeout(()=>{ ind.remove(); s.classList.remove('m3-mov'); },300); }); }
+});
+
+// 4 · Série: confirmar = ember (já existe) + escala 1,06 + traço do check desenhando + vibração curta.
+const _ts=window.toggleSet; if(_ts) window.toggleSet=(btn,rest)=>{ _ts(btn,rest); if(reduz()) return;
+  if(btn.classList.contains('done')){ btn.classList.remove('m3-conf'); void btn.offsetWidth; btn.classList.add('m3-conf'); setTimeout(()=>btn.classList.remove('m3-conf'),420); vib(12); } };
+
+// 5 · Barra de abas: ao trocar de aba, o ícone pousa no lugar (desenho da barra não muda, a pedido do parecer de arte).
+const tb=document.getElementById('tabbar'); let ult=null;
+if(tb) new MutationObserver(()=>{ const on=tb.querySelector('button.on'); if(!on||on===ult) return; const novo=ult!==null; ult=on;
+  if(novo&&!reduz()){ on.classList.remove('m3-tab'); void on.offsetWidth; on.classList.add('m3-tab'); setTimeout(()=>on.classList.remove('m3-tab'),500); } })
+  .observe(tb,{subtree:true,attributes:true,attributeFilter:['class'],childList:true});
+})();
+
+</script>
+<script>
+// ================= DOSE · v7.0 — mapa dos músculos e ícones em movimento (pedido do Tiago em 08/11/2026) =================
+// Mesma ideia do Motion v2: chegar no ponto e parar. Uma vez por tela, sem loop, sem glow.
+// 1 · Mapa dos músculos: a silhueta aparece e cada músculo acende de cima para baixo, como uma varredura do corpo.
+//     Quem está em recuperação chega por último, com o "confirmar" da marca (escala 1,06 e assenta).
+// 2 · Ícones: o traço se desenha (atalhos da Hoje, aba nova, ícones das listas ao abrir a tela).
+// 3 · Medalhas conquistadas: o anel do nível se fecha em 600 ms (Brand Book §10).
+// Reduzir movimento: nada anima, tudo aparece pronto (CSS).
+(function(){
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FORMAS='path,circle,rect,line,polyline,ellipse';
+
+function musculos(raiz){
+  raiz.querySelectorAll('svg.corpo:not([data-m3]), .mcorpo svg:not([data-m3])').forEach((svg,k)=>{ svg.dataset.m3=1;
+    const kids=[...svg.children]; const base=kids.slice(0,2), mus=kids.slice(2);
+    const atraso=k*90; // frente e depois costas
+    base.forEach(el=>{ el.classList.add('m3-sil'); el.style.setProperty('--d',atraso+'ms'); });
+    mus.forEach(el=>{ const cy=+(el.getAttribute('cy')||95); el.classList.add('m3-mu'); el.style.setProperty('--d',(atraso+220+cy/190*520).toFixed(0)+'ms');
+      if(/warn/.test(el.getAttribute('fill')||'')) el.classList.add('m3-rec'); }); });
+}
+function desenha(svg,atraso){ if(!svg||svg.dataset.m3d) return; svg.dataset.m3d=1;
+  svg.querySelectorAll(FORMAS).forEach(f=>{ if(f.getAttribute('fill')&&f.getAttribute('fill')!=='none') return; f.setAttribute('pathLength','1'); f.classList.add('m3-tr'); f.style.setProperty('--d',(atraso||0)+'ms'); }); }
+function icones(raiz){
+  raiz.querySelectorAll('.quick .ico').forEach((s,i)=>desenha(s,120+i*70));
+  raiz.querySelectorAll('.list .item .n .ico, .item .n .ico').forEach((s,i)=>{ if(i<12) desenha(s,80+i*45); });
+  raiz.querySelectorAll('.medal.won .medal-svg').forEach((m,i)=>{ if(m.dataset.m3) return; m.dataset.m3=1; const anel=m.querySelector('circle'); if(anel){ anel.setAttribute('pathLength','1'); anel.classList.add('m3-anel'); anel.style.setProperty('--d',(i*80)+'ms'); } });
+}
+function rodar(raiz){ if(reduz()) return; musculos(raiz); icones(raiz); }
+
+const view=document.getElementById('view');
+if(view){ let f=0; new MutationObserver(()=>{ cancelAnimationFrame(f); f=requestAnimationFrame(()=>rodar(view)); }).observe(view,{childList:true,subtree:true}); requestAnimationFrame(()=>rodar(view)); }
+
+// Aba nova: o ícone pousa (botoes.js) e o traço se redesenha.
+const tb=document.getElementById('tabbar');
+if(tb) new MutationObserver(ms=>{ const b=ms.map(m=>m.target).find(t=>t.tagName==='BUTTON'&&t.classList.contains('m3-tab')); const on=b&&b.querySelector('.ico'); if(on&&!reduz()){ delete on.dataset.m3d; on.querySelectorAll('.m3-tr').forEach(x=>x.classList.remove('m3-tr')); void on.offsetWidth; desenha(on,40); } })
+  .observe(tb,{subtree:true,attributes:true,attributeFilter:['class']});
+
+window.m3Rodar=rodar; // usado pelo design system
 })();
 
 </script>

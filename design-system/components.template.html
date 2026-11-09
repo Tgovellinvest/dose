@@ -47,6 +47,31 @@ body{display:block;min-height:100%}
 .tag-novo{display:inline-block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ember);border:1px solid var(--ember);border-radius:999px;padding:3px 8px;margin-left:8px;vertical-align:4px}
 @media (max-width:760px){.ds{grid-template-columns:1fr}.ds-side{position:sticky;top:0;height:auto;z-index:3;background:var(--bg);display:flex;gap:4px;overflow-x:auto;padding:10px 12px;border-right:0;border-bottom:1px solid var(--line)}.ds-side b{display:none}.ds-side a{white-space:nowrap;flex:none}.ds-main{padding:20px 16px 100px}.spec{grid-template-columns:1fr;gap:12px}.ty{grid-template-columns:1fr 60px}.ty .l{grid-column:1/-1}}
 
+/* ---------- Marca (Brand Book) e laboratório de botões ---------- */
+.mk{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.mk figure{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.mk .art{height:120px;display:grid;place-items:center;padding:18px}
+.mk .art img{max-height:84px;max-width:100%}
+.mk figcaption{padding:10px 12px;font-size:12px;color:var(--tx2);line-height:1.4;border-top:1px solid var(--line)}
+.mk figcaption b{display:block;color:var(--tx);font-size:13px}
+.dodont{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dodont>div{border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.dodont h4{margin:0 0 8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+.dodont .sim h4{color:var(--ok)} .dodont .nao h4{color:var(--stop)}
+.dodont ul{margin:0;padding-left:18px;font-size:14px;line-height:1.6}
+.lab-demo{display:flex;flex-direction:column;gap:10px}
+.lab-demo .set-row{display:flex;gap:10px;align-items:center}
+.lab-demo .set-row span{font-family:var(--num);color:var(--tx2)}
+.tabbar.lab{position:relative;max-width:430px;border-radius:18px;border:1px solid var(--line);height:64px;padding-bottom:0}
+@media (max-width:560px){.dodont{grid-template-columns:1fr}}
+
+.ic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:4px 8px;margin:6px 0 18px}
+.ic-grid button{background:none;border:0;color:var(--tx);display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:12px;cursor:pointer;min-height:44px}
+.ic-grid button:hover{background:var(--s1)}
+.ic-grid .ico{width:28px;height:28px}
+.ic-grid span{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:var(--tx3)}
+.ic-med{display:flex;gap:18px;flex-wrap:wrap}
+
 /* =================== MOTION v2 · proposta para aprovar =================== */
 /* Regras: sem bounce, sem rotação, sem loop decorativo, sem glow; ember uma vez por peça; reduzir movimento = corte seco. */
 :root{--expo:cubic-bezier(.16,1,.3,1);--settle:cubic-bezier(.22,1.12,.36,1)}
@@ -156,14 +181,64 @@ body{display:block;min-height:100%}
 <body>
 <div class="ds">
 <nav class="ds-side" aria-label="Grupos">
+  <b>Marca</b>
+  <a href="#marca">Símbolo e logo</a><a href="#icones">Ícones</a><a href="#tema-claro">Tema claro</a><a href="#voz">Voz</a><a href="#regras">Regras visuais</a>
   <b>Fundamentos</b>
   <a href="#cores">Cores</a><a href="#tipografia">Tipografia</a><a href="#superficies">Superfícies</a><a href="#motion">Motion</a>
   <b>Componentes</b>
   <a href="#navegacao">Navegação</a><a href="#acoes">Ações</a><a href="#medidor">Medidor</a><a href="#treino">Treino</a><a href="#dados">Dados</a><a href="#comunidade">Comunidade</a><a href="#listas">Listas e formulários</a><a href="#sheet">Sheet</a>
-  <b>Motion v2</b>
-  <a href="#motion-v2" class="novo">8 movimentos</a>
+  <b>Motion</b>
+  <a href="#botoes">Motion por botão</a><a href="#motion-v2">Motion v2 · 8 movimentos</a>
 </nav>
 <main class="ds-main">
+
+<section class="grp" id="marca"><h2>Marca</h2><p class="lead">Símbolo e logo<i>.</i></p>
+  <p class="small" style="max-width:640px">A curva dose-resposta sobe e achata; o ponto ember marca a dose certa. Nunca redesenhar: usar os SVGs de <code>brand/logo/</code>. DOSE no logo e no app, Dose em texto corrido, nunca D.O.S.E. nem DOSE Fitness.</p>
+  <div class="mk">
+    <figure><div class="art" style="background:#0F1012"><img src="../brand/logo/dose-symbol-on-graphite.svg" alt="Símbolo DOSE sobre grafite"></div><figcaption><b>Símbolo · principal</b>Traço osso sobre grafite</figcaption></figure>
+    <figure><div class="art" style="background:#F4F2ED"><img src="../brand/logo/dose-symbol-light.svg" alt="Símbolo DOSE sobre marfim"></div><figcaption><b>Símbolo · claro</b>Traço grafite sobre marfim</figcaption></figure>
+    <figure><div class="art" style="background:#0F1012"><img src="../brand/icons/app-icon.svg" alt="Ícone do app" style="border-radius:22%"></div><figcaption><b>Ícone do app</b>Ember com traço grafite</figcaption></figure>
+    <figure><div class="art" style="background:#0F1012"><img src="../brand/logo/dose-wordmark-dark.svg" alt="Wordmark DOSE"></div><figcaption><b>Wordmark</b>Archivo 900, caixa-alta, tracking −6%, ponto final ember</figcaption></figure>
+    <figure><div class="art" style="background:#F4F2ED"><img src="../brand/logo/dose-wordmark-light.svg" alt="Wordmark DOSE claro"></div><figcaption><b>Wordmark · claro</b>Para rua e documento</figcaption></figure>
+    <figure><div class="art" style="background:#0F1012"><img src="../brand/logo/dose-wordmark-method-dark.svg" alt="Wordmark DOSE Method"></div><figcaption><b>Wordmark METHOD</b>Archivo Narrow, caixa-alta, tracking aberto, cinza</figcaption></figure>
+  </div>
+</section>
+
+<section class="grp" id="icones"><p class="lead">Ícones<i>.</i></p>
+  <p class="small" style="max-width:640px">Desenho próprio: traço 1,75, pontas redondas, grade de 24. No app, o traço se desenha quando a tela abre e quando a aba muda. Toque em um ícone para ver de novo.</p>
+  <div class="ic-grid" id="icGrid" data-names="dose home grid nutrition progress more strength run hyrox bjj box swim bike football tennis volley wave mountain heart timer calendar check trophy medal target flag scale ruler users user share play plus edit swap spark shield cloud bell lock star diamond"></div>
+  <div class="spec"><div class="spec-meta"><b>Medalhas</b><code>medalSVG(ico, nível)</code><p>Círculo de traço fino, nível pela cor do traço. Ao conquistar, o anel se fecha em 600 ms. Sem confete, sem som.</p></div><div class="spec-live"><div class="ic-med" id="icMed"></div><button class="replay" id="icMedR">Rodar</button></div></div>
+</section>
+
+<section class="grp" id="tema-claro"><p class="lead">Tema claro<i>.</i></p>
+  <p class="small" style="max-width:640px">Escuro é o padrão. O claro é para rua e documento, com os mesmos papéis de cor.</p>
+  <div class="sw">
+    <div><i style="background:#F4F2ED;border-bottom:1px solid #DCD9D1"></i><span><b>Papel</b>#F4F2ED · fundo</span></div>
+    <div><i style="background:#FFFFFF;border-bottom:1px solid #DCD9D1"></i><span><b>Superfície</b>#FFFFFF · cards</span></div>
+    <div><i style="background:#ECEBE6"></i><span><b>Superfície 2</b>#ECEBE6 · trilhas, chips</span></div>
+    <div><i style="background:#DCD9D1"></i><span><b>Borda</b>#DCD9D1</span></div>
+    <div><i style="background:#15161A"></i><span><b>Texto</b>#15161A</span></div>
+    <div><i style="background:#5E6167"></i><span><b>Texto de apoio</b>#5E6167</span></div>
+    <div><i style="background:#4A4A46"></i><span><b>Osso</b>#4A4A46 · texto secundário</span></div>
+    <div><i style="background:#C9471F"></i><span><b>Ember</b>#C9471F · um acento por tela</span></div>
+  </div>
+</section>
+
+<section class="grp" id="voz"><p class="lead">Voz<i>.</i></p>
+  <p class="serif" style="margin:0 0 14px">Vida na dose. <i>Tá na dose?</i></p>
+  <p class="small" style="max-width:640px">Coach que explica como par. Frase curta, imperativo na instrução, número com unidade e contexto. Inimigo: o excesso. A marca não se oferece, é pedida.</p>
+  <div class="dodont">
+    <div class="sim"><h4>Diz</h4><ul><li>Bateu 8/8. Sobe 2,5 kg.</li><li>Uma refeição fora. Próxima refeição normal.</li><li>O melhor programa é o que você consegue sustentar.</li><li>Semana na dose.</li><li>Só entra por convite.</li></ul></div>
+    <div class="nao"><h4>Nunca diz</h4><ul><li>sem desculpas · no pain no gain</li><li>sua melhor versão · você merece</li><li>queime 600 calorias · detox</li><li>turma (sempre grupo)</li><li>emoji como pontuação, exclamação</li></ul></div>
+  </div>
+</section>
+
+<section class="grp" id="regras"><p class="lead">Regras visuais<i>.</i></p>
+  <div class="dodont">
+    <div class="sim"><h4>Sempre</h4><ul><li>Ember uma vez forte por tela</li><li>No máximo três cores por peça, fora os neutros</li><li>Hierarquia por borda fina, espaço e tamanho</li><li>Archivo 900 nos títulos, até três palavras</li><li>Archivo Narrow em todo número</li><li>Instrument Serif só numa frase por tela</li><li>Um gráfico, uma frase de leitura; eixo com valores reais</li><li>Medalha em círculo de traço fino; nível pela cor do traço</li></ul></div>
+    <div class="nao"><h4>Nunca</h4><ul><li>Gradiente colorido, glow, 3D, sombra pesada</li><li>Pizza, eixo cortado, gráfico 3D</li><li>Zoom de entrada, bounce, rotação, loop</li><li>Confete fora de medalha</li><li>Ranking público</li><li>Antes e depois, promessa de corpo</li><li>Imagem gerada ou alterada por IA</li><li>Semáforo (ok, atenção, pare) como cor de marca</li></ul></div>
+  </div>
+</section>
 
 <section class="grp" id="cores"><h2>Fundamentos</h2><p class="lead">Cores<i>.</i></p>
   <div class="sw">
@@ -226,6 +301,7 @@ body{display:block;min-height:100%}
 
 <section class="grp" id="medidor"><p class="lead">Medidor<i>.</i></p>
   <div class="spec"><div class="spec-meta"><b>Você está na dose?</b><code>.hero4.nadose · .arco · .pilares</code><p>Arco de 0 a 100, ponto ember no valor, pilares Treino, Nutrição e Metas com barras em cascata.</p></div><div class="spec-live phone" data-replay>{{nadose}}</div></div>
+  <div class="spec"><div class="spec-meta"><b>Mapa dos músculos</b><code>.corpos svg.corpo · .mcorpo</code><p>A silhueta aparece e cada músculo acende de cima para baixo, como uma varredura. Quem está em recuperação chega por último e assenta. Nas fichas do Treino, os músculos-alvo acendem em ember.</p></div><div class="spec-live phone" id="mmLive">{{corpo}}<button class="replay" id="mmR">Rodar</button></div></div>
   <div class="spec"><div class="spec-meta"><b>Semana</b><code>.semana4</code></div><div class="spec-live phone" data-replay>{{semana}}</div></div>
 </section>
 
@@ -255,7 +331,19 @@ body{display:block;min-height:100%}
   <div class="spec"><div class="spec-meta"><b>Sheet</b><code>.sheet .sheet-card</code><p>Sobe de baixo em 260ms; alça no topo.</p></div><div class="spec-live">{{sheet}}</div></div>
 </section>
 
-<section class="grp" id="motion-v2"><h2>Motion v2 <span class="tag-novo">proposta para aprovar</span></h2><p class="lead">O ponto certo<i>,</i> em movimento<i>.</i></p>
+<section class="grp" id="botoes"><h2>Motion por botão <span class="tag-novo" style="color:var(--ok);border-color:var(--ok)">aprovado em 08/11</span></h2><p class="lead">Cada botão<i>,</i> um gesto<i>.</i></p>
+  <p class="small" style="max-width:640px">Toque em cada peça. Todas seguem o Brand Book: toque em 120 ms, curva da marca, nada de bounce, rotação, loop ou glow. A animação acompanha o toque e nunca atrasa a troca de tela. Com "reduzir movimento" ligado no aparelho, nada disso aparece.</p>
+  <div class="spec"><div class="spec-meta"><b>1 · Principal · ponto final</b><code>.btn.em</code><p>Comprime no toque; ao soltar, uma risca marfim corre sob o rótulo e para no fim.</p></div><div class="spec-live phone lab-demo"><button class="btn em">Iniciar</button></div></div>
+  <div class="spec"><div class="spec-meta"><b>2 · Secundário · assentar</b><code>.btn · .btn.sec</code><p>Comprime e escurece um tom; volta sem quicar.</p></div><div class="spec-live phone lab-demo"><div class="grid2"><button class="btn">Salvar</button><button class="btn sec">Trocar ou pular</button></div></div></div>
+  <div class="spec"><div class="spec-meta"><b>3 · Fantasma · contorno acende</b><code>.btn.ghost</code><p>A borda fina vira texto claro e o fundo ganha a superfície 2 enquanto o dedo está em cima.</p></div><div class="spec-live phone lab-demo"><div class="grid2"><button class="btn ghost">Ver plano</button><button class="btn sm ghost" style="width:auto">Esporte</button></div></div></div>
+  <div class="spec"><div class="spec-meta"><b>4 · Perigo · sem festa</b><code>.btn.danger</code><p>Só escurece. Apagar não merece animação.</p></div><div class="spec-live phone lab-demo"><button class="btn danger sm" style="width:auto">Apagar registro</button></div></div>
+  <div class="spec"><div class="spec-meta"><b>5 · Chip · preencher do toque</b><code>.chip(.on)</code><p>Ao ligar, a cor nasce do ponto onde o dedo tocou e cobre o chip.</p></div><div class="spec-live phone lab-demo"><div class="chips"><button class="chip on" onclick="this.classList.toggle('on')">Corrida</button><button class="chip" onclick="this.classList.toggle('on')">Hyrox</button><button class="chip" onclick="this.classList.toggle('on')">Musculação</button><button class="chip em" onclick="this.classList.toggle('on')">Dor no joelho</button></div></div></div>
+  <div class="spec"><div class="spec-meta"><b>6 · Segmentado · trilho</b><code>.seg button.on</code><p>A pílula desliza da opção antiga até a nova, em 240 ms.</p></div><div class="spec-live phone lab-demo"><div class="seg"><button class="on" onclick="[].forEach.call(this.parentNode.children,b=>b.classList.toggle('on',b===this))">Semana</button><button onclick="[].forEach.call(this.parentNode.children,b=>b.classList.toggle('on',b===this))">Mês</button><button onclick="[].forEach.call(this.parentNode.children,b=>b.classList.toggle('on',b===this))">Ano</button></div></div></div>
+  <div class="spec"><div class="spec-meta"><b>7 · Série · confirmar</b><code>.set-row .ck</code><p>O que o Brand Book pede: ember varrendo, escala 1,06, o traço do check se desenhando e uma vibração curta (no Android; o iPhone não deixa site vibrar).</p></div><div class="spec-live phone lab-demo"><div class="set-row"><button class="ck" onclick="toggleSet(this,'90 s')"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><span>Série 1 · 60 kg × 8</span></div><div class="set-row"><button class="ck" onclick="toggleSet(this,'90 s')"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><span>Série 2 · 60 kg × 8</span></div></div></div>
+  <div class="spec"><div class="spec-meta"><b>8 · Aba · pousar</b><code>.tabbar button.on</code><p>Ao trocar de aba, o ícone desce e pousa no lugar. O desenho da barra não muda.</p></div><div class="spec-live lab-demo"><nav class="tabbar lab" id="tabbar"><button class="on" onclick="[].forEach.call(this.parentNode.children,b=>b.classList.toggle('on',b===this))"><i><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/></svg></i><span>Hoje</span></button><button class="" onclick="[].forEach.call(this.parentNode.children,b=>b.classList.toggle('on',b===this))"><i><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"/></svg></i><span>Treino</span></button><button class="" onclick="[].forEach.call(this.parentNode.children,b=>b.classList.toggle('on',b===this))"><i><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="6"/></svg></i><span>Comida</span></button><button class="" onclick="[].forEach.call(this.parentNode.children,b=>b.classList.toggle('on',b===this))"><i><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg></i><span>Progresso</span></button><button class="" onclick="[].forEach.call(this.parentNode.children,b=>b.classList.toggle('on',b===this))"><i><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="8"/></svg></i><span>Comunidade</span></button></nav></div></div>
+</section>
+
+<section class="grp" id="motion-v2"><h2>Motion v2 <span class="tag-novo" style="color:var(--ok);border-color:var(--ok)">aprovado em 08/11</span></h2><p class="lead">O ponto certo<i>,</i> em movimento<i>.</i></p>
   <p class="small" style="max-width:640px">Oito movimentos novos, todos contando a mesma ideia: chegar no ponto e parar. Nada pisca em loop, nada quica e o ember aparece uma vez por peça. Toque em "Rodar" para ver de novo.</p>
 
   <div class="spec"><div class="spec-meta"><b>1 · Ponteiro na dose</b><p>A agulha varre, passa do meio e assenta, enquanto o número rola como um odômetro. Para o medidor da tela Hoje.</p></div>
@@ -285,6 +373,27 @@ body{display:block;min-height:100%}
 
 </main>
 </div>
+<script>window.toggleSet=window.toggleSet||function(b){b.classList.toggle('done');};</script>
+<script src="../botoes.js"></script>
+<script src="../icons.js"></script>
+<script src="../motion3.js"></script>
+<script>
+(function(){
+  var g=document.getElementById('icGrid'); if(!g||!window.I) return;
+  g.innerHTML=g.dataset.names.split(' ').map(function(n){ return '<button type="button" data-n="'+n+'">'+I(n)+'<span>'+n+'</span></button>'; }).join('');
+  function draw(svg,d){ svg.removeAttribute('data-m3d'); [].forEach.call(svg.querySelectorAll('.m3-tr'),function(x){x.classList.remove('m3-tr');}); void svg.getBoundingClientRect();
+    [].forEach.call(svg.querySelectorAll('path,circle,rect,line,polyline,ellipse'),function(f){ var fl=f.getAttribute('fill'); if(fl&&fl!=='none') return; f.setAttribute('pathLength','1'); f.style.setProperty('--d',(d||0)+'ms'); f.classList.add('m3-tr'); }); }
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ [].forEach.call(g.querySelectorAll('.ico'),function(s,i){ draw(s,i*35); }); io.disconnect(); } }); },{threshold:.2}); io.observe(g);
+  g.addEventListener('click',function(e){ var b=e.target.closest('button'); if(b) draw(b.querySelector('.ico'),0); });
+  var m=document.getElementById('icMed');
+  function med(){ if(!window.medalSVG) return; m.innerHTML=[['strength',1],['run',2],['hyrox',3]].map(function(x){ return '<div class="medal won t'+x[1]+'">'+medalSVG(x[0],x[1],64)+'</div>'; }).join(''); if(window.m3Rodar) m3Rodar(m); }
+  med(); document.getElementById('icMedR').addEventListener('click',med);
+  var mm=document.getElementById('mmLive'), html=mm.innerHTML;
+  if(window.m3Rodar) m3Rodar(mm);
+  document.getElementById('mmR').addEventListener('click',function(){ mm.innerHTML=html; if(window.m3Rodar) m3Rodar(mm); document.getElementById('mmR').addEventListener('click',arguments.callee); });
+})();
+</script>
+
 <script>
 (function(){
   // ticks do ponteiro

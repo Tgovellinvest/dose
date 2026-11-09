@@ -480,3 +480,38 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 }
 @keyframes m2rev{from{opacity:0;transform:translateY(24px)}}
 @media (prefers-reduced-motion:reduce){.m2-col,.set-row .ck::before{transition:none!important}.m2-ptr{animation:none!important}}
+
+/* v7.0 · Motion por botão (aprovado em 08/11/2026) — toque 120 ms, ease da marca, sem bounce, rotação, loop ou glow */
+.btn{position:relative;transition:transform 120ms var(--ease),filter 120ms var(--ease),background 120ms var(--ease),border-color 120ms var(--ease)}
+.btn:active{transform:scale(.97);filter:brightness(.9)}
+.btn.ghost:active{border-color:var(--tx);background:var(--s2);filter:none}
+.btn.danger:active{filter:brightness(.82)}
+.btn .m3-risca{position:absolute;left:14px;right:14px;bottom:7px;height:2px;border-radius:2px;background:currentColor;transform:scaleX(0);transform-origin:left;animation:m3risca .5s var(--expo) forwards;pointer-events:none}
+@keyframes m3risca{60%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+.chip{position:relative;overflow:hidden;isolation:isolate}
+.chip.m3-fill{background:var(--s2)!important;transition:none}
+.chip.m3-fill::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--m3c);clip-path:circle(0 at var(--m3x) var(--m3y));animation:m3fill .26s var(--ease) forwards}
+@keyframes m3fill{to{clip-path:circle(150% at var(--m3x) var(--m3y))}}
+.seg{position:relative}
+.seg .m3-ind{position:absolute;top:4px;bottom:4px;border-radius:9px;background:var(--s1);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .24s var(--ease),width .24s var(--ease);z-index:0;pointer-events:none}
+.seg button{position:relative;z-index:1}
+.seg.m3-mov button.on{background:none;box-shadow:none}
+.set-row .ck.m3-conf{animation:m3conf .32s var(--ease)}
+@keyframes m3conf{40%{transform:scale(1.06)}100%{transform:none}}
+.set-row .ck.m3-conf svg path{stroke-dasharray:24;animation:m3check .22s var(--ease) .06s both}
+@keyframes m3check{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
+.tabbar button{position:relative}
+.tabbar button.m3-tab i{animation:m3pousa .36s var(--expo) both}
+@keyframes m3pousa{from{transform:translateY(-7px);opacity:.3}}
+@media (prefers-reduced-motion:reduce){.btn,.chip,.seg .m3-ind{transition:none!important}.btn:active,.set-row .ck.m3-conf{transform:none;animation:none}.btn .m3-risca,.chip.m3-fill::before,.tabbar button.m3-tab i{animation:none!important}}
+
+/* v7.0 · mapa dos músculos, ícones e medalhas em movimento */
+.m3-sil{animation:m3sil .5s var(--ease) var(--d,0ms) both}
+@keyframes m3sil{from{opacity:0}}
+.m3-mu{transform-box:fill-box;transform-origin:center;animation:m3mu .6s var(--expo) var(--d,0ms) both}
+@keyframes m3mu{from{opacity:0;transform:scale(.35)}}
+.m3-mu.m3-rec{animation:m3mu .6s var(--expo) var(--d,0ms) both,m3conf .32s var(--ease) calc(var(--d,0ms) + 620ms)}
+.m3-tr{stroke-dasharray:1;stroke-dashoffset:1;animation:m3tr .55s var(--ease) var(--d,0ms) forwards}
+@keyframes m3tr{to{stroke-dashoffset:0}}
+.m3-anel{stroke-dasharray:1;stroke-dashoffset:1;transform:rotate(-90deg);transform-origin:32px 32px;animation:m3tr .6s var(--expo) var(--d,0ms) forwards}
+@media (prefers-reduced-motion:reduce){.m3-sil,.m3-mu,.m3-tr,.m3-anel{animation:none!important;stroke-dashoffset:0}}
