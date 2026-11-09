@@ -578,3 +578,35 @@ html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 .dt-t b{font-size:15px}.dt-t b .num{font-family:var(--num);color:var(--tx3);font-weight:700;margin-left:6px}
 .dt-t span{font-size:13px;color:var(--tx2);line-height:1.4}
 .dt-ref.feita .dt-t b{color:var(--tx2)}
+
+/* v7.6 · Pontos de treino do Rio (mapa) */
+.mp4{position:fixed;inset:0;z-index:4;background:var(--bg)}
+.mp4-mapa{position:absolute;inset:0}
+.mp4-aviso{position:absolute;top:45%;left:20px;right:20px;text-align:center;color:var(--tx2);font-size:14px}
+.mp4-topo{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top) + 74px) 20px 36px;background:linear-gradient(var(--bg) 60%,transparent);pointer-events:none}
+.mp4-topo .btn{pointer-events:auto;margin-bottom:10px}
+.mp4-topo .eyebrow{text-align:left}
+.mp4-topo h1{margin:4px 0 0;font-size:32px;font-weight:900;letter-spacing:-.05em;line-height:.95;text-transform:uppercase}
+.mp4-topo h1 i{font-style:normal;color:var(--ember)}
+.mp4-lista{position:absolute;left:0;right:0;bottom:calc(var(--tab) + env(safe-area-inset-bottom));padding:24px 0 14px;background:linear-gradient(transparent,var(--bg) 35%)}
+.mp4-trilho{display:flex;gap:10px;overflow-x:auto;padding:0 20px;scroll-snap-type:x mandatory;scrollbar-width:none}.mp4-trilho::-webkit-scrollbar{display:none}
+.mp4-cartao{flex:0 0 80%;scroll-snap-align:start;background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;transition:border-color .2s;min-width:0}
+.mp4-cartao.ativo{border-color:var(--ember)}
+.mp4-cartao b{display:block;font-size:17px;letter-spacing:-.02em}
+.mp4-cartao .m{font-family:var(--num);font-weight:700;color:var(--tx2);font-size:14px;margin-top:2px}
+.mp4-cartao p{margin:8px 0 0;font-size:13px;color:var(--tx2);line-height:1.4}
+.mp4-cartao .lk{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--tx);text-decoration:none}
+.mp4-st{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;font-weight:700}
+.mp4-st i{width:8px;height:8px;border-radius:50%;background:var(--tx3)}
+.mp4-st.ab{color:var(--ok)}.mp4-st.ab i{background:var(--ok)}
+.mp4-st.fe{color:var(--tx2)}.mp4-st.nd{color:var(--tx3)}
+.mp4-pt{width:14px;height:14px;border-radius:50%;background:var(--ember);border:2px solid var(--bg);cursor:pointer;opacity:0;transform:translateY(-18px);transition:opacity .4s ease,transform .6s var(--expo)}
+.mp4-pt.on{opacity:1;transform:none}
+.mp4-pt.on::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:2px solid var(--ember);animation:mp4onda 1.4s var(--expo) 1 forwards}
+@keyframes mp4onda{from{transform:scale(1);opacity:.9}to{transform:scale(3.2);opacity:0}}
+.mp4 .maplibregl-ctrl-attrib{background:rgba(15,16,18,.6)!important;color:var(--tx3)!important;font-size:10px}.mp4 .maplibregl-ctrl-attrib a{color:var(--tx2)!important}
+.mp4 .maplibregl-ctrl-bottom-right{bottom:calc(var(--tab) + env(safe-area-inset-bottom) + 170px)}
+.mp4-entra{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;color:var(--tx);font-family:inherit;cursor:pointer;margin:12px 0}
+.mp4-entra b{display:block;font-size:18px;margin-top:2px}.mp4-entra .tiny{display:block}
+.mp4-mini{display:flex;gap:5px}.mp4-mini i{width:7px;height:7px;border-radius:50%;background:var(--s3)}.mp4-mini i:first-child{background:var(--ember)}
+@media (prefers-reduced-motion:reduce){.mp4-pt{opacity:1;transform:none;transition:none}.mp4-pt.on::after{display:none}}
