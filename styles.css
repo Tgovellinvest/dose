@@ -610,3 +610,4 @@ html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 .mp4-entra b{display:block;font-size:18px;margin-top:2px}.mp4-entra .tiny{display:block}
 .mp4-mini{display:flex;gap:5px}.mp4-mini i{width:7px;height:7px;border-radius:50%;background:var(--s3)}.mp4-mini i:first-child{background:var(--ember)}
 @media (prefers-reduced-motion:reduce){.mp4-pt{opacity:1;transform:none;transition:none}.mp4-pt.on::after{display:none}}
+.mp4-acoes{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
