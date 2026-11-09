@@ -651,3 +651,9 @@ html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 @keyframes cvFade{from{opacity:0}to{opacity:1}}
 body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 @media (prefers-reduced-motion:reduce){.cv-obj.sobe,.cvt-obj,.cvt-eb,.cvt-de,.cvt-acoes{animation:none!important}}
+/* v8.0 · grupo de 6 */
+.g6-t{display:block;font-size:17px;letter-spacing:-.02em;margin-top:2px}
+.g6-l{margin-top:12px;border-top:1px solid var(--line)}
+.g6-i{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.g6-i>div{min-width:0}.g6-i b{display:block;font-size:14px}.g6-i .tiny{display:block}
+.g6-ch{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.g6-ch::-webkit-scrollbar{display:none}.g6-ch .chip{flex:none}
