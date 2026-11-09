@@ -34,15 +34,15 @@
 <div class="lista"><div class="trilho" id="trilho"></div></div>
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
-// Percursos conferidos no Time Out Rio (2026). Coordenadas aproximadas do início, a conferir antes de publicar.
+// Percursos conferidos no Time Out Rio (2026). Coordenadas do OpenStreetMap (Nominatim), consultadas em 09/11/2026: MAM, Parque dos Patins, Praia do Leme, Paineiras, Vista Chinesa, Quinta da Boa Vista e Praia de Grumari.
 const PONTOS=[
- {id:'aterro',nome:'Aterro do Flamengo',m:'7,6 km · plano · sombra',d:'Do MAM ao Monumento Estácio de Sá, com vista do Pão de Açúcar.',c:[-43.1720,-22.9150],h:'Ter e qui · 6h30'},
- {id:'lagoa',nome:'Lagoa Rodrigo de Freitas',m:'quase 8 km · plano',d:'Volta completa. Tem gente correndo a qualquer hora.',c:[-43.2120,-22.9735],h:'Seg, qua e sex · 6h'},
- {id:'orla',nome:'Orla do Leme ao Leblon',m:'9 km · beira-mar',d:'Brisa do mar e parada para um mergulho no fim.',c:[-43.1705,-22.9640],h:'Sáb · 7h'},
- {id:'paineiras',nome:'Paineiras',m:'8 km · subida',d:'Dentro do Parque Nacional da Tijuca, mistura subida e trecho leve.',c:[-43.2120,-22.9510],h:'Dom · 7h'},
- {id:'chinesa',nome:'Vista Chinesa',m:'subida forte',d:'Subida pela floresta até o mirante.',c:[-43.2495,-22.9725],h:'Dom · 6h30'},
- {id:'quinta',nome:'Quinta da Boa Vista',m:'cerca de 3,5 km · terra e grama',d:'Lagos e palmeiras. Bom para quem está começando.',c:[-43.2250,-22.9060],h:'Sáb · 8h'},
- {id:'grumari',nome:'Grumari ao Pontal',m:'8 km · beira-mar',d:'Longão de fim de semana com mar no fim.',c:[-43.5245,-23.0480],h:'Dom · 6h'}
+ {id:'aterro',nome:'Aterro do Flamengo',m:'7,6 km · plano · sombra',d:'Do MAM ao Monumento Estácio de Sá, com vista do Pão de Açúcar.',c:[-43.17283,-22.91400],h:'Ter e qui · 6h30'},
+ {id:'lagoa',nome:'Lagoa Rodrigo de Freitas',m:'quase 8 km · plano',d:'Volta completa. Tem gente correndo a qualquer hora.',c:[-43.21664,-22.97124],h:'Seg, qua e sex · 6h'},
+ {id:'orla',nome:'Orla do Leme ao Leblon',m:'9 km · beira-mar',d:'Brisa do mar e parada para um mergulho no fim.',c:[-43.16986,-22.96445],h:'Sáb · 7h'},
+ {id:'paineiras',nome:'Paineiras',m:'8 km · subida',d:'Dentro do Parque Nacional da Tijuca, mistura subida e trecho leve.',c:[-43.21743,-22.94660],h:'Dom · 7h'},
+ {id:'chinesa',nome:'Vista Chinesa',m:'subida forte',d:'Subida pela floresta até o mirante.',c:[-43.24947,-22.97326],h:'Dom · 6h30'},
+ {id:'quinta',nome:'Quinta da Boa Vista',m:'cerca de 3,5 km · terra e grama',d:'Lagos e palmeiras. Bom para quem está começando.',c:[-43.22631,-22.90547],h:'Sáb · 8h'},
+ {id:'grumari',nome:'Grumari ao Pontal',m:'8 km · beira-mar',d:'Longão de fim de semana com mar no fim.',c:[-43.53419,-23.05015],h:'Dom · 6h'}
 ];
 const reduz=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const tri=document.getElementById('trilho');
@@ -56,7 +56,7 @@ function pintar(map){ const st=map.getStyle(); st.layers.forEach(l=>{ const id=l
   else if(t==='line'&&/water|river/.test(id)) map.setPaintProperty(id,'line-color','#17181B');
   else if(t==='line'&&/boundary|admin/.test(id)) map.setLayoutProperty(id,'visibility','none');
   else if(t==='line') map.setPaintProperty(id,'line-color','#272A2F');
-  else if(t==='symbol'){ if(/poi|housenum|transit|aeroway/.test(id)) map.setLayoutProperty(id,'visibility','none'); else { map.setPaintProperty(id,'text-color','#73767B'); map.setPaintProperty(id,'text-halo-color','#0F1012'); if(l.layout&&l.layout['text-field']) map.setLayoutProperty(id,'text-field',['coalesce',['get','name:pt'],['get','name']]); } }
+  else if(t==='symbol'){ if(/poi|housenum|transit|aeroway|shield|highway-name|road_shield/.test(id)||(l.layout&&l.layout['icon-image'])) map.setLayoutProperty(id,'visibility','none'); else { map.setPaintProperty(id,'text-color','#73767B'); map.setPaintProperty(id,'text-halo-color','#0F1012'); if(l.layout&&l.layout['text-field']) map.setLayoutProperty(id,'text-field',['coalesce',['get','name:pt'],['get','name']]); } }
   else if(t==='fill-extrusion') map.removeLayer(id);
  }catch(e){} });
  const src=Object.keys(st.sources).find(k=>st.sources[k].type==='vector');
