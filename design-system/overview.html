@@ -722,6 +722,96 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 .pg-fim .pg-fr{opacity:1;transform:none}
 .pg-sem .pg-f,.pg-sem .pg-v,.pg-sem .pg-fr,.pg-sem .pg-carga{transition:none}
 @media (prefers-reduced-motion:reduce){.pg *{transition:none!important}}
+/* v8.5 · ajuste semanal da dieta animado */
+.aj{margin:12px 0;padding:18px;border-radius:var(--r);background:var(--s1);-webkit-tap-highlight-color:transparent}
+.aj-cds{display:grid;gap:6px;margin:8px 0 2px}
+.aj-cd{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--tx2);opacity:0;transform:translateY(6px);transition:opacity .5s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.aj-cd i{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;font-weight:700;color:#0F1012}
+.aj-cd.ok i{background:#6FAE8A}.aj-cd.pd i{background:#D9A066}
+.aj.on1 .aj-cd:nth-child(1),.aj.on2 .aj-cd:nth-child(2){opacity:1;transform:none}
+.aj-ms{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;opacity:0;transition:opacity .5s ease}
+.aj.on3 .aj-ms{opacity:1}
+.aj-m{background:var(--bg);border-radius:12px;padding:12px}.aj-m span{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);font-weight:600}
+.aj-m b{font-family:var(--num);font-weight:700;font-variant-numeric:tabular-nums;font-size:28px;line-height:1.1}.aj-m small{margin-left:3px;color:var(--tx2);font-family:var(--num);font-weight:700}
+.aj-regua{margin:26px 0 4px;opacity:0;transition:opacity .4s ease}.aj.on4 .aj-regua{opacity:1}
+.aj-rt{position:relative;height:6px;border-radius:3px;background:var(--s3);margin:0 4px}
+.aj-fx{position:absolute;top:-4px;bottom:-4px;border-radius:4px;background:color-mix(in srgb,var(--tx) 14%,transparent)}
+.aj-fx i{position:absolute;top:36px;left:0;white-space:nowrap;font-style:normal;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3)}
+.aj-mk{position:absolute;top:8px;width:1px;height:6px;background:var(--tx3)}.aj-mk i{position:absolute;top:8px;left:-8px;font-style:normal;font-size:10px;font-family:var(--num);color:var(--tx3)}
+.aj-mr{position:absolute;top:-9px;width:2px;height:24px;margin-left:-1px;background:var(--tx);border-radius:1px}
+.aj-mr i{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);font-style:normal;font-family:var(--num);font-weight:700;font-variant-numeric:tabular-nums;font-size:15px;color:var(--tx);white-space:nowrap}
+.aj-rl{display:flex;justify-content:space-between;margin-top:46px;font-size:10px;color:var(--tx3);font-family:var(--num)}
+.aj-meta{display:grid;grid-template-columns:1fr auto;align-items:end;gap:2px 12px;margin-top:14px;padding:14px 16px;border-radius:14px;background:var(--bg);opacity:.5;transition:opacity .45s ease}
+.aj.on5m .aj-meta{opacity:1}
+.aj-lb{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3);font-weight:600}
+.aj-num{grid-column:2;grid-row:1/3;display:flex;align-items:baseline;gap:4px}.aj-num small{font-family:var(--num);font-weight:700;color:var(--tx2)}
+.aj-v{font-family:var(--num);font-weight:700;font-variant-numeric:tabular-nums;font-size:36px;line-height:1;display:inline-block;transition:transform .9s cubic-bezier(.16,1,.3,1),color .3s ease}
+.aj-mov .aj-v{transform:translateY(-6px)}.aj-muda .aj-v{color:var(--ember)}
+.aj-et{font-size:13px;color:var(--tx2)}
+.aj-troca{display:block;margin-top:8px}
+.aj-fr{margin:12px 2px 0;font-size:13px;line-height:1.45;color:var(--tx2);opacity:0;transform:translateY(4px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.aj.on5 .aj-fr{opacity:1;transform:none}
+.aj-sem *{transition:none!important}
+@media (prefers-reduced-motion:reduce){.aj *{transition:none!important}}
+/* v8.6 · grupo de até 6 animado */
+.g6-i[data-id]{cursor:pointer}
+.g6v{-webkit-tap-highlight-color:transparent}
+.g6v-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.g6v-et{font-family:var(--num);font-weight:700;font-size:15px;letter-spacing:.02em;color:var(--tx2);transition:color .3s ease}
+.g6v.on-et .g6v-et{color:var(--tx)}
+.g6v-rel{display:flex;align-items:center;gap:8px}.g6v-rel small{font-size:12px;color:var(--tx3);font-family:var(--num);font-variant-numeric:tabular-nums}
+.g6v-rel svg{width:26px;height:26px;transform:rotate(-90deg)}
+.g6v-rel .t{fill:none;stroke:#272A2F;stroke-width:4}
+.g6v-rel .p{fill:none;stroke:var(--tx2);stroke-width:4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s cubic-bezier(.16,1,.3,1),stroke .4s ease}
+.g6v.on-rel .g6v-rel .p{stroke-dashoffset:calc(1 - var(--frac,0))}
+.g6v.on-nao .g6v-rel .p{stroke-dashoffset:0;stroke:#D9A066}
+.g6v.on-nao .g6v-rel small{color:#D9A066}
+.g6v-lug{position:relative;display:grid;grid-template-columns:repeat(6,1fr);align-items:start;padding:12px 0 10px}
+.g6v-ct{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.g6v-ct rect{fill:none;stroke:var(--ember);stroke-width:1.5;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s cubic-bezier(.65,0,.35,1)}
+.g6v.on-ct .g6v-ct rect{stroke-dashoffset:0}
+.g6s{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;transition:opacity .6s ease}
+.g6c{position:relative;width:40px;height:40px;border-radius:50%;border:1.5px dashed #272A2F;display:flex;align-items:center;justify-content:center}
+.g6c::after{content:"";position:absolute;inset:-1.5px;border-radius:50%;background:#D8D2C2;transform:scale(0);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.g6s.eu .g6c::after{background:var(--tx)}
+.g6s.on .g6c::after{transform:scale(1)}
+.g6c em{position:relative;z-index:1;font-style:normal;font-family:var(--num);font-weight:700;font-size:14px;color:#0F1012;opacity:0;transition:opacity .3s ease .35s}
+.g6s.on .g6c em{opacity:1}
+.g6s small{font-size:11px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;opacity:0;transition:opacity .4s ease .2s}
+.g6s.on small{opacity:1}.g6s.eu.on small{color:var(--tx)}
+.g6v.on-nao .g6s{opacity:.4}
+.g6v-fr{margin:12px 2px 0;font-size:13px;line-height:1.45;color:var(--tx2);opacity:0;transform:translateY(4px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.g6v.on-fr .g6v-fr{opacity:1;transform:none}
+.g6-sem *,.g6-sem *::after{transition:none!important}
+@media (prefers-reduced-motion:reduce){.g6v *,.g6v *::after{transition:none!important}}
+.g6v-tt{display:block;font-size:20px;letter-spacing:-.02em;margin-top:2px}
+/* v8.7 · volume da semana e deload */
+.vd{margin:10px 0 14px;padding:18px;border-radius:var(--r);background:var(--s1);-webkit-tap-highlight-color:transparent}
+.vd-bars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:150px;margin-top:10px}
+.vd-b{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.vd-b i{display:block;width:100%;max-width:30px;height:var(--h);border-radius:6px 6px 2px 2px;background:#D8D2C2;transform:scaleY(0);transform-origin:bottom;transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.vd-b.on i{transform:scaleY(1)}
+.vd-n{font-family:var(--num);font-weight:700;font-variant-numeric:tabular-nums;font-size:13px;color:var(--tx2);opacity:0;transition:opacity .3s ease}
+.vd-b.on .vd-n{opacity:1}
+.vd-b small{font-size:10px;color:var(--tx3);font-family:var(--num);height:12px}
+.vd-prox{opacity:0;transform:translateY(6px);transition:opacity .5s ease,transform .6s cubic-bezier(.16,1,.3,1)}.vd-prox.on{opacity:1;transform:none}
+.vd-pl i{background:transparent;border:1.5px dashed #D8D2C2}
+.vd-selo{writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:10px 5px;border-radius:6px;background:var(--ember);color:#0F1012;margin-bottom:auto;margin-top:auto}
+.vd-s2{background:var(--s3);color:var(--tx2)}
+.vd-forca{margin-top:18px}.vd-lb{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);font-weight:600;margin-bottom:6px}
+.vd-forca svg{width:100%;height:auto;overflow:visible}
+.vd-forca polyline{fill:none;stroke:var(--tx);stroke-width:1.5;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.2s cubic-bezier(.65,0,.35,1)}
+.vd.on-l polyline{stroke-dashoffset:0}
+.vd-pt circle{fill:var(--tx);opacity:0;transition:opacity .3s ease,fill .35s ease}.vd-pt.on circle{opacity:1}
+.vd-pt text{font-family:var(--num);font-weight:700;font-size:10px;fill:#D9A066;opacity:0;transition:opacity .35s ease}
+.vd.on-q .vd-pt.cai circle{fill:#D9A066}.vd.on-q .vd-pt.cai text{opacity:1}
+.vd-regra{margin:12px 0 0;font-size:13px;color:var(--tx);font-family:var(--num);font-weight:700;opacity:0;transition:opacity .5s ease}
+.vd.on-p .vd-regra{opacity:1}
+.vd-fr{margin:8px 2px 0;font-size:13px;line-height:1.45;color:var(--tx2);opacity:0;transform:translateY(4px);transition:opacity .6s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.vd.on-fr .vd-fr{opacity:1;transform:none}
+.vd-sem *{transition:none!important}
+@media (prefers-reduced-motion:reduce){.vd *{transition:none!important}}
+.aj-ap{margin-top:12px}.dd-print{margin-top:4px}
 
 </style>
 <style>
@@ -2410,6 +2500,11 @@ function ajusteSemanal(){ const ps=S.pesagens.slice().sort((a,b)=>a.data.localeC
   if(ob.startsWith("cut")||ob==="recomp"){ if(pct<-1.2) return {n:"watch",t:"Perdendo mais de 1% por semana",d:`${Math.round(pct*10)/10}%. Suba ~150 kcal (carboidrato em volta do treino) para proteger massa magra (Helms 2014).`}; if(pct>-0.25) return {n:"watch",t:"Peso travado duas semanas",d:`${Math.round(pct*10)/10}% com ${reg}/7 dias registrados${media&&al?` e média de ${Math.round(media)} kcal contra meta ${al.k}`:""}. Reduza ~100–150 kcal ou adicione 2×20 min de Z2. Uma variável só.`}; return {n:"ok",t:"Ritmo certo",d:`${Math.round(pct*10)/10}% na semana, dentro de 0,5–1%. Mantém a dose.`}; }
   if(ob.startsWith("bulk")){ if(pct>0.6) return {n:"watch",t:"Ganhando rápido demais",d:`${Math.round(pct*10)/10}%: acima de 0,5% por semana a maior parte é gordura. Corte ~150 kcal.`}; if(pct<0.1) return {n:"info",t:"Peso parado em superávit",d:"Suba ~150 kcal, prioridade carboidrato."}; return {n:"ok",t:"Ritmo certo",d:"0,1–0,5% por semana. Mantém."}; }
   return {n:"ok",t:"Manutenção",d:`${Math.round(pct*10)/10}% na semana. Dentro do esperado para manter.`}; }
+// v8.5: expõe a regra e os números que ela usa, para a animação do ajuste semanal (ajuste.js) mostrar a mesma decisão.
+window.ajusteSemanal=ajusteSemanal;
+window.ajusteDados=()=>{ const ps=S.pesagens.slice().sort((a,b)=>a.data.localeCompare(b.data)); const w0=ps.filter(x=>x.data>=shift(today(),-7)), w1=ps.filter(x=>x.data<shift(today(),-7)&&x.data>=shift(today(),-14));
+  const m0=w0.length?w0.reduce((a,x)=>a+x.peso,0)/w0.length:null, m1=w1.length?w1.reduce((a,x)=>a+x.peso,0)/w1.length:null; const dias=[...Array(7)].map((_,i)=>shift(today(),-i)); const reg=dias.filter(d=>diaTot(d).k>0).length;
+  return {nPes:ps.length, nPes14:w0.length+w1.length, w0:w0.length, w1:w1.length, pesOk:ps.length>=10&&w0.length>=3&&w1.length>=3, reg, regOk:reg>=4, m0, m1, pct:m0!=null&&m1?(m0-m1)/m1*100:null, ob:S.perfil.objetivo||"cut", meta:(alvos()||{}).k||null}; };
 V._peso=()=>{ const aj=ajusteSemanal(); const m7=media7(); const ps=S.pesagens.slice().sort((a,b)=>a.data.localeCompare(b.data)); const first=ps[0]; const last=ps[ps.length-1]; const semana=ps.filter(x=>x.data>=shift(today(),-7)); const semAnt=ps.filter(x=>x.data<shift(today(),-7)&&x.data>=shift(today(),-14)); const mA=semana.length?semana.reduce((a,x)=>a+x.peso,0)/semana.length:null; const mB=semAnt.length?semAnt.reduce((a,x)=>a+x.peso,0)/semAnt.length:null; const delta=mA&&mB?mA-mB:null; const pct=delta&&mB?delta/mB*100:null;
   return `<div class="card hero"><div class="row"><div><div class="eyebrow" style="color:var(--tx2)">Média de 7 dias</div><div class="big">${m7??"—"}<span class="small muted"> kg</span></div><div class="tiny">${last?"última pesagem "+fmtD(last.data)+": "+last.peso+" kg":"sem pesagens"}</div></div><div style="text-align:right">${delta!=null?`<div class="mono" style="font-size:20px" class="${delta<=0?'up':'down'}">${delta>0?"+":""}${Math.round(delta*10)/10} kg</div><div class="tiny">vs semana anterior · ${Math.round(Math.abs(pct)*10)/10}%${Math.abs(pct)>1?' <span style="color:var(--warn)">acima de 1%</span>':''}</div>`:'<div class="tiny">duas semanas de dados mostram a tendência</div>'}</div></div></div>
   ${aj?`<div class="item" style="border-left:3px solid var(--${aj.n==='watch'?'warn':aj.n==='ok'?'ok':'bone'});margin:10px 0"><div class="t"><b>${esc(aj.t)}</b><span>${esc(aj.d)}</span></div></div>`:'<p class="tiny">Com 10 pesagens em duas semanas o coach sugere o ajuste semanal (uma variável por vez).</p>'}
@@ -5113,7 +5208,7 @@ window.g6Pedir=async()=>{ const p=pontos()[esc6.p]; try{ const r=(await rpc('que
 async function g6Lista(){ const el=document.getElementById('g6Lista'); if(!el||!U()) return;
   try{ const L=await rpc('minhas_procuras',{})||[]; if(!L.length){ el.innerHTML=''; return; }
     el.innerHTML=`<div class="g6-l">${L.map(x=>{ const prazo=new Date(x.quando).getTime()-864e5<Date.now(); const st=x.treino_id?`Grupo fechado`:prazo?'Não fechou. Não marcamos.':`${x.esperando} de 4 na lista`;
-      return `<div class="g6-i"><div><b>${esc(x.ponto)}</b><span class="tiny">${quandoTxt(x.quando)} · ${st}</span></div>${x.treino_id?`<button class="lk" onclick="comAba('pontos');rgAbrirTreino('${x.treino_id}')">ver ›</button>`:`<button class="lk" onclick="g6Sair('${x.id}')">${prazo?'limpar':'sair'}</button>`}</div>`; }).join('')}</div>`; }catch(e){ el.innerHTML=''; } }
+      return `<div class="g6-i" data-id="${x.id}" role="button" tabindex="0"><div><b>${esc(x.ponto)}</b><span class="tiny">${quandoTxt(x.quando)} · ${st}</span></div>${x.treino_id?`<button class="lk" onclick="comAba('pontos');rgAbrirTreino('${x.treino_id}')">ver ›</button>`:`<button class="lk" onclick="g6Sair('${x.id}')">${prazo?'limpar':'sair'}</button>`}</div>`; }).join('')}</div>`; }catch(e){ el.innerHTML=''; } }
 window.g6Sair=async(id)=>{ try{ await api(`procuras?id=eq.${id}`,{method:'DELETE'}); g6Lista(); }catch(e){ toast(e.message); } };
 
 // ---------- G4 · virar grupo fixo ----------
@@ -5326,6 +5421,268 @@ const _as=A.sessao; A.sessao=(p)=>{ const r=_as?_as(p):null; const pgs=document.
   pgs.forEach(pg=>pg.addEventListener('click',()=>fim(pg)));
   if(!('IntersectionObserver' in window)){ pgs.forEach(tocar); return r; }
   const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ tocar(e.target); io.unobserve(e.target); } }),{threshold:.45}); pgs.forEach(pg=>io.observe(pg)); return r; };
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.5 — ajuste semanal da dieta animado (aprovado pelo Tiago em 09/11/2026) =================
+// Mostra por que a meta de calorias mudou ou não mudou. Referência: protótipo "dose_ajuste_semanal_dieta" (projeto Editor de Vídeos).
+// Sem lógica nova: a decisão vem de ajusteSemanal() (views2.js, regra "Ajuste semanal (coach)") e os números de ajusteDados(),
+// que repete as mesmas contas. Cut: perde >1,2% → +150; perde <0,25% (ou ganha) → −150 ou 2×20 min de Z2; 0,25–1,2% mantém.
+// Bulk: ganha >0,6% → −150; <0,1% → +150; senão mantém.
+// Motion: cubic-bezier(.16,1,.3,1), marcador em easeInOutCubic 1,1 s, sem loop, bounce, brilho ou confete. Um toque pula para o fim.
+(function(){
+const V=window.VIEWS;
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const eOut=t=>1-Math.pow(1-t,4), eIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const f1=v=>(Math.round(v*10)/10).toFixed(1).replace('.',',');
+const pctTxt=v=>String(Math.round(Math.abs(v)*10)/10).replace('.',',');
+const kTxt=v=>String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+
+function caso(){ const aj=window.ajusteSemanal?ajusteSemanal():null; const D=window.ajusteDados?ajusteDados():null; if(!D) return null;
+  let tipo='mantem', delta=0;
+  if(!aj||aj.t==='Diário com poucos dias') tipo='poucos';
+  else if(aj.t==='Perdendo mais de 1% por semana'||aj.t==='Peso parado em superávit'){ tipo='muda'; delta=150; }
+  else if(aj.t==='Ganhando rápido demais'){ tipo='muda'; delta=-150; }
+  else if(aj.t==='Peso travado duas semanas'){ const esc=(S.ajusteEsc||{})[semanaIni()]; if(esc==='z2') tipo='z2'; else { tipo='muda'; delta=-150; } }
+  const ap=(S.ajusteAplicado||{})[semanaIni()]; if(ap&&tipo==='muda'){ tipo='aplicada'; delta=ap.delta; }
+  const bulk=/^bulk/.test(D.ob), manut=!bulk&&!(/^cut/.test(D.ob)||D.ob==='recomp');
+  return {aj,D,tipo,delta,bulk,manut,travado:aj&&aj.t==='Peso travado duas semanas'}; }
+
+function frase(c){ const {D,tipo,delta,bulk}=c; if(tipo==='poucos') return 'Ainda não ajusto: preciso de 4 dias de diário e 10 pesagens em 2 semanas.';
+  const p=D.pct; const verbo=p<0?'Perdeu':'Ganhou'; const base=`${verbo} ${pctTxt(p)}% na semana`;
+  if(c.manut) return `${base}. Dentro do esperado para manter. A meta fica como está.`;
+  if(tipo==='aplicada') return `${base}. A meta ${delta>0?'subiu':'desceu'} ${Math.abs(delta)} kcal nesta semana e já está valendo.`;
+  if(tipo==='z2') return `${base}, abaixo de 0,25%. Em vez de cortar calorias, entram 2×20 min de Z2. A meta fica como está.`;
+  if(tipo==='muda'){ if(bulk) return delta<0?`${base}, acima de 0,6%. A meta desce 150 kcal.`:`${base}, abaixo de 0,1%. A meta sobe 150 kcal.`;
+    return delta>0?`${base}, mais rápido que 1,2%. A meta sobe 150 kcal para proteger a massa magra.`:`${base}, abaixo de 0,25%. A meta desce 150 kcal.`; }
+  const v=bulk?p:-p; const dentro=bulk?(v>=0.1&&v<=0.5):(v>=0.5&&v<=1); return `${base}, ${dentro?'dentro da faixa':'perto da faixa'}. A meta fica como está.`; }
+
+function regua(c){ const MAX=1.6; const b=c.bulk; const faixa=c.manut?null:b?[0.1,0.5]:[0.5,1]; const marcas=b?[0.1,0.25,0.5,0.6]:[0.25,0.5,1,1.2];
+  const v=c.D.pct==null?0:(b?c.D.pct:c.manut?Math.abs(c.D.pct):-c.D.pct); const pos=Math.max(0,Math.min(MAX,v))/MAX*100; const P=x=>x/MAX*100;
+  return `<div class="aj-regua" data-pos="${pos}"><div class="aj-rt">${faixa?`<span class="aj-fx" style="left:${P(faixa[0])}%;width:${P(faixa[1]-faixa[0])}%"><i>faixa · mantém</i></span>`:''}${marcas.map(m=>`<b class="aj-mk" style="left:${P(m)}%"><i>${String(m).replace('.',',')}</i></b>`).join('')}<span class="aj-mr" style="left:0%"><i>${v<0?'+':''}${pctTxt(v)}%</i></span></div>
+   <div class="aj-rl"><span>0</span><span>${b?'ganho':'perda'} por semana, % do peso</span><span>1,6</span></div></div>`; }
+
+function bloco(c){ const {D,tipo,delta}=c; const ok=(b,t)=>`<div class="aj-cd ${b?'ok':'pd'}"><i aria-hidden="true">${b?'✓':'·'}</i><span>${t}</span></div>`;
+  const meta=D.meta; const nova=meta!=null?meta+delta:null; const et=tipo==='aplicada'?`aplicada · ${delta>0?'+':'−'}${Math.abs(delta)} kcal`:tipo==='muda'?`${delta>0?'+':'−'}${Math.abs(delta)} kcal`:tipo==='z2'?'+2×20 min Z2':'mantém';
+  return `<div class="aj" data-tipo="${tipo}" data-de="${meta||0}" data-para="${nova||0}" role="group" aria-label="Ajuste semanal da meta">
+   <div class="eyebrow" style="text-align:left">Ajuste semanal</div>
+   <div class="aj-cds">${ok(D.regOk,`${Math.min(D.reg,4)} de 4 dias de diário`)}${ok(D.pesOk,`${Math.min(D.nPes14,10)} de 10 pesagens`)}</div>
+   ${tipo==='poucos'?'':`<div class="aj-ms"><div class="aj-m"><span>Média semana passada</span><b data-v="${D.m1}">0,0</b><small>kg</small></div><div class="aj-m"><span>Média desta semana</span><b data-v="${D.m0}">0,0</b><small>kg</small></div></div>
+   ${regua(c)}
+   <div class="aj-meta"><span class="aj-lb">${tipo==='muda'?'Meta sugerida':'Meta de calorias'}</span><span class="aj-num"><b class="aj-v">${meta?kTxt(meta):'—'}</b><small>kcal</small></span><span class="aj-et">${et}</span></div>
+   ${c.travado?`<button class="lk aj-troca" onclick="event.stopPropagation();ajTroca()">${tipo==='z2'?'Prefiro cortar 150 kcal':'Prefiro 2×20 min de Z2 em vez de cortar'}</button>`:''}`}
+   <p class="aj-fr">${frase(c)}</p>${tipo==='muda'&&meta?`<button class="btn sec aj-ap" onclick="event.stopPropagation();ajAplicar(${delta})">Aplicar a nova meta: ${kTxt(nova)} kcal</button>`:''}</div>`; }
+
+// ok do Tiago (09/11): a meta sugerida só vale depois de "Aplicar". O ajuste mexe no carboidrato (≈4 kcal por grama), como o coach indica.
+window.ajAplicar=(delta)=>{ const pc=S.perfil.protocoloCoach; let base=null; if(pc&&pc.kcal) base=Object.assign({},pc); else { const n=typeof calcNutri==='function'?calcNutri(S.perfil):null; if(n) base={kcal:n.alvo,p:n.prot,c:n.carb,g:n.gord}; }
+  if(!base) return toast('Defina a meta em Nutrição › Metas primeiro'); const de=base.kcal;
+  S.perfil.protocoloCoach=Object.assign(base,{kcal:de+delta,c:Math.max(0,Math.round((base.c||0)+delta/4)),fonte:'ajuste semanal'});
+  S.ajusteAplicado=S.ajusteAplicado||{}; S.ajusteAplicado[semanaIni()]={de,para:de+delta,delta}; save(); toast(`Meta agora em ${kTxt(de+delta)} kcal`); route(); };
+window.ajTroca=()=>{ S.ajusteEsc=S.ajusteEsc||{}; const k=semanaIni(); S.ajusteEsc[k]=S.ajusteEsc[k]==='z2'?'kcal':'z2'; save(); route(); };
+
+const _p=V._peso; V._peso=(...a)=>{ const h=_p(...a); const c=caso(); if(!c) return h;
+  const re=/<div class="item" style="border-left:3px solid var\(--(?:warn|ok|bone)\);margin:10px 0">[\s\S]*?<\/div><\/div>|<p class="tiny">Com 10 pesagens[^<]*<\/p>/;
+  if(!re.test(h)) return h; setTimeout(iniciar,30); return h.replace(re,bloco(c)); };
+
+// ---------- animação ----------
+function contar(el,de,ate,dur,fmt,ease){ return new Promise(ok=>{ const t0=performance.now(); const f=t=>{ const k=Math.min(1,(t-t0)/dur); el.textContent=fmt(de+(ate-de)*(ease||eOut)(k)); if(k<1) el._raf=requestAnimationFrame(f); else ok(); }; el._raf=requestAnimationFrame(f); }); }
+function fim(a){ if(a._fim) return; a._fim=true; (a._t||[]).forEach(clearTimeout); a.querySelectorAll('b').forEach(e=>e._raf&&cancelAnimationFrame(e._raf)); const mr=a.querySelector('.aj-mr'); mr&&mr._raf&&cancelAnimationFrame(mr._raf);
+  a.classList.add('aj-sem','on1','on2','on3','on4','on5m','on5');
+  a.querySelectorAll('.aj-m b').forEach(b=>b.textContent=f1(+b.dataset.v)); const rg=a.querySelector('.aj-regua'); if(rg) mr.style.left=rg.dataset.pos+'%';
+  const v=a.querySelector('.aj-v'); if(v&&a.dataset.tipo==='muda'){ v.textContent=kTxt(+a.dataset.para); a.classList.add('aj-muda'); } }
+function tocar(a){ if(a._ini) return; a._ini=true; a.addEventListener('click',()=>fim(a)); if(reduz()){ fim(a); return; }
+  const T=(fn,ms)=>{ (a._t=a._t||[]).push(setTimeout(()=>{ if(!a._fim) fn(); },ms)); };
+  T(()=>a.classList.add('on1'),0); T(()=>a.classList.add('on2'),120);
+  if(a.dataset.tipo==='poucos'){ T(()=>a.classList.add('on5'),900); T(()=>{ a._fim=true; },1600); return; }
+  T(()=>{ a.classList.add('on3'); a.querySelectorAll('.aj-m b').forEach(b=>contar(b,0,+b.dataset.v,900,f1)); },600);
+  T(()=>{ a.classList.add('on4'); const rg=a.querySelector('.aj-regua'), mr=a.querySelector('.aj-mr'); const to=+rg.dataset.pos, t0=performance.now(); const f=t=>{ const k=Math.min(1,(t-t0)/1100); mr.style.left=(to*eIO(k))+'%'; if(k<1&&!a._fim) mr._raf=requestAnimationFrame(f); }; mr._raf=requestAnimationFrame(f); },1500);
+  T(()=>{ a.classList.add('on5m'); if(a.dataset.tipo==='muda'){ a.classList.add('aj-muda','aj-mov'); contar(a.querySelector('.aj-v'),+a.dataset.de,+a.dataset.para,900,kTxt).then(()=>a.classList.remove('aj-mov')); } },2700);
+  T(()=>a.classList.add('on5'),3600); T(()=>{ a._fim=true; },4300); }
+function iniciar(){ const a=document.querySelector('#view .aj'); if(!a) return;
+  if(!('IntersectionObserver' in window)){ tocar(a); return; } const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ tocar(a); io.disconnect(); } }),{threshold:.35}); io.observe(a); }
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.6 — grupo de até 6 animado na tela do pedido (aprovado pelo Tiago em 09/11/2026) =================
+// Torna visível a regra "fecha com 4, vai até 6, prazo de 24 h; se não fechar, não marca". Referência: protótipo "dose_grupo_fecha_com_4".
+// Privacidade (decisão nova do Tiago): antes de fechar, cada lugar mostra só o nível; você aparece como "você". Nome só depois de fechar
+// (o apelido do perfil público, como nos grupos). Dados reais de procura_lugares(); a animação nunca simula a chegada de alguém.
+// Cada mudança importante toca uma vez: o que já foi visto fica em S.g6Vistos (no aparelho).
+// Motion: cubic-bezier(.16,1,.3,1); contorno em easeInOutCubic 0,9 s; sem loop, bounce, brilho ou confete. Um toque pula para o fim.
+(function(){
+const U=()=>window.CLOUD&&CLOUD.user();
+const rpc=(f,a)=>window.GRUPOS.rpc(f,a);
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DS=["dom","seg","ter","qua","qui","sex","sáb"];
+const quandoTxt=q=>{ const d=new Date(q); const dia=new Date(d.toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'})+'T12:00:00'); const [h,m]=d.toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',hour12:false}).split(':').map(Number); return `${DS[dia.getDay()]} ${String(dia.getDate()).padStart(2,'0')}/${String(dia.getMonth()+1).padStart(2,'0')}, ${m?`${h}h${String(m).padStart(2,'0')}`:`${h}h`}`; };
+const falta=ms=>{ if(ms<=0) return 'prazo encerrado'; const h=Math.floor(ms/36e5), d=Math.floor(h/24); return d?`faltam ${d} d ${h%24} h`:h?`faltam ${h} h`:`faltam ${Math.max(1,Math.round(ms/6e4))} min`; };
+const ini=s=>String(s||'').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'·';
+
+function tela(id,L){ const n=L.lugares.length, fech=L.estado==='fechado', nao=L.estado==='naofechou';
+  const prazo=new Date(L.quando).getTime()-864e5, cri=new Date(L.criado).getTime(); const frac=nao?1:Math.max(0,Math.min(1,(Date.now()-cri)/Math.max(1,prazo-cri)));
+  const lug=[...Array(6)].map((_,i)=>{ const x=L.lugares[i]; if(!x) return `<div class="g6s vazio"><span class="g6c"></span><small>&nbsp;</small></div>`;
+    const rot=x.eu?'você':fech&&x.apelido?esc(String(x.apelido).split(' ')[0]):`nível ${x.nivel??'—'}`;
+    return `<div class="g6s ${x.eu?'eu':''}" data-i="${i}"><span class="g6c">${fech&&!x.eu&&x.apelido?`<em>${esc(ini(x.apelido))}</em>`:''}</span><small>${rot}</small></div>`; }).join('');
+  const k=fech?Math.max(4,n):4;
+  const et=fech?'grupo fechado':nao?'não fechou':`${Math.min(n,4)} de 4 para fechar`;
+  const fr=fech?`Quatro pessoas no mesmo ponto e horário: o grupo fechou e o treino está marcado.${n<6?` Ainda cabem mais ${6-n}.`:' O grupo está completo.'}`
+    :nao?`O prazo acabou com ${n} ${n===1?'pessoa':'pessoas'}. Não fechou, então nada foi marcado. Dá pra pedir outro horário.`
+    :`${4-Math.min(n,4)===1?"Falta":"Faltam"} ${4-Math.min(n,4)} para fechar. Se não fechar até ${quandoTxt(prazo)}, nada é marcado.`;
+  return `<div class="eyebrow" style="text-align:left">Grupo de até 6 · corrida</div><b class="g6v-tt">${esc(L.ponto)}</b><p class="small" style="margin:2px 0 12px">${quandoTxt(L.quando)}</p>
+   <div class="g6v" data-id="${id}" data-estado="${L.estado}" data-n="${n}" data-frac="${frac}">
+    <div class="g6v-top"><span class="g6v-et">${et}</span><span class="g6v-rel" ${fech?'hidden':''}><svg viewBox="0 0 36 36" aria-hidden="true"><circle class="t" cx="18" cy="18" r="15"/><circle class="p" cx="18" cy="18" r="15" pathLength="1"/></svg><small>${nao?'prazo encerrado':falta(prazo-Date.now())}</small></span></div>
+    <div class="g6v-lug">${fech?`<svg class="g6v-ct" data-k="${k}" aria-hidden="true"><rect rx="16" ry="16" pathLength="1"/></svg>`:''}${lug}</div>
+    <p class="g6v-fr">${fr}</p>
+    ${nao?`<button class="btn sec" style="margin-top:10px" onclick="g6Outro('${esc(L.ponto).replace(/'/g,"\\'")}')">Pedir outro horário</button>`:''}
+   </div>`; }
+
+window.g6Outro=(ponto)=>{ closeSheet(); const P=window.DOSE_PONTOS||[]; const i=P.findIndex(p=>p.nome===ponto); setTimeout(()=>{ window.g6Novo(); if(i>=0&&window.g6Set) setTimeout(()=>g6Set('p',i),40); },250); };
+
+window.g6Ver=async(id)=>{ if(!U()) return; let L=null; try{ L=await rpc('procura_lugares',{p_id:id}); }catch(e){ return toast(e.message||'Não consegui abrir agora'); } if(!L) return toast('Pedido não encontrado');
+  sheet(tela(id,L)); const el=document.querySelector('#sheet .g6v'); if(el){ ajusta(el); setTimeout(()=>tocar(el,L),60); } };
+// contorno: medido na tela (6 lugares de largura igual; contorna os ocupados, mínimo 4)
+function ajusta(el){ const sv=el.querySelector('.g6v-ct'); if(!sv) return; const box=el.querySelector('.g6v-lug').getBoundingClientRect(); const W=box.width, H=box.height, k=+sv.dataset.k;
+  const ss=[...el.querySelectorAll('.g6s .g6c, .g6s small')]; const top=Math.min(...ss.map(x=>x.getBoundingClientRect().top))-box.top-8, bot=Math.max(...ss.map(x=>x.getBoundingClientRect().bottom))-box.top+8;
+  sv.setAttribute('viewBox',`0 0 ${W} ${H}`); const r=sv.querySelector('rect'); r.setAttribute('x',1); r.setAttribute('y',Math.max(1,top)); r.setAttribute('width',Math.max(0,W*k/6-2)); r.setAttribute('height',Math.max(0,Math.min(H-1,bot)-Math.max(1,top))); }
+
+// ---------- animação ----------
+const visto=id=>(S.g6Vistos||{})[id]||null;
+const marcar=(id,e,n)=>{ S.g6Vistos=S.g6Vistos||{}; S.g6Vistos[id]={e,n}; save(); };
+function fim(el){ if(el._fim) return; el._fim=true; (el._t||[]).forEach(clearTimeout); el.classList.add('g6-sem','on-lug','on-rel','on-ct','on-et','on-fr'); if(el.dataset.estado==='naofechou') el.classList.add('on-nao'); el.querySelectorAll('.g6s:not(.vazio)').forEach(s=>s.classList.add('on')); }
+function tocar(el,L){ const id=el.dataset.id, est=el.dataset.estado, n=+el.dataset.n; const v=visto(id);
+  el.style.setProperty('--frac',el.dataset.frac); el.addEventListener('click',()=>fim(el));
+  const jaVisto=v&&v.e===est&&est!=='aberto'; const antes=jaVisto?Math.min(v.n,n):0;
+  marcar(id,est,n);
+  if(reduz()){ fim(el); return; }
+  const T=(fn,ms)=>{ (el._t=el._t||[]).push(setTimeout(()=>{ if(!el._fim) fn(); },ms)); };
+  const S6=[...el.querySelectorAll('.g6s:not(.vazio)')];
+  if(jaVisto){ // estado final direto; só quem chegou depois enche (dentro do contorno já desenhado)
+    el.classList.add('g6-sem','on-lug','on-rel','on-ct','on-et','on-fr'); if(est==='naofechou') el.classList.add('on-nao'); S6.slice(0,antes).forEach(s=>s.classList.add('on'));
+    requestAnimationFrame(()=>{ el.classList.remove('g6-sem'); S6.slice(antes).forEach((s,i)=>T(()=>s.classList.add('on'),200+i*600)); T(()=>{ el._fim=true; },200+S6.length*600+600); }); return; }
+  el.classList.add('on-lug'); T(()=>el.classList.add('on-rel'),100);
+  const nEnche=est==='fechado'?Math.min(4,S6.length):S6.length; S6.slice(0,nEnche).forEach((s,i)=>T(()=>s.classList.add('on'),i*600));
+  let t=(nEnche-1)*600+500;
+  if(est==='fechado'){ T(()=>el.classList.add('on-ct'),t+150); t+=150+900; S6.slice(nEnche).forEach((s,i)=>T(()=>s.classList.add('on'),t+150+i*600)); t+=150+(S6.length-nEnche)*600; }
+  if(est==='naofechou'){ T(()=>el.classList.add('on-nao'),t+200); t+=900; }
+  T(()=>el.classList.add('on-et'),t+100); T(()=>el.classList.add('on-fr'),Math.max(t+300,3600)); T(()=>{ el._fim=true; },Math.max(t+300,3600)+600); }
+
+// a lista de pedidos abre a tela; depois de pedir, abre o pedido novo
+document.addEventListener('click',e=>{ const it=e.target.closest&&e.target.closest('.g6-i[data-id]'); if(it&&!e.target.closest('button')) window.g6Ver(it.dataset.id); });
+const _pd=window.g6Pedir; if(_pd) window.g6Pedir=async(...a)=>{ await _pd(...a); try{ const L=await rpc('minhas_procuras',{})||[]; const x=L.slice().sort((p,q)=>String(q.id).localeCompare(String(p.id)))[0]; const novo=L.find(p=>!(S.g6Vistos||{})[p.id])||x; if(novo) window.g6Ver(novo.id); }catch(e){} };
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.7 — volume da semana e deload no check-in semanal (aprovado pelo Tiago em 09/11/2026) =================
+// Mostra por que a próxima semana é (ou não é) de deload. Referência: protótipo "dose_volume_semana_deload" (projeto Editor de Vídeos).
+// A decisão vem de leituraSemana() (coach.js): gatilho = e1RM (Epley) caindo mais de 3% em 2 sessões seguidas; calendário = 6 ou mais
+// das últimas 8 semanas com treino e nenhum check-in de deload. O app NÃO calcula volume nem carga da semana de deload, então a
+// próxima semana não ganha altura inventada: entra o selo "deload" com as faixas da regra (mesma decisão da progressão de carga).
+// Sem deload: a barra entra na altura do plano (séries das próximas sessões da rotação, uma por dia de musculação do perfil).
+// Motion: cubic-bezier(.16,1,.3,1); linha em easeInOutCubic 1,2 s; sem loop, bounce, brilho ou confete. Um toque pula para o fim.
+(function(){
+const V=window.VIEWS;
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const eOut=t=>1-Math.pow(1-t,4);
+const semIni=off=>{ const x=new Date(); x.setDate(x.getDate()-((x.getDay()+6)%7)-7*off); return x.ymd(); };
+const pct=v=>String(Math.round(Math.abs(v)*10)/10).replace('.',',');
+const NS=6;
+
+function e1rm(ex){ const by={}; S.logs.forEach(l=>(l.sets||[]).forEach(s=>{ if(s.ex===ex&&s.done&&s.peso){ const v=s.peso*(1+(s.reps||0)/30); by[l.data]=Math.max(by[l.data]||0,v); } })); return Object.keys(by).sort().map(d=>({d,v:by[d]})); }
+function dados(){ const L=window.leituraSemana?leituraSemana():[]; const gat=L.find(x=>x.t==='Queda de performance em 2 sessões'); const cal=L.find(x=>x.t==='Seis ou mais semanas sem deload');
+  // séries feitas por semana (as últimas 6, da mais antiga para a atual)
+  const sem=[...Array(NS)].map((_,i)=>{ const off=NS-1-i, a=semIni(off), b=semIni(off-1); return S.logs.filter(l=>l.data>=a&&l.data<b).reduce((n,l)=>n+(l.sets||[]).filter(s=>s.done).length,0); });
+  // exercício: o que disparou o gatilho; senão o composto principal (primeiro exercício da primeira sessão da ficha)
+  let ex=null, porque='composto principal'; if(gat){ const nomes=gat.d.split('.')[0].split(',').map(x=>x.trim()); ex=Object.keys(S.pesos).find(k=>EX[k]&&EX[k].nome===nomes[0])||null; if(ex) porque='gatilho'; }
+  if(!ex){ try{ const pr=programa(); const s0=pr.sessoes[Object.keys(pr.sessoes)[0]]; ex=resolveEx(s0.slots[0].ex).id; }catch(e){} }
+  const serie=ex?e1rm(ex).slice(-6):[];
+  // plano da próxima semana
+  let plano=null; try{ const pr=programa(); const ids=Object.keys(pr.sessoes); const k=(S.perfil.diasMusc||[]).length; if(k&&ids.length){ let i=Math.max(0,ids.indexOf(proximaSessaoId())); plano=0; for(let j=0;j<k;j++){ plano+=pr.sessoes[ids[(i+j)%ids.length]].slots.reduce((n,sl)=>n+(sl.sets||0),0); } } }catch(e){}
+  const semTreino=[0,1,2,3,4,5,6,7].filter(k=>{ const a=semIni(k), b=semIni(k-1); return S.logs.some(l=>l.data>=a&&l.data<b); }).length;
+  const tipo=gat?'gatilho':cal?'calendario':serie.length<3?'pouco':'segue';
+  return {tipo,sem,ex,porque,serie,plano,semTreino}; }
+
+function bloco(D){ const {tipo,sem,ex,porque,serie,plano}=D; const max=Math.max(1,...sem,plano||0);
+  const bar=(v,cls,lab)=>`<div class="vd-b ${cls}"><span class="vd-n" data-v="${v}">0</span><i style="--h:${Math.round(v/max*100)}%"></i><small>${lab}</small></div>`;
+  const labs=[...Array(NS)].map((_,i)=>i===NS-1?'esta':`−${NS-1-i}`);
+  const prox=tipo==='gatilho'||tipo==='calendario'?`<div class="vd-b vd-prox vd-dl"><span class="vd-selo">deload</span><small>próxima</small></div>`
+    :plano?bar(plano,'vd-prox vd-pl','próxima'):`<div class="vd-b vd-prox"><span class="vd-selo vd-s2">plano</span><small>próxima</small></div>`;
+  // linha da força
+  let linha=''; if(serie.length>=2){ const W=300,H=86,P=10; const vs=serie.map(x=>x.v); const mn=Math.min(...vs), mx=Math.max(...vs); const y=v=>mx===mn?H/2:H-P-(v-mn)/(mx-mn)*(H-2*P); const x=i=>P+i*(W-2*P)/(serie.length-1);
+    const pts=serie.map((s,i)=>`${x(i).toFixed(1)},${y(s.v).toFixed(1)}`).join(' ');
+    const dots=serie.map((s,i)=>{ const q=i>0?(s.v-serie[i-1].v)/serie[i-1].v*100:0; const cai=i>0&&q<-3&&tipo==='gatilho'&&i>=serie.length-2; return `<g class="vd-pt ${cai?'cai':''}" data-i="${i}"><circle cx="${x(i).toFixed(1)}" cy="${y(s.v).toFixed(1)}" r="3.5"/>${cai?`<text x="${x(i).toFixed(1)}" y="${(y(s.v)+16).toFixed(1)}" text-anchor="middle">−${pct(q)}%</text>`:''}</g>`; }).join('');
+    linha=`<div class="vd-forca"><div class="vd-lb">Força estimada · ${esc(EX[ex]?EX[ex].nome:'—')}${porque==='composto principal'?' (composto principal)':''}</div><svg viewBox="0 0 ${W} ${H+14}"><polyline points="${pts}" pathLength="1"/>${dots}</svg></div>`; }
+  const regra=tipo==='gatilho'?'volume −40 a 50%, carga −10 a 15%, RIR 3 a 4':tipo==='calendario'?'cerca de 50% das séries, carga mantida ou −10 a 20%':'';
+  const fr=tipo==='gatilho'?`A força caiu duas sessões seguidas, mais de 3% cada. A próxima semana é de deload: ${regra}.`
+    :tipo==='calendario'?`Faz ${D.semTreino} semanas de treino. A próxima é de deload, pelo calendário.`
+    :tipo==='pouco'?'Ainda tem pouco histórico para ler a força. A próxima semana segue o plano.'
+    :'Força subindo e sem sinal de fadiga. A próxima semana segue o plano.';
+  return `<div class="vd" data-tipo="${tipo}" role="group" aria-label="Volume da semana e deload"><div class="eyebrow" style="text-align:left">Séries por semana</div>
+   <div class="vd-bars">${sem.map((v,i)=>bar(v,'vd-h',labs[i])).join('')}${prox}</div>
+   ${linha}${regra?`<p class="vd-regra">${regra}</p>`:''}<p class="vd-fr">${fr}</p></div>`; }
+
+const _c=V._checkin; V._checkin=(...a)=>{ const h=_c(...a); let b=''; try{ b=bloco(dados()); }catch(e){ return h; } setTimeout(iniciar,30); return b+h; };
+
+// ---------- animação ----------
+function contar(el,ate,dur){ const t0=performance.now(); const f=t=>{ const k=Math.min(1,(t-t0)/dur); el.textContent=Math.round(ate*eOut(k)); if(k<1) el._raf=requestAnimationFrame(f); }; el._raf=requestAnimationFrame(f); }
+function fim(a){ if(a._fim) return; a._fim=true; (a._t||[]).forEach(clearTimeout); a.querySelectorAll('.vd-n').forEach(n=>{ n._raf&&cancelAnimationFrame(n._raf); n.textContent=n.dataset.v; });
+  a.classList.add('vd-sem','on-l','on-q','on-p','on-fr'); a.querySelectorAll('.vd-b,.vd-pt').forEach(x=>x.classList.add('on')); }
+function tocar(a){ if(a._ini) return; a._ini=true; a.addEventListener('click',()=>fim(a)); if(reduz()){ fim(a); return; }
+  const T=(fn,ms)=>{ (a._t=a._t||[]).push(setTimeout(()=>{ if(!a._fim) fn(); },ms)); };
+  const bs=[...a.querySelectorAll('.vd-h')]; bs.forEach((b,i)=>T(()=>{ b.classList.add('on'); contar(b.querySelector('.vd-n'),+b.querySelector('.vd-n').dataset.v,800); },i*70));
+  let t=(bs.length-1)*70+800+150; const pts=[...a.querySelectorAll('.vd-pt')];
+  if(pts.length){ T(()=>a.classList.add('on-l'),t); pts.forEach((p,i)=>T(()=>p.classList.add('on'),t+i*(1200/Math.max(1,pts.length-1)))); t+=1200+150; T(()=>a.classList.add('on-q'),t); t+=450; }
+  T(()=>{ a.classList.add('on-p'); const p=a.querySelector('.vd-prox'); p.classList.add('on'); const n=p.querySelector('.vd-n'); if(n) contar(n,+n.dataset.v,800); },t);
+  T(()=>a.classList.add('on-fr'),Math.max(t+500,3600)); T(()=>{ a._fim=true; },Math.max(t+500,3600)+600); }
+function iniciar(){ const a=document.querySelector('#view .vd'); if(!a) return; if(!('IntersectionObserver' in window)){ tocar(a); return; } const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ tocar(a); io.disconnect(); } }),{threshold:.35}); io.observe(a); }
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.8 — "Ler do print" na dose do dia (aprovado pelo Tiago em 09/11/2026, Q3) =================
+// Lê o print do resumo do treino (Apple Watch, Garmin ou outro app) no próprio aparelho, sem servidor e sem custo:
+// Tesseract.js 5.1.1 (Apache-2.0) com o modelo de português, servidos pelo site em vendor/ocr/ e baixados só quando a pessoa usa (~5 MB).
+// Os campos lidos entram nos mesmos campos editáveis da dose do dia; a pessoa confere e corrige antes de postar.
+// Testado só com prints simulados (17 de 17 campos); prints reais ainda não testados (hipótese).
+(function(){
+const SH=window.SHARE; if(!SH||!SH.dose) return;
+// Lê o texto de um print de resumo de treino e devolve os campos da dose do dia.
+// Pela unidade (BPM, KM, CAL, PPM, W, h:mm:ss) e, quando falta unidade, pelo rótulo.
+window.lerResumo=function(txt){
+  const t=String(txt||'').replace(/[’'´`]/g,"'").replace(/[“”″]/g,'"').replace(/\r/g,'');
+  const T=t.toLowerCase();
+  const num=s=>parseFloat(String(s).replace(/\s/g,'').replace(',','.'));
+  const out={};
+  // tempo: h:mm:ss ou mm:ss (o primeiro que aparecer perto de "tempo" ou "duração"; senão o primeiro do texto)
+  const tempos=[...T.matchAll(/\b(\d{1,2}):(\d{2})(?::(\d{2}))?\b/g)].filter(m=>!/\d{1,2}:\d{2}\s*[–-]\s*\d/.test(T.slice(m.index,m.index+12)));
+  const perto=tempos.find(m=>/tempo|dura[cç]/.test(T.slice(Math.max(0,m.index-60),m.index)))||tempos.find(m=>m[3]!==undefined)||null;
+  if(perto){ const a=+perto[1],b=+perto[2],c=perto[3]!==undefined?+perto[3]:null; const min=c!==null?a*60+b+c/60:a+b/60; if(min>0&&min<600) out.min=Math.round(min); }
+  const km=T.match(/(\d+[.,]\d+|\d+)\s*km\b(?!\s*\/\s*h)/); if(km){ const v=num(km[1]); if(v>0&&v<400) out.km=v; }
+  const bpm=[...T.matchAll(/(\d{2,3})\s*bpm/g)].map(m=>+m[1]).filter(v=>v>=40&&v<=230);
+  if(bpm.length){ const lm=T.match(/m[aá]x[^\n\d]*?(\d{2,3})\s*bpm/); out.fcMed=bpm.length>1?Math.min(...bpm):bpm[0]; if(bpm.length>1) out.fcMax=lm?+lm[1]:Math.max(...bpm); }
+  else { const fm=T.match(/(?:fc|frequ[eê]ncia card[ií]aca)\s*m[eé]dia\D{0,20}(\d{2,3})/); if(fm) out.fcMed=+fm[1]; const fx=T.match(/(?:fc|frequ[eê]ncia card[ií]aca)\s*m[aá]x\w*\D{0,20}(\d{2,3})/); if(fx) out.fcMax=+fx[1]; }
+  const ca=T.match(/calorias\s+ativas\D{0,30}?(\d{2,4})|(\d{2,4})\s*(?:k?cal)\b/); const cl=T.match(/calorias\D{0,20}?(\d{2,4})/);
+  const kcalA=[...T.matchAll(/(\d{2,4})\s*k?cal\b/g)].map(m=>+m[1]);
+  if(kcalA.length) out.kcal=Math.min(...kcalA); else if(cl) out.kcal=+cl[1];
+  const cad=T.match(/(\d{2,3})\s*(?:ppm|spm|rpm)\b/)||T.match(/cad[eê]ncia[^\n\d]{0,30}(\d{2,3})/); if(cad) out.cad=+cad[1];
+  const pot=T.match(/(\d{2,4})\s*w\b/)||T.match(/pot[eê]ncia[^\n\d]{0,20}(\d{2,4})/); if(pot) out.pot=+pot[1];
+  return out; }
+let carga=null;
+function lib(){ if(window.Tesseract) return Promise.resolve(); if(carga) return carga; carga=new Promise((ok,erro)=>{ const s=document.createElement('script'); s.src='vendor/ocr/tesseract.min.js'; s.onload=ok; s.onerror=()=>{ carga=null; erro(new Error('Sem internet para carregar a leitura')); }; document.head.appendChild(s); }); return carga; }
+window.ddPrint=async(inp)=>{ const f=inp.files&&inp.files[0]; if(!f) return; const st=document.getElementById('ddPrintSt'); const msg=t=>{ if(st) st.textContent=t; };
+  try{ msg('Preparando a leitura… na primeira vez baixa cerca de 5 MB.'); await lib(); msg('Lendo o print…');
+    const w=await Tesseract.createWorker('por',1,{workerPath:'vendor/ocr/worker.min.js',corePath:'vendor/ocr',langPath:'vendor/ocr',gzip:true});
+    const {data}=await w.recognize(f); await w.terminate(); const r=window.lerResumo(data.text); let n=0;
+    const map={min:'dd_min',fcMed:'dd_fcMed',fcMax:'dd_fcMax',cad:'dd_cad',pot:'dd_pot',kcal:'dd_kcal'};
+    Object.entries(map).forEach(([k,id])=>{ const el=document.getElementById(id); if(el&&r[k]!=null){ el.value=r[k]; window.ddCampo(el); n++; } });
+    msg(n?`Li ${n} ${n===1?'campo':'campos'}${r.km!=null?` (distância no print: ${String(r.km).replace('.',',')} km)`:''}. Confira antes de postar.`:'Não achei os números nesse print. Preencha à mão ou tente outro print.');
+  }catch(e){ msg(e.message||'Não consegui ler esse print.'); } finally { inp.value=''; } };
+const _d=SH.dose; SH.dose=async(...a)=>{ const r=await _d(...a); const det=document.querySelector('#sheet details'); if(det&&!det.querySelector('.dd-print')){
+  const box=document.createElement('div'); box.className='dd-print'; box.innerHTML=`<label class="btn sm sec" style="width:auto;margin-top:8px">${I('plus')} Ler do print do relógio<input type="file" accept="image/*" hidden onchange="ddPrint(this)"></label><p class="tiny" id="ddPrintSt" style="margin:6px 0 0">A leitura acontece no seu aparelho. O print não sai dele.</p>`;
+  det.querySelector('summary').insertAdjacentElement('afterend',box); }
+  return r; };
 })();
 
 </script>

@@ -42,7 +42,7 @@ window.g6Pedir=async()=>{ const p=pontos()[esc6.p]; try{ const r=(await rpc('que
 async function g6Lista(){ const el=document.getElementById('g6Lista'); if(!el||!U()) return;
   try{ const L=await rpc('minhas_procuras',{})||[]; if(!L.length){ el.innerHTML=''; return; }
     el.innerHTML=`<div class="g6-l">${L.map(x=>{ const prazo=new Date(x.quando).getTime()-864e5<Date.now(); const st=x.treino_id?`Grupo fechado`:prazo?'Não fechou. Não marcamos.':`${x.esperando} de 4 na lista`;
-      return `<div class="g6-i"><div><b>${esc(x.ponto)}</b><span class="tiny">${quandoTxt(x.quando)} · ${st}</span></div>${x.treino_id?`<button class="lk" onclick="comAba('pontos');rgAbrirTreino('${x.treino_id}')">ver ›</button>`:`<button class="lk" onclick="g6Sair('${x.id}')">${prazo?'limpar':'sair'}</button>`}</div>`; }).join('')}</div>`; }catch(e){ el.innerHTML=''; } }
+      return `<div class="g6-i" data-id="${x.id}" role="button" tabindex="0"><div><b>${esc(x.ponto)}</b><span class="tiny">${quandoTxt(x.quando)} · ${st}</span></div>${x.treino_id?`<button class="lk" onclick="comAba('pontos');rgAbrirTreino('${x.treino_id}')">ver ›</button>`:`<button class="lk" onclick="g6Sair('${x.id}')">${prazo?'limpar':'sair'}</button>`}</div>`; }).join('')}</div>`; }catch(e){ el.innerHTML=''; } }
 window.g6Sair=async(id)=>{ try{ await api(`procuras?id=eq.${id}`,{method:'DELETE'}); g6Lista(); }catch(e){ toast(e.message); } };
 
 // ---------- G4 · virar grupo fixo ----------
