@@ -646,7 +646,8 @@ html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 .mp4-acoes{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
 
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="vendor/chart-4.4.1.umd.js"></script>
+<script>window.Chart||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"><\/script>')</script>
 <!-- Google Analytics 4 (propriedade "DOSE app", stream "DOSE web") -->
 
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-1JLM8045TT',{anonymize_ip:true,send_page_view:true});window.addEventListener('hashchange',()=>gtag('event','page_view',{page_title:document.title,page_location:location.href,page_path:location.hash.replace('#','/')}));</script>
@@ -4497,8 +4498,10 @@ function parse(txt){
 
 // ---------- PDF (lido no aparelho, biblioteca carregada só quando precisa) ----------
 let pdfLib=null;
-function carregaPdf(){ if(pdfLib) return pdfLib; pdfLib=new Promise((ok,erro)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-  s.onload=()=>{ try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; ok(window.pdfjsLib); }catch(e){ erro(e); } }; s.onerror=()=>{ pdfLib=null; erro(new Error('sem internet')); }; document.head.appendChild(s); }); return pdfLib; }
+// Plano B: cópia no próprio site (vendor/) primeiro; a CDN só entra se a cópia falhar.
+function carregaPdf(){ if(pdfLib) return pdfLib; const tenta=(js,wk)=>new Promise((ok,erro)=>{ const s=document.createElement('script'); s.src=js;
+  s.onload=()=>{ try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc=wk; ok(window.pdfjsLib); }catch(e){ erro(e); } }; s.onerror=()=>erro(new Error('falhou')); document.head.appendChild(s); });
+  pdfLib=tenta('vendor/pdf-3.11.174.min.js','vendor/pdf-3.11.174.worker.min.js').catch(()=>tenta('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js')).catch(e=>{ pdfLib=null; throw e; }); return pdfLib; }
 async function textoDoPdf(file){ const lib=await carregaPdf(); const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise; let out='';
   for(let i=1;i<=doc.numPages;i++){ const pg=await doc.getPage(i); const tc=await pg.getTextContent(); let y=null, linha='';
     tc.items.forEach(it=>{ const yy=Math.round(it.transform[5]); if(y!==null&&Math.abs(yy-y)>3){ out+=linha.trim()+'\n'; linha=''; } y=yy; linha+=it.str+(it.hasEOL?'\n':' '); }); out+=linha.trim()+'\n'; }
@@ -4601,8 +4604,10 @@ V.comunidade_mapa=()=>{ setTitle('Pontos de treino'); const st=p=>window.statusH
 
 let lib=null, mapa=null;
 function carregar(){ if(window.maplibregl) return Promise.resolve(window.maplibregl); if(lib) return lib;
-  lib=new Promise((ok,erro)=>{ const css=document.createElement('link'); css.rel='stylesheet'; css.href='https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css'; document.head.appendChild(css);
-    const s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js'; s.onload=()=>ok(window.maplibregl); s.onerror=()=>{ lib=null; erro(new Error('sem internet')); }; document.head.appendChild(s); }); return lib; }
+  // Plano B: cópia da biblioteca no próprio site (vendor/); a CDN só entra se a cópia falhar.
+  const tenta=(js,css)=>new Promise((ok,erro)=>{ const l=document.createElement('link'); l.rel='stylesheet'; l.href=css; document.head.appendChild(l);
+    const s=document.createElement('script'); s.src=js; s.onload=()=>window.maplibregl?ok(window.maplibregl):erro(new Error('vazio')); s.onerror=()=>erro(new Error('falhou')); document.head.appendChild(s); });
+  lib=tenta('vendor/maplibre-gl-4.7.1.js','vendor/maplibre-gl-4.7.1.css').catch(()=>tenta('https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js','https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css')).catch(e=>{ lib=null; throw e; }); return lib; }
 function pintar(map){ const st=map.getStyle(); st.layers.forEach(l=>{ const id=l.id, t=l.type; try{
   if(t==='background') map.setPaintProperty(id,'background-color','#0F1012');
   else if(t==='fill'&&/water/.test(id)) map.setPaintProperty(id,'fill-color','#17181B');

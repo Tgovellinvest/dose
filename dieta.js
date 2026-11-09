@@ -26,8 +26,10 @@ function parse(txt){
 
 // ---------- PDF (lido no aparelho, biblioteca carregada só quando precisa) ----------
 let pdfLib=null;
-function carregaPdf(){ if(pdfLib) return pdfLib; pdfLib=new Promise((ok,erro)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-  s.onload=()=>{ try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; ok(window.pdfjsLib); }catch(e){ erro(e); } }; s.onerror=()=>{ pdfLib=null; erro(new Error('sem internet')); }; document.head.appendChild(s); }); return pdfLib; }
+// Plano B: cópia no próprio site (vendor/) primeiro; a CDN só entra se a cópia falhar.
+function carregaPdf(){ if(pdfLib) return pdfLib; const tenta=(js,wk)=>new Promise((ok,erro)=>{ const s=document.createElement('script'); s.src=js;
+  s.onload=()=>{ try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc=wk; ok(window.pdfjsLib); }catch(e){ erro(e); } }; s.onerror=()=>erro(new Error('falhou')); document.head.appendChild(s); });
+  pdfLib=tenta('vendor/pdf-3.11.174.min.js','vendor/pdf-3.11.174.worker.min.js').catch(()=>tenta('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js')).catch(e=>{ pdfLib=null; throw e; }); return pdfLib; }
 async function textoDoPdf(file){ const lib=await carregaPdf(); const doc=await lib.getDocument({data:await file.arrayBuffer()}).promise; let out='';
   for(let i=1;i<=doc.numPages;i++){ const pg=await doc.getPage(i); const tc=await pg.getTextContent(); let y=null, linha='';
     tc.items.forEach(it=>{ const yy=Math.round(it.transform[5]); if(y!==null&&Math.abs(yy-y)>3){ out+=linha.trim()+'\n'; linha=''; } y=yy; linha+=it.str+(it.hasEOL?'\n':' '); }); out+=linha.trim()+'\n'; }

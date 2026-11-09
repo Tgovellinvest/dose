@@ -1,0 +1,61 @@
+# DOSE · saúde diária dos serviços (custo zero)
+# Todo dia às 8h17 (Rio) testa o site e cada serviço externo do app. Se algo falhar, abre (ou atualiza)
+# a issue "Alerta de saúde da DOSE" e o GitHub avisa o dono do repositório por e-mail e no app.
+# A consulta ao Supabase também conta como atividade e evita a pausa do plano grátis (7 dias sem uso).
+# Só usa a chave publicável do Supabase, que já é pública no código do app.
+name: Saúde da DOSE
+on:
+  schedule:
+    - cron: '17 11 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  saude:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testar serviços
+        id: teste
+        env:
+          SB: https://typfaauucqkztdhmbhqb.supabase.co
+          KEY: sb_publishable_MwvaO9YLPu_PwR_MqVQm-Q_QCAEPJHI
+        run: |
+          falhas=""
+          checa () { # nome url [header]
+            if [ -n "$3" ]; then code=$(curl -s -o /tmp/r -w '%{http_code}' --max-time 25 -H "$3" -H "apikey: $KEY" -A 'DOSE-saude/1.0 (github.com/Tgovellinvest/dose)' "$2");
+            else code=$(curl -s -o /tmp/r -w '%{http_code}' --max-time 25 -A 'DOSE-saude/1.0 (github.com/Tgovellinvest/dose)' "$2"); fi
+            echo "$1: $code"
+            case "$code" in 2*) ;; *) falhas="$falhas\n- **$1** respondeu $code ($2)";; esac
+          }
+          checa "Site (GitHub Pages)" "https://tgovellinvest.github.io/dose/"
+          checa "Versão publicada (sw.js)" "https://tgovellinvest.github.io/dose/sw.js"
+          grep -q "dose-v" /tmp/r || falhas="$falhas\n- **sw.js** não traz a versão"
+          checa "Supabase · login" "$SB/auth/v1/health" "Authorization: Bearer $KEY"
+          checa "Supabase · banco (mantém o projeto acordado)" "$SB/rest/v1/grupos?select=id&limit=1" "Authorization: Bearer $KEY"
+          checa "Mapa · OpenFreeMap" "https://tiles.openfreemap.org/styles/positron"
+          checa "Fontes · Google Fonts" "https://fonts.googleapis.com/css2?family=Archivo:wght@900&display=swap"
+          checa "Código de barras · Open Food Facts" "https://world.openfoodfacts.org/api/v2/product/3017620422003.json?fields=code"
+          checa "Reserva · cdnjs (Chart.js)" "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+          checa "Reserva · jsDelivr (MapLibre)" "https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"
+          printf "%b" "$falhas" > /tmp/falhas.md
+          if [ -s /tmp/falhas.md ]; then echo "falhou=1" >> "$GITHUB_OUTPUT"; else echo "falhou=0" >> "$GITHUB_OUTPUT"; fi
+      - name: Avisar ou encerrar o alerta
+        uses: actions/github-script@v7
+        env:
+          FALHOU: ${{ steps.teste.outputs.falhou }}
+        with:
+          script: |
+            const fs=require('fs'); const titulo='Alerta de saúde da DOSE';
+            const abertas=await github.rest.issues.listForRepo({owner:context.repo.owner,repo:context.repo.repo,state:'open',per_page:50});
+            const atual=abertas.data.find(i=>i.title===titulo);
+            const quando=new Date().toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'});
+            if(process.env.FALHOU==='1'){
+              const corpo=`Teste de ${quando}\n\nO que falhou:\n${fs.readFileSync('/tmp/falhas.md','utf8')}\n\nO plano B de cada serviço está no documento "DOSE - Serviços Externos e Plano B" do projeto.`;
+              if(atual) await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:atual.number,body:corpo});
+              else await github.rest.issues.create({owner:context.repo.owner,repo:context.repo.repo,title:titulo,body:corpo,assignees:[context.repo.owner]});
+              core.setFailed('Serviço fora do ar');
+            } else if(atual){
+              await github.rest.issues.createComment({owner:context.repo.owner,repo:context.repo.repo,issue_number:atual.number,body:`Tudo voltou ao normal em ${quando}.`});
+              await github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:atual.number,state:'closed'});
+            }

@@ -32,8 +32,10 @@ V.comunidade_mapa=()=>{ setTitle('Pontos de treino'); const st=p=>window.statusH
 
 let lib=null, mapa=null;
 function carregar(){ if(window.maplibregl) return Promise.resolve(window.maplibregl); if(lib) return lib;
-  lib=new Promise((ok,erro)=>{ const css=document.createElement('link'); css.rel='stylesheet'; css.href='https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css'; document.head.appendChild(css);
-    const s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js'; s.onload=()=>ok(window.maplibregl); s.onerror=()=>{ lib=null; erro(new Error('sem internet')); }; document.head.appendChild(s); }); return lib; }
+  // Plano B: cópia da biblioteca no próprio site (vendor/); a CDN só entra se a cópia falhar.
+  const tenta=(js,css)=>new Promise((ok,erro)=>{ const l=document.createElement('link'); l.rel='stylesheet'; l.href=css; document.head.appendChild(l);
+    const s=document.createElement('script'); s.src=js; s.onload=()=>window.maplibregl?ok(window.maplibregl):erro(new Error('vazio')); s.onerror=()=>erro(new Error('falhou')); document.head.appendChild(s); });
+  lib=tenta('vendor/maplibre-gl-4.7.1.js','vendor/maplibre-gl-4.7.1.css').catch(()=>tenta('https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js','https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css')).catch(e=>{ lib=null; throw e; }); return lib; }
 function pintar(map){ const st=map.getStyle(); st.layers.forEach(l=>{ const id=l.id, t=l.type; try{
   if(t==='background') map.setPaintProperty(id,'background-color','#0F1012');
   else if(t==='fill'&&/water/.test(id)) map.setPaintProperty(id,'fill-color','#17181B');
