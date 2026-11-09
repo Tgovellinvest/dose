@@ -1,38 +1,18 @@
-/* ================= DOSE · v8.0 — "Luxo silencioso" (prévia para o DOSE Studio; aprovada em princípio pelo Tiago em 09/11/2026, Q1 a Q5) =================
-   Filosofia: luxo silencioso funcional, minimalismo quente carioca, evitar ostentação. Subtrair, não redesenhar.
-   Q1 botão principal marfim; ember só no ponto, no "feito" e no mapa. Q2 sem bordas nos cards, +25% de respiro.
-   Q3 caixa-alta 900 só no título da tela; seções em Archivo 700 normal. Q4 grafite levemente mais quente, tema claro marfim quente.
-   As animações ficam todas, cerca de 20% mais calmas.
-   Só vale quando <html data-visual="silencio">. Sem gradiente, sem brilho. */
-html[data-visual="silencio"]{
-  --bg:#100F0E; --s1:#181715; --s2:#1F1E1B; --s3:#292724; --line:#2A2825;
-  --tx:#F4F2ED; --tx2:#AAA69E; --tx3:#7A766F; --bone:#DCD5C6;
-  --gap:16px; --base:320ms; --slow:840ms; --fast:170ms;
-}
-html[data-visual="silencio"][data-theme=light]{--bg:#F4F2ED;--s1:#FBFAF7;--s2:#ECE9E2;--s3:#E2DED5;--line:#E2DED5;--tx:#1A1916;--tx2:#615D56;--tx3:#8F8A82;--bone:#55504A}
-/* Q2 · respiro e menos caixa */
-html[data-visual="silencio"] .view{padding-left:22px;padding-right:22px}
-html[data-visual="silencio"] .card,html[data-visual="silencio"] .item,html[data-visual="silencio"] .cm,html[data-visual="silencio"] .chip{border-color:transparent}
-html[data-visual="silencio"] .card{padding:20px}
-html[data-visual="silencio"] .list{gap:10px}
-html[data-visual="silencio"] .btn.ghost{border-color:var(--s3)}
-/* Q1 · ember só onde é o ponto */
-html[data-visual="silencio"] .btn.em{background:var(--tx);color:var(--bg)}
-html[data-visual="silencio"] .serif i,html[data-visual="silencio"] .coach i{color:var(--bone)}
-html[data-visual="silencio"] h3::before{display:none}
-html[data-visual="silencio"] .eyebrow.em{color:var(--tx3)}
-/* Q3 · tipografia que fala baixo */
-html[data-visual="silencio"] h1.sec{font-size:24px;margin:10px 0 8px}
-html[data-visual="silencio"] h3{font-size:15px;font-weight:700;text-transform:none;letter-spacing:-.01em;color:var(--tx);margin:30px 0 10px}
-html[data-visual="silencio"] .eyebrow{letter-spacing:.2em;font-weight:600}
-html[data-visual="silencio"] .tiny{color:var(--tx3)}
-/* abas: a pílula ativa some no fundo, o texto marca */
-html[data-visual="silencio"] .seg{background:transparent;border-bottom:1px solid var(--line);border-radius:0;padding:0 0 2px;mask-image:none}
-html[data-visual="silencio"] .seg button,html[data-visual="silencio"] .seg button.on{background:none;box-shadow:none}
-html[data-visual="silencio"] .seg button.on{color:var(--tx)}
-html[data-visual="silencio"] .seg .m3-ind{top:auto;bottom:-1px;height:2px;border-radius:1px;background:var(--tx);box-shadow:none}
-@media (prefers-reduced-motion:reduce){html[data-visual="silencio"]{--base:0ms;--slow:0ms}}
-/* sem brilho atrás do medidor; pilares sem borda; menu em marfim (o ember fica no ponto) */
-html[data-visual="silencio"] .hero4:before{display:none}
-html[data-visual="silencio"] .pilar{border-color:transparent}
-html[data-visual="silencio"] .menubtn{color:var(--tx)}
+/* ================= DOSE · v8.1 — "Luxo silencioso", só o que o Tiago aprovou no DOSE Studio (09/11/2026) =================
+   Aprovado: cards sem borda e com mais respiro; títulos de seção em caixa normal; abas em texto com um traço embaixo;
+   as mesmas animações, um pouco mais calmas (cerca de 20%).
+   Ficou de fora (continua como antes): botão ember, cores, brilho do medidor, menu em ember. */
+:root{--gap:16px;--base:320ms;--slow:840ms;--fast:170ms}
+/* cards sem borda e mais respiro */
+.view{padding-left:22px;padding-right:22px}
+.card,.item,.cm,.pilar{border-color:transparent}
+.card{padding:20px}
+.list{gap:10px}
+/* títulos de seção em caixa normal */
+h3{font-size:15px;font-weight:700;text-transform:none;letter-spacing:-.01em;color:var(--tx);margin:30px 0 10px}
+/* abas: texto com um traço embaixo, sem pílula */
+.seg:not(.ck):not(.intens){background:transparent;border-bottom:1px solid var(--line);border-radius:0;padding:0 0 2px;mask-image:none}
+.seg:not(.ck):not(.intens) button,.seg:not(.ck):not(.intens) button.on{background:none;box-shadow:none}
+.seg:not(.ck):not(.intens) button.on{color:var(--tx)}
+.seg:not(.ck):not(.intens) .m3-ind{top:auto;bottom:-1px;height:2px;border-radius:1px;background:var(--tx);box-shadow:none}
+@media (prefers-reduced-motion:reduce){:root{--base:0ms;--slow:0ms}}
