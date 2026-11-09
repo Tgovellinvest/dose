@@ -690,6 +690,13 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 .g6-i{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .g6-i>div{min-width:0}.g6-i b{display:block;font-size:14px}.g6-i .tiny{display:block}
 .g6-ch{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.g6-ch::-webkit-scrollbar{display:none}.g6-ch .chip{flex:none}
+/* v8.2 · menos toques e primeira dose */
+.ut-card{display:flex;gap:12px;align-items:center;justify-content:space-between}.ut-card>div{min-width:0}.ut-card b{display:block}.ut-card .tiny{display:block;margin-top:2px}.ut-card .btn{flex:none;width:auto}
+.ut-dieta{width:auto;margin:8px 0 2px}
+.ut-sempre{margin:4px 0 12px}.ut-sempre .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.ut-sempre .chips::-webkit-scrollbar{display:none}.ut-sempre .chip{flex:none;max-width:78vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ut-rep{margin:0 0 6px}.ut-rep .btn{width:auto;margin:4px 6px 0 0}
+.ut-min{margin-top:6px}.ut-sal{margin-left:8px}
+.pd-aviso{margin:10px 0 2px}.pd-aviso b{display:block;font-size:17px;letter-spacing:-.02em;margin-top:2px}
 
 </style>
 <style>
@@ -4946,13 +4953,16 @@ const _ac=A.comunidade; A.comunidade=(p)=>{ const r=_ac?_ac(p):null;
 
 // ---------- Convites ----------
 async function cvCarregar(){ const box=document.getElementById('cvBox'); if(!box||!U()) return;
-  try{ const L=await api(`convites?de=eq.${U().id}&select=numero,codigo,para_nome,criado,usado_em&order=criado.desc&limit=50`)||[];
+  try{ const L=await api(`convites?de=eq.${U().id}&select=numero,codigo,para_nome,criado,usado_em,primeira_dose_em&order=criado.desc&limit=50`)||[];
     const ini=new Date(); const mesRio=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).format(ini);
-    const doMes=L.filter(c=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).format(new Date(c.criado))===mesRio).length; const livres=Math.max(0,3-doMes);
+    const D14=14*864e5, agora=Date.now(); const conta=c=>!!c.primeira_dose_em||(!c.usado_em&&agora-new Date(c.criado)<D14)||(!!c.usado_em&&agora-new Date(c.usado_em)<D14);
+    const doMes=L.filter(c=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).format(new Date(c.criado))===mesRio&&conta(c)).length;
+    const dm=t=>new Date(t).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit'});
+    const st=c=>c.primeira_dose_em?`Primeira dose em ${dm(c.primeira_dose_em+'T12:00:00')}`:c.usado_em?(conta(c)?`Aceito. Primeira dose até ${dm(new Date(c.usado_em).getTime()+D14)}`:'Sem primeira dose. Voltou para a sua cota'):(conta(c)?`Aguardando até ${dm(new Date(c.criado).getTime()+D14)}`:'Venceu sem aceite. Voltou para a sua cota'); const livres=Math.max(0,3-doMes);
     const mes=MES[+mesRio.slice(5,7)-1];
-    box.innerHTML=`<div class="card cv-cota"><div class="cv-pts" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<livres?'on':''}"></i>`).join('')}</div><div><b>${livres} ${livres===1?'convite livre':'convites livres'} em ${mes}</b><div class="tiny">Cada membro tem 3 por mês. Quem recebe ganha um número de membro.</div></div></div>
+    box.innerHTML=`<div class="card cv-cota"><div class="cv-pts" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<livres?'on':''}"></i>`).join('')}</div><div><b>${livres} ${livres===1?'convite livre':'convites livres'} em ${mes}</b><div class="tiny">Cada membro tem 3 por mês. O convite se completa na primeira dose: vocês dois num treino em até 14 dias. Se não acontecer, ele volta para a sua cota.</div></div></div>
      <button class="btn em" ${livres?'':'disabled'} onclick="cvNovo()">${livres?'Fazer um convite':'Novos convites no mês que vem'}</button>
-     ${L.length?`<h3>Seus convites</h3><div class="list">${L.map(c=>`<div class="item" onclick="cvVer('${c.codigo}')"><div class="n"><b class="mono">${nr(c.numero)}</b></div><div class="t"><b>${esc(c.para_nome)}</b><span>${c.usado_em?'Aceito. Já é da comunidade DOSE':'Aguardando'}</span></div><span class="arrow">›</span></div>`).join('')}</div>`:''}`; }
+     ${L.length?`<h3>Seus convites</h3><div class="list">${L.map(c=>`<div class="item" onclick="cvVer('${c.codigo}')"><div class="n"><b class="mono">${nr(c.numero)}</b></div><div class="t"><b>${esc(c.para_nome)}</b><span>${st(c)}</span></div><span class="arrow">›</span></div>`).join('')}</div>`:''}`; }
   catch(e){ box.innerHTML=`<div class="card"><b>Não carregou</b><p class="small">${esc(e.message)}</p></div>`; } }
 window.cvNovo=()=>{ if(!U()) return garantirConta(cvNovo,'Para convidar');
   sheet(`<h3>Fazer um convite</h3><p class="small">O convite vai com um número e com o seu nome. Escolha alguém que treina com você.</p>
@@ -5093,6 +5103,130 @@ const _enc=window.encontro; if(_enc) window.encontro=async(id)=>{ await _enc(id)
     box.insertAdjacentElement('afterend',b);
     const p=document.createElement('p'); p.className='tiny'; p.style.margin='6px 0 0'; p.textContent=`Você e ${mut.length} pessoas desse treino marcaram "treinaria de novo" entre si.`; b.insertAdjacentElement('afterend',p);
   }catch(e){} };
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.2 — registrar com menos toques, sem digitar (aprovado pelo Tiago em 09/11/2026, Q2 e Q4) =================
+// Regra: o app propõe, a pessoa confirma ou corrige.
+// 1. Sessão em um toque: "Fiz como da última vez" marca todas as séries com a carga e as repetições da última vez.
+//    Quando o coach manda subir (bateu o topo da faixa em todas as séries), a carga já vem com +2,5 kg ou +1 placa (Q2).
+// 2. "Segui a dieta hoje": marca todas as refeições da dieta importada; a pessoa desmarca a que não fez.
+// 3. "O de sempre": no diário, até 3 refeições que a pessoa repete naquele horário (histórico do próprio aparelho).
+// 4. Refeição salva: guarda os itens de uma refeição com nome automático e lança tudo de novo num toque.
+// 5. Esporte em um toque: repetir o último registro de cada esporte e chips de duração.
+// Nenhum dado sai do aparelho. Incremento de 2,5 kg segue a regra que o coach já usa (sugestaoCarga, app.js).
+(function(){
+const V=window.VIEWS;
+const shift=(d,n)=>{ const x=new Date(d+'T12:00:00'); x.setDate(x.getDate()+n); return x.ymd(); };
+
+// ---------- 1 · sessão em um toque ----------
+const _ses=V.sessao; V.sessao=(p)=>{ const h=_ses(p); if(!/class="set-row"/.test(h)) return h;
+  const temHist=document&&Object.keys(S.pesos||{}).length>0; if(!temHist) return h;
+  const bt=`<div class="card ut-card"><div><b>Fiz como da última vez</b><span class="tiny">Marca todas as séries com a carga da última vez (já com a subida quando o coach manda). Depois toque só no que mudou.</span></div><button class="btn sm sec" onclick="utSessao('${p.s}')">Marcar tudo</button></div>`;
+  const i=h.indexOf('<details><summary>Aquecimento'); return i>=0?h.slice(0,i)+bt+h.slice(i):h; };
+window.utSessao=(sess)=>{ const pr=programa(); const s=pr.sessoes[sess]; if(!s) return; let n=0, sub=0, sem=0;
+  const faixa={}; s.slots.forEach(sl=>{ faixa[resolveEx(sl.ex).id]=sl.reps; });
+  document.querySelectorAll('#view .set-row').forEach(r=>{ const ins=r.querySelectorAll('input[data-ex]'); const ck=r.querySelector('.ck'); if(!ins.length||!ck||ck.classList.contains('done')) return;
+    const ex=ins[0].dataset.ex, k=+ins[0].dataset.set; const ult=window.ultSet?ultSet(ex,k):null; const last=S.pesos[ex];
+    const carga=r.querySelector('input[data-f=peso],input[data-f=placas]'), reps=r.querySelector('input[data-f=reps]');
+    const sug=typeof sugestaoCarga==='function'?sugestaoCarga(ex,faixa[ex]):null;
+    let v=carga.value!==''?num(carga.value):null;
+    if(sug&&sug.up){ if(carga.dataset.f==='placas'&&sug.placas!=null) v=sug.placas; else if(last&&last.peso) v=Math.round((last.peso+2.5)*2)/2; }
+    else if(v==null&&ult) v=carga.dataset.f==='placas'?ult.placas:ult.peso;
+    let rp=reps.value!==''?num(reps.value):(ult&&ult.reps)||null; if(sug&&sug.up&&reps.value===''){ const mn=parseInt(String(faixa[ex]||'').replace(/\/.*$/,'')); if(mn) rp=mn; }
+    if(v==null||!rp){ sem++; return; }
+    carga.value=v; reps.value=rp; ck.classList.add('done'); n++; if(sug&&sug.up) sub++; });
+  if(window.saveDraft) saveDraft(sess); else if(typeof saveDraft==='function') saveDraft(sess);
+  if(navigator.vibrate) try{ navigator.vibrate(18); }catch(e){}
+  toast(n?`${n} séries marcadas${sub?` · carga subiu onde o coach mandou`:''}${sem?` · ${sem} sem histórico, preencha`:''}`:'Nenhuma série com histórico para repetir'); };
+
+// ---------- 2 · dieta inteira em um toque ----------
+const botaoDieta=h=>h.replace(/(<b class="num" id="dtTot">(\d+) de (\d+)<\/b><\/div>)/,(m,a,f,n)=>{ const d=(h.match(/dtCheck\(this,'(\d{4}-\d{2}-\d{2})'/)||[])[1]; if(!d||+f>=+n) return a; return `${a}<button class="btn sm sec ut-dieta" onclick="utDieta('${d}')">Segui a dieta ${d===today()?'hoje':'nesse dia'}</button>`; });
+const _nut=V.nutricao; V.nutricao=(p)=>{ let h=_nut(p); h=botaoDieta(h); if(/<h1 class="sec">Diário<\/h1>/.test(h)) h=diario(h,(p&&p.d)||today()); return h; };
+if(V.hoje){ const _hj=V.hoje; V.hoje=(p)=>botaoDieta(_hj(p)); }
+window.utDieta=(d)=>{ const dt=S.dieta; if(!dt) return; S.dietaChecks=S.dietaChecks||{}; S.dietaChecks[d]=dt.refeicoes.map(r=>r.id); save(); if(navigator.vibrate) try{ navigator.vibrate(18); }catch(e){} toast('Todas as refeições marcadas. Desmarque a que não fez.'); route(); };
+
+// ---------- 3 e 4 · "o de sempre" e refeição salva ----------
+const PER=[["cafe","Café da manhã",5,10],["almoco","Almoço",11,14],["lanche","Lanche",15,18],["jantar","Jantar",19,22],["ceia","Ceia",22,29]];
+const perAgora=()=>{ const h=+new Intl.DateTimeFormat('en-GB',{timeZone:'America/Sao_Paulo',hour:'2-digit',hour12:false}).format(new Date()); const x=PER.find(([,,a,b])=>(h<5?h+24:h)>=a&&(h<5?h+24:h)<b); return x?x[0]:'almoco'; };
+const assin=its=>its.map(x=>x.nome).sort().join('|');
+function deSempre(per,d){ const desde=shift(d,-30); const dias={}; S.diario.filter(x=>x.data>=desde&&x.data<d&&(x.per||'almoco')===per).forEach(x=>{ (dias[x.data]=dias[x.data]||[]).push(x); });
+  const c={}; Object.values(dias).forEach(its=>{ const k=assin(its); if(!c[k]) c[k]={n:0,its}; c[k].n++; });
+  const hist=Object.values(c).filter(x=>x.n>=2).sort((a,b)=>b.n-a.n).map(x=>({nome:x.its.map(i=>i.nome).slice(0,3).join(', ')+(x.its.length>3?'…':''),itens:x.its,vezes:x.n}));
+  const salvas=(S.refSalvas||[]).filter(r=>r.per===per).map(r=>({nome:r.nome,itens:r.itens,salva:r.id}));
+  const vistos=new Set(); return [...salvas,...hist].filter(r=>{ const k=assin(r.itens); if(vistos.has(k)) return false; vistos.add(k); return true; }).slice(0,3); }
+let ofertas=[];
+function diario(h,d){ const per=perAgora(); const nomePer=(PER.find(x=>x[0]===per)||[])[1]; const ja=S.diario.some(x=>x.data===d&&(x.per||'almoco')===per);
+  ofertas=ja?[]:deSempre(per,d);
+  const box=ofertas.length?`<div class="ut-sempre"><div class="eyebrow" style="text-align:left">O de sempre · ${esc(nomePer)}</div><div class="chips">${ofertas.map((o,i)=>`<button class="chip" onclick="utSempre('${d}','${per}',${i})">${esc(o.nome)}${o.vezes?` <span class="tiny">${o.vezes}×</span>`:''}</button>`).join('')}</div></div>`:'';
+  if(box){ const i=h.indexOf('<div class="card hero">'); if(i>=0) h=h.slice(0,i)+box+h.slice(i); }
+  // salvar refeição: períodos do dia com 2 itens ou mais
+  return h.replace(/(<button class="btn sm ghost" onclick="S\._per='(\w+)';sheet\(V\._addFood\('[\d-]+'\)\)">[^<]*<\/button>)/g,(m,a,k)=>{ const its=S.diario.filter(x=>x.data===d&&(x.per||'almoco')===k); if(its.length<2) return a;
+    const sal=(S.refSalvas||[]).some(r=>r.per===k&&assin(r.itens)===assin(its)); return a+(sal?'<span class="tiny ut-sal">Refeição salva</span>':`<button class="btn sm ghost" onclick="utSalvar('${d}','${k}')">Salvar refeição</button>`); }); }
+window.utSempre=(d,per,i)=>{ const o=ofertas[i]; if(!o) return; o.itens.forEach(x=>S.diario.push(Object.assign({},x,{id:uid(),data:d,per}))); save(); if(navigator.vibrate) try{ navigator.vibrate(18); }catch(e){} toast(`${o.itens.length} ${o.itens.length===1?'item lançado':'itens lançados'}`); route(); };
+window.utSalvar=(d,per)=>{ const its=S.diario.filter(x=>x.data===d&&(x.per||'almoco')===per).map(x=>({nome:x.nome,qtd:x.qtd,k:x.k,p:x.p,c:x.c,g:x.g})); if(its.length<2) return;
+  const base=(PER.find(x=>x[0]===per)||[,'Refeição'])[1]; const nome=`${base} · ${its.slice(0,2).map(x=>x.nome.split(/[,(]/)[0].trim()).join(' e ')}${its.length>2?' e mais':''}`;
+  S.refSalvas=S.refSalvas||[]; S.refSalvas.push({id:uid(),per,nome:nome.slice(0,60),itens:its}); save(); toast('Refeição salva. Aparece no "o de sempre" desse horário.'); route(); };
+
+// ---------- 5 · esporte em um toque ----------
+const INT={baixa:'leve',media:'média',alta:'forte'};
+const _le=V._logEsporte; V._logEsporte=(pre)=>{ let h=_le(pre); const vistos=new Set(); const ult=[];
+  for(let i=S.bjj.length-1;i>=0&&ult.length<2;i--){ const b=S.bjj[i]; const k=b.esporte||b.tipo; if(!k||vistos.has(k)||!b.min) continue; vistos.add(k); ult.push(b); }
+  const rep=ult.length?`<div class="ut-rep"><div class="eyebrow" style="text-align:left">Repetir em um toque</div>${ult.map(b=>`<button class="btn sm sec" onclick="utEsporte('${b.id}')">${esc(b.tipo||'Esporte')} · ${b.min} min${b.intens?` · ${INT[b.intens]||b.intens}`:''}</button>`).join('')}<p class="tiny" style="margin:4px 0 0">Lança hoje igual ao último. Ou preencha abaixo.</p></div>`:'';
+  h=h.replace('<label>Data</label>',rep+'<label>Data</label>');
+  h=h.replace(/(<input id="esMin" type="number"[^>]*>)/,`$1<div class="chips ut-min">${[30,45,60,90].map(m=>`<button type="button" class="chip" onclick="document.getElementById('esMin').value=${m};this.parentNode.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c===this))">${m}</button>`).join('')}</div>`);
+  return h; };
+window.utEsporte=(id)=>{ const b=S.bjj.find(x=>x.id===id); if(!b) return; const n=Object.assign({},b,{id:uid(),data:today(),notas:'',dores:{},dorCot:0,dorJo:0}); delete n.rel; delete n.fonte;
+  S.bjj.push(n); S.bjj.sort((a,c)=>a.data.localeCompare(c.data)); save(); closeSheet(); toast(`${b.tipo||'Esporte'} registrado`); route(); if(window.SHARE&&SHARE.dose) setTimeout(()=>SHARE.dose('esporte',n.id),350); };
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.2 — "Primeira dose" (aprovada pelo Tiago em 09/11/2026, Q1) =================
+// O convite só se completa quando quem convidou e quem chegou treinam juntos (presença confirmada) em até 14 dias do aceite.
+// Vira o cartão "Primeira dose · Nº 0137" com os dois nomes, o ponto e a data; medalhas Padrinho (quem convidou) e Primeira dose (quem chegou).
+// Se não acontecer, o convite volta para a cota de quem convidou (regra no banco: criar_convite e _convite_conta).
+// Sem ranking e sem contador público: só os dois veem.
+(function(){
+const V=window.VIEWS, A=window.AFTER;
+const U=()=>window.CLOUD&&CLOUD.user();
+const rpc=(f,a)=>window.GRUPOS.rpc(f,a);
+const nr=n=>String(n||0).padStart(4,'0');
+const dm=d=>new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+const primeiro=s=>String(s||'').trim().split(/\s+/)[0]||'';
+
+async function sinc(){ if(!U()) return null; try{ const L=await rpc('minhas_primeiras_doses',{})||[]; S.primeiras=L; save(); return L; }catch(e){ return null; } }
+
+// aviso no topo da Comunidade enquanto a primeira dose está em aberto
+function aviso(){ const hoje=today(); const p=(S.primeiras||[]).find(x=>!x.primeira_dose_em&&x.prazo>=hoje); if(!p) return '';
+  const quem=p.papel==='padrinho'?primeiro(p.para_nome):primeiro(p.de_nome);
+  return `<div class="card pd-aviso"><div class="eyebrow" style="text-align:left">Primeira dose · Nº ${nr(p.numero)}</div><b>Treine com ${esc(quem)} até ${dm(p.prazo)}.</b><p class="small" style="margin:4px 0 10px">${p.papel==='padrinho'?'O convite se completa quando vocês dois treinam juntos. Marque num ponto e confirme a presença.':'Seu convite se completa no primeiro treino com quem te convidou.'}</p><button class="btn sm sec" onclick="comAba('pontos',document.querySelector('.com-abas button'))">Escolher um ponto</button></div>`; }
+const _vc=V.comunidade; V.comunidade=(p)=>{ const h=_vc(p); const av=aviso(); if(!av) return h; const i=h.indexOf('<div class="seg com-abas"'); return i>=0?h.slice(0,i)+av+h.slice(i):h; };
+const _ac=A.comunidade; A.comunidade=(p)=>{ const r=_ac?_ac(p):null; sinc().then(L=>{ if(!L) return; const novo=L.find(x=>x.primeira_dose_em&&!(S.pdVistas||[]).includes(x.numero)); if(novo) setTimeout(()=>window.pdCartao(novo.numero),900); }); return r; };
+
+// cartão da primeira dose
+let pc=null;
+window.pdCartao=async(numero)=>{ const p=(S.primeiras||[]).find(x=>x.numero===numero&&x.primeira_dose_em); if(!p) return; S.pdVistas=[...new Set([...(S.pdVistas||[]),numero])]; save(); pc={p,fmt:'feed',blob:null};
+  sheet(`<div class="eyebrow" style="text-align:left">Convite completo</div><h3 style="margin-top:2px">A primeira dose</h3>
+   <div class="seg" style="margin:8px 0"><button class="on" onclick="pdFmt('feed',this)">Feed 4:5</button><button onclick="pdFmt('story',this)">Story 9:16</button></div>
+   <div id="pdPrev" class="dd-prev" style="aspect-ratio:4/5"></div>
+   <p class="small" style="margin-top:10px">${p.papel==='padrinho'?`Você ganhou a medalha Padrinho. ${esc(primeiro(p.para_nome))} ganhou a Primeira dose.`:`Você ganhou a medalha Primeira dose. ${esc(primeiro(p.de_nome))} ganhou a Padrinho.`}</p>
+   <button class="btn em" style="margin-top:8px" onclick="pdPostar()">${I('share')} Postar</button><button class="btn sm ghost" style="margin-top:8px" onclick="closeSheet()">Agora não</button>`);
+  pdRender(); };
+const dados=p=>({eyebrow:`Primeira dose · Convite Nº ${nr(p.numero)}`,titulo:`${primeiro(p.de_nome)} e ${primeiro(p.para_nome)}`,big:{v:nr(p.numero),u:'convite'},ks:[...(p.ponto?[{v:p.ponto.length>11?p.ponto.split(' ')[0]:p.ponto,l:'ponto'}]:[]),{v:dm(p.primeira_dose_em),l:'primeiro treino juntos'}],frase:'A primeira dose. Juntos.',fonte:'Presença confirmada por quem organizou'});
+async function pdRender(){ const c=await window.cartaoDose(pc.fmt,dados(pc.p)); const el=document.getElementById('pdPrev'); if(el){ el.innerHTML=''; const im=new Image(); im.alt='Cartão da primeira dose'; im.src=c.toDataURL('image/png'); el.appendChild(im); } pc.blob=await new Promise(r=>c.toBlob(r,'image/png')); }
+window.pdFmt=(f,b)=>{ pc.fmt=f; b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); const el=document.getElementById('pdPrev'); if(el) el.style.aspectRatio=f==='story'?'9/16':'4/5'; pdRender(); };
+window.pdPostar=async()=>{ try{ const file=new File([pc.blob],`dose-primeira-dose-${nr(pc.p.numero)}.png`,{type:'image/png'}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:'DOSE',text:'Vida na dose.'}); closeSheet(); } else { const u=URL.createObjectURL(pc.blob); const a=document.createElement('a'); a.href=u; a.download=file.name; document.body.appendChild(a); a.click(); a.remove(); toast('Imagem salva'); } }catch(e){} };
+
+// medalhas
+const _md=window.medalhas; if(_md) window.medalhas=function(){ const L=_md.apply(this,arguments); const P=S.primeiras||[];
+  const pad=P.filter(x=>x.papel==='padrinho'&&x.primeira_dose_em).length; const t=[1,3,10]; const tier=pad>=t[2]?3:pad>=t[1]?2:pad>=t[0]?1:0;
+  L.push({cat:'Padrinho',ico:'users',nome:'Convites que viraram primeira dose',v:pad,t,un:'convites',tier,prox:t.find(x=>x>pad)||null});
+  const novo=P.some(x=>x.papel==='novo'&&x.primeira_dose_em)?1:0;
+  L.push({cat:'Primeira dose',ico:'pin',nome:'Primeiro treino com quem te convidou',v:novo,t:[1,1,1],un:'treino',tier:novo?1:0,prox:novo?null:1});
+  return L; };
+setTimeout(sinc,5000);
 })();
 
 </script>

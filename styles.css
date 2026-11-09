@@ -657,3 +657,10 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 .g6-i{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .g6-i>div{min-width:0}.g6-i b{display:block;font-size:14px}.g6-i .tiny{display:block}
 .g6-ch{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.g6-ch::-webkit-scrollbar{display:none}.g6-ch .chip{flex:none}
+/* v8.2 · menos toques e primeira dose */
+.ut-card{display:flex;gap:12px;align-items:center;justify-content:space-between}.ut-card>div{min-width:0}.ut-card b{display:block}.ut-card .tiny{display:block;margin-top:2px}.ut-card .btn{flex:none;width:auto}
+.ut-dieta{width:auto;margin:8px 0 2px}
+.ut-sempre{margin:4px 0 12px}.ut-sempre .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.ut-sempre .chips::-webkit-scrollbar{display:none}.ut-sempre .chip{flex:none;max-width:78vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ut-rep{margin:0 0 6px}.ut-rep .btn{width:auto;margin:4px 6px 0 0}
+.ut-min{margin-top:6px}.ut-sal{margin-left:8px}
+.pd-aviso{margin:10px 0 2px}.pd-aviso b{display:block;font-size:17px;letter-spacing:-.02em;margin-top:2px}

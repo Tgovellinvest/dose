@@ -56,13 +56,16 @@ const _ac=A.comunidade; A.comunidade=(p)=>{ const r=_ac?_ac(p):null;
 
 // ---------- Convites ----------
 async function cvCarregar(){ const box=document.getElementById('cvBox'); if(!box||!U()) return;
-  try{ const L=await api(`convites?de=eq.${U().id}&select=numero,codigo,para_nome,criado,usado_em&order=criado.desc&limit=50`)||[];
+  try{ const L=await api(`convites?de=eq.${U().id}&select=numero,codigo,para_nome,criado,usado_em,primeira_dose_em&order=criado.desc&limit=50`)||[];
     const ini=new Date(); const mesRio=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).format(ini);
-    const doMes=L.filter(c=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).format(new Date(c.criado))===mesRio).length; const livres=Math.max(0,3-doMes);
+    const D14=14*864e5, agora=Date.now(); const conta=c=>!!c.primeira_dose_em||(!c.usado_em&&agora-new Date(c.criado)<D14)||(!!c.usado_em&&agora-new Date(c.usado_em)<D14);
+    const doMes=L.filter(c=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).format(new Date(c.criado))===mesRio&&conta(c)).length;
+    const dm=t=>new Date(t).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit'});
+    const st=c=>c.primeira_dose_em?`Primeira dose em ${dm(c.primeira_dose_em+'T12:00:00')}`:c.usado_em?(conta(c)?`Aceito. Primeira dose até ${dm(new Date(c.usado_em).getTime()+D14)}`:'Sem primeira dose. Voltou para a sua cota'):(conta(c)?`Aguardando até ${dm(new Date(c.criado).getTime()+D14)}`:'Venceu sem aceite. Voltou para a sua cota'); const livres=Math.max(0,3-doMes);
     const mes=MES[+mesRio.slice(5,7)-1];
-    box.innerHTML=`<div class="card cv-cota"><div class="cv-pts" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<livres?'on':''}"></i>`).join('')}</div><div><b>${livres} ${livres===1?'convite livre':'convites livres'} em ${mes}</b><div class="tiny">Cada membro tem 3 por mês. Quem recebe ganha um número de membro.</div></div></div>
+    box.innerHTML=`<div class="card cv-cota"><div class="cv-pts" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<livres?'on':''}"></i>`).join('')}</div><div><b>${livres} ${livres===1?'convite livre':'convites livres'} em ${mes}</b><div class="tiny">Cada membro tem 3 por mês. O convite se completa na primeira dose: vocês dois num treino em até 14 dias. Se não acontecer, ele volta para a sua cota.</div></div></div>
      <button class="btn em" ${livres?'':'disabled'} onclick="cvNovo()">${livres?'Fazer um convite':'Novos convites no mês que vem'}</button>
-     ${L.length?`<h3>Seus convites</h3><div class="list">${L.map(c=>`<div class="item" onclick="cvVer('${c.codigo}')"><div class="n"><b class="mono">${nr(c.numero)}</b></div><div class="t"><b>${esc(c.para_nome)}</b><span>${c.usado_em?'Aceito. Já é da comunidade DOSE':'Aguardando'}</span></div><span class="arrow">›</span></div>`).join('')}</div>`:''}`; }
+     ${L.length?`<h3>Seus convites</h3><div class="list">${L.map(c=>`<div class="item" onclick="cvVer('${c.codigo}')"><div class="n"><b class="mono">${nr(c.numero)}</b></div><div class="t"><b>${esc(c.para_nome)}</b><span>${st(c)}</span></div><span class="arrow">›</span></div>`).join('')}</div>`:''}`; }
   catch(e){ box.innerHTML=`<div class="card"><b>Não carregou</b><p class="small">${esc(e.message)}</p></div>`; } }
 window.cvNovo=()=>{ if(!U()) return garantirConta(cvNovo,'Para convidar');
   sheet(`<h3>Fazer um convite</h3><p class="small">O convite vai com um número e com o seu nome. Escolha alguém que treina com você.</p>
