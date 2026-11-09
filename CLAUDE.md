@@ -28,7 +28,7 @@ O dono é o Tiago. Fale com ele em português do Brasil, resposta primeiro e det
 - Backend: Supabase (projeto `typfaauucqkztdhmbhqb`, plano grátis). A chave publicável fica no código; nenhuma outra.
 - Planos por esporte: `planos.js` (base) + `treino2.js` (Hyrox e corrida ampliados, ritmo VDOT, playlist).
 - Motion: `motion2.js` (8 movimentos aprovados), `botoes.js` (animação por tipo de botão) e `motion3.js` (mapa dos músculos, ícones e medalhas). Regras no Brand Book §7.
-- Telas aprovadas no DOSE Studio: `boasvindas.js` (Do excesso à dose) , `hoje2.js` (Hoje: medidor, ficha em leque, semana em barras) e `abertura.js` (abertura do dia para membros).
+- Telas aprovadas no DOSE Studio: `boasvindas.js` (Do excesso à dose) , `hoje2.js` (Hoje: medidor, ficha em leque, semana em barras) , `abertura.js` (abertura do dia para membros) e `dieta.js` (Minha dieta importada com check por refeição).
 
 ## Publicar (skill `dose-deploy`)
 1. Subir a versão: `?v=X` em todas as tags de `index.html` e `const C='dose-vX'` em `sw.js`. Arquivo novo entra na lista do `sw.js`.

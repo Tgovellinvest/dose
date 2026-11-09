@@ -568,3 +568,13 @@ html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 .abertura.sai{opacity:0;pointer-events:none}
 .abertura .ab-in{width:100%;max-width:420px}
 .abertura .m4-exc{height:240px;margin:0 0 18px}
+
+/* v7.5 · Minha dieta */
+.dt-card{margin-bottom:12px}
+.dt-card .set-row.dt-ref{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.dt-card .set-row.dt-ref:first-of-type{margin-top:10px}
+.dt-ref .ck{position:relative;overflow:hidden;isolation:isolate;flex:none}
+.dt-t{min-width:0;display:flex;flex-direction:column;gap:2px}
+.dt-t b{font-size:15px}.dt-t b .num{font-family:var(--num);color:var(--tx3);font-weight:700;margin-left:6px}
+.dt-t span{font-size:13px;color:var(--tx2);line-height:1.4}
+.dt-ref.feita .dt-t b{color:var(--tx2)}
