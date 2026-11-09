@@ -12,7 +12,7 @@
   try{ Object.defineProperty(window,'sessionStorage',{value:fake,configurable:true}); }catch(e){}
   var of=window.fetch; window.fetch=function(u,o){ var s=String(u&&u.url||u); if(/^https?:/i.test(s)&&s.indexOf(location.origin)!==0&&!/fonts\.(googleapis|gstatic)\.com|cdnjs/.test(s)) return Promise.reject(new Error('DS: rede desligada')); return of.apply(this,arguments); };
   var d=function(n){var x=new Date();x.setDate(x.getDate()-n);return x.toISOString().slice(0,10);};
-  var S={onboarded:true,tutorialVisto:true,perfil:{nome:'Membro Demo',sexo:'m',idade:32,altura:178,peso:79,objetivo:'hipertrofia',nivel:'intermediario',diasMusc:['seg','qua','sex'],esportes:{corrida:['ter','qui'],hyrox:['sab']},instagram:'membro.demo'},
+  var S={onboarded:true,tutorialVisto:true,perfil:{nome:'Membro Exemplo',sexo:'m',idade:32,altura:178,peso:79,objetivo:'hipertrofia',nivel:'intermediario',diasMusc:['seg','qua','sex'],esportes:{corrida:['ter','qui'],hyrox:['sab']},instagram:'membro.exemplo'},
     logs:[], bjj:[], checkins:[{data:d(7),peso:79.6,cintura:84,sono:7},{data:d(0),peso:79.1,cintura:83.5,sono:7.5}],
     cardio:[{id:'c1',data:d(1),tipo:'Corrida',dist:6,min:33,intens:'baixa'},{id:'c2',data:d(3),tipo:'Corrida',dist:5,min:24,intens:'alta'},{id:'c3',data:d(5),tipo:'Corrida',dist:10,min:58,intens:'baixa'}],
     vdot:{v:41.8,data:d(5),km:3,min:13.5}};
