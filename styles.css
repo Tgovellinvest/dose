@@ -515,3 +515,8 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 @keyframes m3tr{to{stroke-dashoffset:0}}
 .m3-anel{stroke-dasharray:1;stroke-dashoffset:1;transform:rotate(-90deg);transform-origin:32px 32px;animation:m3tr .6s var(--expo) var(--d,0ms) forwards}
 @media (prefers-reduced-motion:reduce){.m3-sil,.m3-mu,.m3-tr,.m3-anel{animation:none!important;stroke-dashoffset:0}}
+
+/* v7.1 · Do excesso à dose (boas-vindas) */
+.m4-exc{height:210px;margin:4px -4px 8px}
+.m4-exc canvas{width:100%;height:100%;display:block}
+.m4-espera .m2-dot{animation-delay:2.9s!important}
