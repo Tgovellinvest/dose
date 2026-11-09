@@ -611,3 +611,43 @@ html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 .mp4-mini{display:flex;gap:5px}.mp4-mini i{width:7px;height:7px;border-radius:50%;background:var(--s3)}.mp4-mini i:first-child{background:var(--ember)}
 @media (prefers-reduced-motion:reduce){.mp4-pt{opacity:1;transform:none;transition:none}.mp4-pt.on::after{display:none}}
 .mp4-acoes{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+
+/* ===== v7.9 · dose do dia, clube, convite e encontro ===== */
+.dd-prev{border-radius:16px;overflow:hidden;background:#000;max-height:50dvh;margin:0 auto}
+.dd-prev img{width:100%;height:100%;object-fit:contain;display:block}
+/* cartão de membro */
+.cm{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 16px;margin:6px 0 4px}
+.cm-topo{display:flex;justify-content:space-between;align-items:baseline}
+.cm-marca{font-weight:900;font-size:18px;letter-spacing:-.04em}.cm-marca i{font-style:normal;color:var(--ember)}
+.cm-n{font-family:var(--num);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}.cm-n b{color:var(--tx);font-size:20px;letter-spacing:.06em}
+.cm-nome{display:block;background:none;border:0;padding:0;margin:18px 0 0;color:var(--tx);font-family:inherit;font-weight:900;font-size:30px;letter-spacing:-.05em;text-transform:uppercase;line-height:.95;text-align:left;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cm-desde{margin:6px 0 0;color:var(--bone);font-size:18px}
+.cm-dl{margin:14px 0 0;display:grid;gap:6px}.cm-dl>div{display:flex;gap:10px;font-size:13px;min-width:0}
+.cm-dl dt{flex:0 0 104px;color:var(--tx3);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding-top:2px}.cm-dl dd{margin:0;color:var(--tx2);min-width:0;overflow-wrap:anywhere}
+.cm-conv{margin-top:10px}
+.com-abas{margin-top:14px}
+/* convites */
+.cv-cota{display:flex;gap:14px;align-items:center}
+.cv-pts{display:flex;gap:6px;flex:none}.cv-pts i{width:12px;height:12px;border-radius:50%;border:2px solid var(--s3)}.cv-pts i.on{background:var(--tx);border-color:var(--tx)}
+.cv-obj{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:18px;position:relative;overflow:hidden}
+.cv-obj::after{content:"";position:absolute;right:18px;top:62px;width:9px;height:9px;border-radius:50%;background:var(--ember)}
+.cv-topo{display:flex;justify-content:space-between;align-items:baseline}
+.cv-n{font-family:var(--num);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}.cv-n b{color:var(--tx);font-size:22px;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.cv-para{margin:30px 0 0;font-weight:900;font-size:40px;letter-spacing:-.05em;text-transform:uppercase;line-height:.92;overflow-wrap:anywhere}
+.cv-frase{margin:6px 0 0;color:var(--bone);font-size:20px}
+.cv-rod{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--tx2)}
+.cv-obj.sobe{animation:cvSobe .7s var(--expo) both}
+@keyframes cvSobe{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+/* tela do convite */
+.cvt{min-height:calc(100dvh - 120px);display:flex;flex-direction:column;justify-content:center;padding:8px 0 24px}
+.cvt .m4-exc{height:180px;margin:0 -4px}
+.cvt-box .m2-kin{font-size:46px;margin:6px 0 0}
+.cvt-eb{text-align:left;animation:cvFade .5s ease both}.cvt-eb b{font-family:var(--num);color:var(--tx);font-variant-numeric:tabular-nums}
+.cvt-de{color:var(--bone);font-size:19px;margin:12px 0 18px;animation:cvFade .6s ease both}
+.cvt-obj{animation:cvSobe .8s var(--expo) both;animation-delay:inherit}
+.cvt-box .cvt-obj{animation-delay:2.9s}
+.cvt-acoes{margin-top:16px;animation:cvFade .5s ease both}
+.cvt-ok{margin-bottom:10px}.cvt-num{font-family:var(--num);font-weight:700;font-size:48px;line-height:1;margin:4px 0}
+@keyframes cvFade{from{opacity:0}to{opacity:1}}
+body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
+@media (prefers-reduced-motion:reduce){.cv-obj.sobe,.cvt-obj,.cvt-eb,.cvt-de,.cvt-acoes{animation:none!important}}

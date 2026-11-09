@@ -645,6 +645,46 @@ html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 @media (prefers-reduced-motion:reduce){.mp4-pt{opacity:1;transform:none;transition:none}.mp4-pt.on::after{display:none}}
 .mp4-acoes{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
 
+/* ===== v7.9 · dose do dia, clube, convite e encontro ===== */
+.dd-prev{border-radius:16px;overflow:hidden;background:#000;max-height:50dvh;margin:0 auto}
+.dd-prev img{width:100%;height:100%;object-fit:contain;display:block}
+/* cartão de membro */
+.cm{background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 16px;margin:6px 0 4px}
+.cm-topo{display:flex;justify-content:space-between;align-items:baseline}
+.cm-marca{font-weight:900;font-size:18px;letter-spacing:-.04em}.cm-marca i{font-style:normal;color:var(--ember)}
+.cm-n{font-family:var(--num);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}.cm-n b{color:var(--tx);font-size:20px;letter-spacing:.06em}
+.cm-nome{display:block;background:none;border:0;padding:0;margin:18px 0 0;color:var(--tx);font-family:inherit;font-weight:900;font-size:30px;letter-spacing:-.05em;text-transform:uppercase;line-height:.95;text-align:left;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.cm-desde{margin:6px 0 0;color:var(--bone);font-size:18px}
+.cm-dl{margin:14px 0 0;display:grid;gap:6px}.cm-dl>div{display:flex;gap:10px;font-size:13px;min-width:0}
+.cm-dl dt{flex:0 0 104px;color:var(--tx3);font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding-top:2px}.cm-dl dd{margin:0;color:var(--tx2);min-width:0;overflow-wrap:anywhere}
+.cm-conv{margin-top:10px}
+.com-abas{margin-top:14px}
+/* convites */
+.cv-cota{display:flex;gap:14px;align-items:center}
+.cv-pts{display:flex;gap:6px;flex:none}.cv-pts i{width:12px;height:12px;border-radius:50%;border:2px solid var(--s3)}.cv-pts i.on{background:var(--tx);border-color:var(--tx)}
+.cv-obj{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:18px;position:relative;overflow:hidden}
+.cv-obj::after{content:"";position:absolute;right:18px;top:62px;width:9px;height:9px;border-radius:50%;background:var(--ember)}
+.cv-topo{display:flex;justify-content:space-between;align-items:baseline}
+.cv-n{font-family:var(--num);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}.cv-n b{color:var(--tx);font-size:22px;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.cv-para{margin:30px 0 0;font-weight:900;font-size:40px;letter-spacing:-.05em;text-transform:uppercase;line-height:.92;overflow-wrap:anywhere}
+.cv-frase{margin:6px 0 0;color:var(--bone);font-size:20px}
+.cv-rod{display:flex;justify-content:space-between;gap:10px;margin-top:22px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--tx2)}
+.cv-obj.sobe{animation:cvSobe .7s var(--expo) both}
+@keyframes cvSobe{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+/* tela do convite */
+.cvt{min-height:calc(100dvh - 120px);display:flex;flex-direction:column;justify-content:center;padding:8px 0 24px}
+.cvt .m4-exc{height:180px;margin:0 -4px}
+.cvt-box .m2-kin{font-size:46px;margin:6px 0 0}
+.cvt-eb{text-align:left;animation:cvFade .5s ease both}.cvt-eb b{font-family:var(--num);color:var(--tx);font-variant-numeric:tabular-nums}
+.cvt-de{color:var(--bone);font-size:19px;margin:12px 0 18px;animation:cvFade .6s ease both}
+.cvt-obj{animation:cvSobe .8s var(--expo) both;animation-delay:inherit}
+.cvt-box .cvt-obj{animation-delay:2.9s}
+.cvt-acoes{margin-top:16px;animation:cvFade .5s ease both}
+.cvt-ok{margin-bottom:10px}.cvt-num{font-family:var(--num);font-weight:700;font-size:48px;line-height:1;margin:4px 0}
+@keyframes cvFade{from{opacity:0}to{opacity:1}}
+body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
+@media (prefers-reduced-motion:reduce){.cv-obj.sobe,.cvt-obj,.cvt-eb,.cvt-de,.cvt-acoes{animation:none!important}}
+
 </style>
 <script src="vendor/chart-4.4.1.umd.js"></script>
 <script>window.Chart||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"><\/script>')</script>
@@ -2829,7 +2869,7 @@ function rankingHTML(det){ const u=C().user(); const {per,met}=window._gpRk; con
 window.gpRk=(k,v,gid)=>{ window._gpRk[k]=v; const det=G.cache.detalhe[gid]; const el=document.getElementById('gpRank'); if(det&&el) el.innerHTML=rankingHTML(det); };
 window.gpComoPontua=()=>sheet(`<h3>Como pontua</h3><ul class="small"><li><b>10 pontos</b> por dia com treino, esporte ou cardio registrado no DOSE.</li><li><b>+2</b> no dia em que registrar 2 atividades (máximo 1 bônus por dia).</li><li><b>+5</b> por semana em que bater a meta de dias do desafio.</li><li><b>+5</b> por treino aberto da comunidade em que quem organizou confirmou a sua presença.</li><li>Empate: ganha quem tem mais dias ativos.</li></ul><p class="small">A pontuação premia aparecer com constância, não volume. Treinar 3 vezes no mesmo dia não vale mais que voltar amanhã.</p><p class="tiny">Km, minutos e sequência têm ranking próprio. Carga, peso e dieta nunca entram.</p>`);
 const descDesafio=d=>{ if(!d||!d.tipo) return "Sem desafio: só o placar de dias ativos."; const un={dias:"dias ativos",km:"km",treinos:"treinos"}[d.tipo]; return `${d.meta} ${un} ${d.periodo==='semana'?"por semana":"no total"}${d.fim?` · até ${fmtD(d.fim)}`:""}`; };
-const TIPOPOST={sessao:"strength",cardio:"run",semana:"calendar",mes:"calendar",medalha:"trophy",objetivo:"target"};
+const TIPOPOST={sessao:"strength",cardio:"run",esporte:"flame",encontro:"pin",semana:"calendar",mes:"calendar",medalha:"trophy",objetivo:"target"};
 
 // ---------- Views ----------
 V.grupos=(p)=>{ if(window.setTitle) setTitle("Grupos"); if(!C().user()) return `<h1 class="sec">Grupos</h1><div class="vazio"><div class="eyebrow">Fase A</div><p class="serif">Grupo fechado, por convite. <i>Ranking só entre quem está dentro.</i></p><p class="small">Um desafio com prazo, ranking da semana, do mês e do desafio, e os registros de cada um. Dá para começar sem cadastro.</p><div class="grid2" style="margin-top:12px"><button class="btn em" onclick="gpNovo()">Criar grupo</button><button class="btn sec" onclick="gpEntrar('${esc(p.c||"")}')">Tenho código</button></div></div>`;
@@ -2848,7 +2888,7 @@ function gpDetalheHTML(det){ const u=C().user(); const g=det.g; const pl=placar(
    <div id="gpRank">${rankingHTML(det)}</div>
    <p class="tiny">Conta dias em que a pessoa registrou treino, esporte ou cardio no DOSE. Ninguém vê sua carga, seu peso ou sua dieta.</p>
    <div class="card"><b>Convidar</b><p class="small">Código <span class="mono" style="font-size:18px;letter-spacing:.12em">${esc(g.codigo)}</span></p><div class="grid2"><button class="btn sm sec" onclick="gpConvidar('${esc(g.nome)}','${esc(g.codigo)}')">${I("share")} Enviar convite</button><button class="btn sm ghost" onclick="navigator.clipboard.writeText('${link}').then(()=>toast('Link copiado'))">Copiar link</button></div></div>
-   <h3>Registros</h3>${det.posts.length?det.posts.map(p=>{ const reag=(p.grupo_reacoes||[]).length; const eu=(p.grupo_reacoes||[]).some(r=>r.user_id===u.id); return `<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="row" style="gap:10px;align-items:flex-start"><div class="n">${I(TIPOPOST[p.tipo]||"card")}</div><div><b>${esc(nomeDe(p.user_id))}</b> <span class="tiny">· ${fmtD(p.data)}</span><div class="small">${esc(p.resumo.titulo||"")}</div><div class="tiny">${(p.resumo.linhas||[]).map(esc).join(" · ")}</div></div></div><button class="btn sm ${eu?'em':'ghost'}" style="width:auto;padding:6px 10px" onclick="gpReagir('${p.id}',${eu?0:1},'${g.id}')">${I("flame",16)} ${reag||""}</button></div>${p.user_id===u.id?`<button class="btn sm ghost" style="width:auto;margin-top:6px;padding:4px 8px" onclick="gpApagarPost('${p.id}','${g.id}')">apagar</button>`:""}</div>`; }).join(""):`<div class="card sub small">Ainda sem registros. Ao finalizar um treino ou corrida, toque em "Postar no grupo" na tela de compartilhar.</div>`}
+   <h3>Registros</h3>${det.posts.length?det.posts.map(p=>{ const reag=(p.grupo_reacoes||[]).length; const eu=(p.grupo_reacoes||[]).some(r=>r.user_id===u.id); return `<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="row" style="gap:10px;align-items:flex-start"><div class="n">${I(TIPOPOST[p.tipo]||"card")}</div><div><b>${esc(nomeDe(p.user_id))}</b> <span class="tiny">· ${fmtD(p.data)}</span><div class="small">${esc(p.resumo.titulo||"")}</div><div class="tiny">${(p.resumo.linhas||[]).map(esc).join(" · ")}</div></div></div><button class="btn sm ${eu?'em':'ghost'}" style="width:auto;padding:6px 10px" onclick="gpReagir('${p.id}',${eu?0:1},'${g.id}')">${I("flame",16)}</button></div>${p.user_id===u.id?`<button class="btn sm ghost" style="width:auto;margin-top:6px;padding:4px 8px" onclick="gpApagarPost('${p.id}','${g.id}')">apagar</button>`:""}</div>`; }).join(""):`<div class="card sub small">Ainda sem registros. Ao finalizar um treino ou corrida, toque em "Postar no grupo" na tela de compartilhar.</div>`}
    <div class="card" style="margin-top:16px"><button class="btn sm ghost" onclick="gpSair('${g.id}',${dono})">${dono?"Apagar grupo (sou o dono)":"Sair do grupo"}</button></div>`; }
 
 // ---------- Ações ----------
@@ -3791,7 +3831,7 @@ const _prog=V.progresso; V.progresso=(p)=>{ let h=_prog(p); const t=p.t||"painel
 <script>
 // ================= DOSE · v6.1 — Comunidade da região =================
 // Perfil público opt-in (18+, cidade/bairro digitados, nunca GPS) · treinos abertos com faixa de nível (Playtomic)
-// · ranking da região por esporte que premia constância (Strava Local Legend); km e pace só contam Strava
+// · v7.9: ranking da cidade cortado (aprovado pelo Tiago em 09/11/2026). Ranking só dentro do grupo.
 // · turma do plano (Runna) · contato só com interesse mútuo depois do treino (Timeleft) · bloquear e denunciar.
 // Sem chat. Peso, carga, dieta e fotos nunca sobem.
 (function(){
@@ -3859,16 +3899,16 @@ R.treinos=async(esp,raio)=>{ const p=await R.meuPerfil(); if(!p) return []; cons
 R.meuNivel=(esp)=>{ const p=R.cache.perfil; const e=((p&&p.esportes)||[]).find(x=>x.id===esp); return e&&e.nivel!=null?e.nivel:null; };
 
 // ---------- Tela: bloco da região dentro da Comunidade ----------
-window.V_regiao=()=>`<h3>Perto de você</h3><div id="rgBox">${U()?`<div class="card sub small">carregando…</div>`:`<div class="card"><p class="serif" style="margin:0 0 6px">Treine com quem mora perto. <i>Você decide o que aparece.</i></p><p class="small">Treinos abertos, ranking da cidade e gente do seu esporte. Para aparecer para a região, entre com o Google.</p><button class="btn em sm" onclick="go('perfilpub')">Ver como funciona</button></div>`}</div>`;
+window.V_regiao=()=>`<h3>Perto de você</h3><div id="rgBox">${U()?`<div class="card sub small">carregando…</div>`:`<div class="card"><p class="serif" style="margin:0 0 6px">Treine com quem mora perto. <i>Você decide o que aparece.</i></p><p class="small">Treinos abertos nos pontos e gente do seu esporte. Para aparecer para a região, entre com o Google.</p><button class="btn em sm" onclick="go('perfilpub')">Ver como funciona</button></div>`}</div>`;
 window.A_regiao=async()=>{ const box=document.getElementById('rgBox'); if(!box||!U()) return;
-  try{ const p=await R.meuPerfil(true); if(!p||!p.ativo){ box.innerHTML=`<div class="card"><p class="serif" style="margin:0 0 6px">Treine com quem mora perto. <i>Você decide o que aparece.</i></p><p class="small">Ligue o perfil público para entrar em treinos abertos, criar o seu e aparecer no ranking da cidade. Desligado por padrão. Só maiores de 18.</p><button class="btn em sm" onclick="go('perfilpub')">Ligar perfil público</button></div>`; return; }
+  try{ const p=await R.meuPerfil(true); if(!p||!p.ativo){ box.innerHTML=`<div class="card"><p class="serif" style="margin:0 0 6px">Treine com quem mora perto. <i>Você decide o que aparece.</i></p><p class="small">Ligue o perfil público para entrar em treinos abertos e criar o seu. Desligado por padrão. Só maiores de 18.</p><button class="btn em sm" onclick="go('perfilpub')">Ligar perfil público</button></div>`; return; }
     R.sincronizar().catch(()=>{}); const s=st(); const meus=(p.esportes||[]).map(e=>e.id); if(!meus.length){ box.innerHTML=`<div class="card small">Escolha seus esportes no <a href="#perfilpub">perfil público</a>.</div>`; return; } if(!s.esp||!meus.includes(s.esp)) s.esp=meus[0];
     box.innerHTML=`<div class="tiny" style="margin:-4px 0 8px">${meus.length===1?`${esc(nomeEsp(meus[0]))} · `:""}${esc(p.cidade)}${p.bairro?` · ${esc(p.bairro)}`:""} · <a href="#perfilpub">ajustar</a></div>
      <div class="raio" role="group" aria-label="Raio">${RAIOS.map(r=>`<button class="${(usaRaio(s)?s.raio:'cidade')===r?'on':''}" onclick="${r==='cidade'||R.posValida()?`rgSet('raio',${r==='cidade'?"'cidade'":r})`:'rgPos()'}">${r==='cidade'?'Cidade':r+' km'}</button>`).join("")}</div>
      ${R.posValida()?'':`<button class="lk" style="margin:-2px 0 6px" onclick="rgPos()">${I('pin',14)} Usar minha localização aproximada (~1 km)</button>`}
      ${meus.length>1?`<div class="chips" style="margin-bottom:8px">${meus.map(e=>`<button class="chip ${e===s.esp?'on':''}" onclick="rgSet('esp','${e}')">${esc(nomeEsp(e))}</button>`).join("")}</div>`:""}
-     <div class="seg" style="margin-bottom:10px">${[["treinos","Treinos"],["ranking","Ranking"],["pessoas","Pessoas"]].map(([k,n])=>`<button class="${s.aba===k?'on':''}" onclick="rgSet('aba','${k}')">${n}</button>`).join("")}</div><div id="rgAba"><div class="card sub small">carregando…</div></div>`;
-    const el=document.getElementById('rgAba'); el.innerHTML=s.aba==='ranking'?await abaRanking(s):s.aba==='pessoas'?await abaPessoas(s):await abaTreinos(s); }
+     <div class="seg" style="margin-bottom:10px">${[["treinos","Treinos"],["pessoas","Pessoas"]].map(([k,n])=>`<button class="${s.aba===k?'on':''}" onclick="rgSet('aba','${k}')">${n}</button>`).join("")}</div><div id="rgAba"><div class="card sub small">carregando…</div></div>`;
+    const el=document.getElementById('rgAba'); el.innerHTML=s.aba==='pessoas'?await abaPessoas(s):await abaTreinos(s); }
   catch(e){ box.innerHTML=`<div class="card"><b>Não carregou</b><p class="small">${esc(e.message)}</p></div>`; } };
 window.rgSet=(k,v)=>{ st()[k]=v; save(); A_regiao(); };
 
@@ -3947,16 +3987,16 @@ window.AFTER.perfilpub=async()=>{ if(window.ajustaLogin) ajustaLogin(); const bo
   const meusEsp=[...new Set([...(Object.keys(S.perfil.esportes||{}).filter(k=>k!=='outro')),...((S.perfil.diasMusc||[]).length?['musculacao']:[]),...((p.esportes||[]).map(e=>e.id))])];
   const todos=[...new Set([...meusEsp,'corrida','musculacao','ciclismo','natacao',...(window.SPORTS||[]).map(s=>s.id)])];
   const nv=id=>((p.esportes||[]).find(e=>e.id===id)||{}).nivel;
-  box.innerHTML=`<div class="card"><label class="row" style="justify-content:space-between;margin:0"><span><b>Aparecer em "Perto de você"</b><div class="tiny">e no ranking da cidade</div></span><input id="ppAtivo" type="checkbox" ${p.ativo?'checked':''} style="width:auto;transform:scale(1.3)"></label></div>
+  box.innerHTML=`<div class="card"><label class="row" style="justify-content:space-between;margin:0"><span><b>Aparecer em "Perto de você"</b><div class="tiny">e nos treinos abertos</div></span><input id="ppAtivo" type="checkbox" ${p.ativo?'checked':''} style="width:auto;transform:scale(1.3)"></label></div>
    <div class="card"><div class="grid2"><div><label for="ppCid">Cidade</label><input id="ppCid" maxlength="60" value="${esc(p.cidade||'')}" placeholder="São Paulo"></div><div><label for="ppBai">Bairro</label><input id="ppBai" maxlength="60" value="${esc(p.bairro||'')}" placeholder="Pinheiros"></div></div><p class="tiny">Escrito por você. O app nunca usa GPS para isso.</p>
     <label for="ppApe">Como você aparece</label><input id="ppApe" maxlength="30" value="${esc(p.apelido||G().apelido())}">
     <label for="ppHor">Dias e horários que costuma treinar</label><input id="ppHor" maxlength="120" value="${esc(p.horarios||'')}" placeholder="Ex.: ter e qui 6h · sáb de manhã">
     <label for="ppIg">Instagram (só aparece com interesse mútuo)</label><input id="ppIg" maxlength="40" placeholder="@seuusuario"></div>
    <div class="card"><b>Esportes e nível</b><p class="tiny">Marque os que você quer praticar com gente da região.</p><div class="list" id="ppEsp">${todos.map(id=>`<div class="item" style="gap:8px"><label class="row" style="margin:0;flex:1;gap:8px"><input type="checkbox" data-e="${id}" ${(p.esportes||[]).some(e=>e.id===id)||(!p.esportes&&meusEsp.includes(id))?'checked':''} style="width:auto"> <span>${esc(nomeEsp(id))}</span></label><select data-n="${id}" style="width:auto;margin:0">${NIVEIS.map((n,i)=>`<option value="${i}" ${nv(id)===i||(nv(id)==null&&i===2)?'selected':''}>${n}</option>`).join("")}</select></div>`).join("")}</div></div>
-   <div class="card"><b>O que a região vê</b>${[["horarios","Dias e horários"],["nivel","Nível em cada esporte"],["km","Km e dias ativos no ranking"],["pace","Pace e tempos no ranking"]].map(([k,n])=>`<label class="row" style="justify-content:space-between;margin:8px 0 0"><span>${n}</span><input type="checkbox" data-m="${k}" ${m[k]!==false?'checked':''} style="width:auto"></label>`).join("")}<div class="row" style="justify-content:space-between;margin-top:8px;color:var(--tx3)"><span>Peso, carga, dieta, fotos</span><span class="tiny">nunca</span></div></div>
+   <div class="card"><b>O que a região vê</b>${[["horarios","Dias e horários"],["nivel","Nível em cada esporte"]].map(([k,n])=>`<label class="row" style="justify-content:space-between;margin:8px 0 0"><span>${n}</span><input type="checkbox" data-m="${k}" ${m[k]!==false?'checked':''} style="width:auto"></label>`).join("")}<div class="row" style="justify-content:space-between;margin-top:8px;color:var(--tx3)"><span>Peso, carga, dieta, fotos</span><span class="tiny">nunca</span></div></div>
    <div class="card"><b>Distância</b><p class="small">${R.posValida()?`Localização aproximada salva até ${new Date(st().posAte).toLocaleDateString('pt-BR')}. Os outros veem só a faixa (ex.: 2 a 5 km), nunca onde você está.`:`Para ver e aparecer por raio (2 a 25 km), use a localização aproximada. O celular arredonda para uma área de ~1 km antes de enviar; vale 30 dias.`}</p><div class="row" style="gap:8px">${R.posValida()?`<button class="btn sm sec" style="width:auto" onclick="rgPos()">Atualizar</button><button class="btn sm ghost" style="width:auto" onclick="rgPosApagar()">Apagar</button>`:`<button class="btn sm sec" style="width:auto" onclick="rgPos()">${I('pin',14)} Usar localização aproximada</button>`}</div></div>
    <div class="card"><label class="row" style="gap:8px;margin:0 0 10px;align-items:flex-start"><input id="ppConduta" type="checkbox" ${p.conduta_ok?'checked':''} style="width:auto;margin-top:3px"> <span class="small">Aceito o <a href="#" onclick="event.preventDefault();rgConduta()">código de conduta</a>: a DOSE é para treinar junto.</span></label><label class="row" style="gap:8px;margin:0;align-items:flex-start"><input id="pp18" type="checkbox" ${p.maior18?'checked':''} style="width:auto;margin-top:3px"> <span class="small">Tenho 18 anos ou mais e li os <a href="termos.html" target="_blank" rel="noopener">termos</a> da Comunidade.</span></label></div>
-   <button class="btn em" onclick="ppSalvar()">Salvar</button><p class="tiny" style="margin-top:8px">Desligar tira você da região na hora: perfil, treinos e ranking somem para os outros.</p>`;
+   <button class="btn em" onclick="ppSalvar()">Salvar</button><p class="tiny" style="margin-top:8px">Desligar tira você da região na hora: perfil e treinos somem para os outros.</p>`;
   api(`contatos?user_id=eq.${U().id}&select=instagram`).then(r=>{ const el=document.getElementById('ppIg'); if(el&&r&&r[0]) el.value=r[0].instagram||""; }).catch(()=>{}); };
 window.ppSalvar=async()=>{ const ativo=ppAtivo.checked; const cid=ppCid.value.trim(); if(ativo&&!pp18.checked) return toast("Confirme que tem 18 anos ou mais"); if(ativo&&!ppConduta.checked) return toast("Aceite o código de conduta"); if(cid.length<2) return toast("Diga sua cidade");
   const mostra={esportes:true}; document.querySelectorAll('[data-m]').forEach(c=>mostra[c.dataset.m]=c.checked);
@@ -4692,6 +4732,279 @@ const _md=window.medalhas; if(_md) window.medalhas=function(){ const L=_md.apply
 const _ac=A.comunidade; A.comunidade=(p)=>{ const r=_ac?_ac(p):null; sincPresencas(); return r; };
 setTimeout(sincPresencas,4000);
 })();
+
+</script>
+<script>
+// ================= DOSE · v7.9 — "A dose do dia" (aprovada pelo Tiago em 09/11/2026: Q1 a Q4) =================
+// Q1: ao salvar qualquer atividade, o cartão do esporte abre pronto. Uma pergunta: postar? ("Postar", "Postar no grupo", "Agora não").
+// Q2: dados do relógio opcionais e editáveis (FC média e máxima, cadência, potência, calorias do relógio) mais o número de cada esporte.
+//     Nada é inventado: campo vazio não aparece no cartão. Calorias sem relógio continuam como estimativa MET (Ainsworth 2011).
+// Q3: um cartão por esporte (musculação, corrida, Hyrox, jiu-jítsu, natação, beach tennis/tênis) e um cartão geral para os outros.
+// Cartão: grafite, número grande em Archivo Narrow, título em Archivo 900, curva do símbolo com o ponto ember, frase em Instrument Serif.
+// Sem brilho nem gradiente. Desenhado no aparelho; nada sobe para servidor até a pessoa postar.
+(function(){
+const SH=window.SHARE; if(!SH) return;
+const COR={g:"#0F1012",s1:"#17181B",s3:"#262930",ink:"#F2F1EC",bone:"#D8D2C2",mute:"#8E8B84",em:"#E4572E"};
+const DIA=["dom","seg","ter","qua","qui","sex","sáb"];
+const fData=s=>{ const d=new Date(s+"T12:00:00"); return `${DIA[d.getDay()]} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`; };
+const f1=n=>String(Math.round(n*10)/10).replace('.',',');
+const mmss=s=>{ s=Math.round(s); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return h?`${h}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`:`${m}:${String(x).padStart(2,'0')}`; };
+const segs=v=>{ if(v==null||v==='') return null; v=String(v).trim(); if(/^\d+(\.\d+)?$/.test(v)) return parseFloat(v)*60; const p=v.split(':').map(Number); if(p.some(isNaN)) return null; return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]; };
+const n0=v=>{ const x=(typeof num==='function'?num(v):parseFloat(String(v).replace(',','.'))); return x&&x>0?x:null; };
+
+// ---------- qual esporte é o registro ----------
+const CORRIDA=/corrida|trote|esteira|intervalado|z2|caminhada/i;
+function esporteDe(tipo,a){ if(tipo==='sessao') return 'musc';
+  if(tipo==='cardio'){ if(/nata/i.test(a.tipo)) return 'natacao'; if(/bike|ciclis/i.test(a.tipo)) return 'bike'; if(CORRIDA.test(a.tipo)) return 'corrida'; return 'cardio'; }
+  const e=a.esporte||''; if(e==='hyrox'||/hyrox/i.test(a.tipo)) return 'hyrox'; if(e==='bjj'||(!e&&/treino|bjj|jiu/i.test(a.tipo))) return 'bjj'; if(e==='tenis'||/t[eê]nis/i.test(a.tipo)) return 'tenis'; if(e==='natacao') return 'natacao'; return 'outro'; }
+const NOME={musc:"Musculação",corrida:"Corrida",natacao:"Natação",bike:"Bike",hyrox:"Hyrox",bjj:"Jiu-jítsu",tenis:"Beach tennis e tênis",cardio:"Cardio",outro:"Esporte"};
+// campos editáveis por esporte (além dos do relógio)
+const EXTRA={hyrox:[["tempo","Tempo final","mm:ss"],["estacoes","Estações feitas","de 8"]],bjj:[["rounds","Rounds","rolas"]],tenis:[["sets","Sets",""],["placar","Placar","6/4 3/6 10/8"]],natacao:[["metros","Metros",""]]};
+const RELOGIO=e=>[["fcMed","FC média","bpm"],["fcMax","FC máxima","bpm"],...(e==='corrida'?[["cad","Cadência","passos/min"],["pot","Potência","W"]]:e==='bike'?[["pot","Potência","W"],["cad","Cadência","rpm"]]:[]),["kcal","Calorias do relógio","kcal"]];
+
+// ---------- dados do cartão ----------
+function dados(tipo,a){ const e=esporteDe(tipo,a); const r=a.rel||{}; const min=tipo==='sessao'?a.dur:a.min; const fc=r.fcMed||a.fc;
+  const d={e,eyebrow:`${NOME[e]==='Esporte'?(a.tipo||'Esporte'):NOME[e]} · ${fData(a.data)}`,titulo:null,big:null,ks:[]};
+  const kc=()=>{ if(r.kcal) d.ks.push({v:r.kcal,l:"kcal do relógio"}); else if(min&&SH.kcal) d.ks.push({v:"≈"+SH.kcal(tipo==='sessao'?'musc':e==='bjj'?'BJJ':e==='hyrox'?'Hyrox':e==='tenis'?'Tênis':(a.tipo||'Cardio'),min,a.dist),l:"kcal (estimativa)"}); };
+  const fcs=()=>{ if(fc) d.ks.push({v:fc,l:"FC média"}); if(r.fcMax) d.ks.push({v:r.fcMax,l:"FC máxima"}); };
+  const tempo=()=>{ if(min) d.ks.push({v:min+" min",l:"tempo"}); };
+  if(e==='musc'){ const done=(a.sets||[]).filter(s=>s.done); const ton=done.reduce((x,s)=>x+(s.peso||0)*(s.reps||0),0); d.titulo=a.nome||"Treino de força";
+    d.big=ton>0?(ton>=1000?{v:f1(ton/1000),u:"t movidas"}:{v:Math.round(ton),u:"kg movidos"}):{v:done.length,u:"séries"};
+    if(ton>0) d.ks.push({v:done.length,l:"séries"}); d.ks.push({v:new Set(done.map(s=>s.ex)).size,l:"exercícios"}); tempo(); fcs(); kc(); }
+  else if(e==='corrida'||e==='bike'||e==='cardio'){ d.titulo=a.titulo||(a.tipo!==NOME[e]?a.tipo:null);
+    if(a.dist){ d.big={v:f1(a.dist),u:"km"}; tempo(); if(min&&e!=='bike'){ const p=min/a.dist; d.ks.push({v:`${Math.floor(p)}:${String(Math.round((p%1)*60)).padStart(2,'0')}`,l:"pace /km"}); } if(min&&e==='bike') d.ks.push({v:f1(a.dist/(min/60)),l:"km/h"}); }
+    else d.big={v:min||0,u:"min"};
+    fcs(); if(r.cad) d.ks.push({v:r.cad,l:e==='bike'?"cadência rpm":"cadência"}); if(r.pot) d.ks.push({v:r.pot+" W",l:"potência"}); kc(); }
+  else if(e==='natacao'){ const m=r.metros||a.metros||(a.dist?Math.round(a.dist*1000):null); d.titulo=a.titulo||null;
+    d.big=m?{v:m>=1000?f1(m/1000).replace(/,0$/,''):m,u:m>=1000?"km nadados":"metros"}:{v:min||0,u:"min"}; if(m) tempo(); if(m&&min){ const p=min*60/(m/100); d.ks.push({v:mmss(p),l:"ritmo /100 m"}); } fcs(); kc(); }
+  else if(e==='hyrox'){ const t=r.tempo?segs(r.tempo):a.tempoProva; d.titulo=a.titulo||null;
+    d.big=t?{v:mmss(t),u:"tempo final"}:{v:min||0,u:"min"}; if(r.estacoes) d.ks.push({v:`${r.estacoes}/8`,l:"estações"}); if(t) tempo(); fcs(); kc(); }
+  else if(e==='bjj'){ d.titulo=a.titulo||null;
+    d.big=r.rounds?{v:r.rounds,u:r.rounds==1?"round":"rounds"}:{v:min||0,u:"min de tatame"}; if(r.rounds) tempo(); if(a.intens) d.ks.push({v:({baixa:"leve",media:"média",alta:"forte"})[a.intens]||a.intens,l:"intensidade"}); fcs(); kc(); }
+  else if(e==='tenis'){ d.titulo=a.titulo||null; const pl=r.placar||a.placar;
+    d.big=r.sets?{v:r.sets,u:r.sets==1?"set":"sets"}:{v:min||0,u:"min de quadra"}; if(pl) d.ks.push({v:pl,l:"placar"}); if(r.sets) tempo(); fcs(); kc(); }
+  else { d.titulo=a.titulo||null; d.big={v:min||0,u:"min"}; if(a.dist) d.ks.push({v:f1(a.dist)+" km",l:"distância"}); fcs(); kc(); }
+  const it=a.intens||(a.rpe>=8?'alta':a.rpe&&a.rpe<=5?'baixa':null); d.frase=it==='alta'?"Dia forte. Na dose.":it==='baixa'?"Leve, de propósito. Na dose.":"Na dose.";
+  if(a.fonte==='strava') d.fonte="Importado do Strava"; else if(a.rel&&Object.keys(a.rel).some(k=>['fcMed','fcMax','cad','pot','kcal'].includes(k)&&a.rel[k])) d.fonte="Dados do relógio digitados pelo membro";
+  return d; }
+
+// ---------- desenho ----------
+const rr=(x,X,Y,W,H,r)=>{ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+W,Y,X+W,Y+H,r); x.arcTo(X+W,Y+H,X,Y+H,r); x.arcTo(X,Y+H,X,Y,r); x.arcTo(X,Y,X+W,Y,r); x.closePath(); };
+const fontes=async()=>{ try{ await Promise.all(["900 100px Archivo","700 60px 'Archivo Narrow'","italic 48px 'Instrument Serif'","600 36px Archivo"].map(f=>document.fonts.load(f))); }catch(e){} };
+function quebra(t,max){ const o=[]; let l=""; String(t).split(" ").forEach(w=>{ if((l+" "+w).trim().length>max&&l){ o.push(l); l=w; } else l=(l+" "+w).trim(); }); if(l) o.push(l); return o.slice(0,2); }
+function curva(x,X,Y,W,H){ const P=u=>{ const p0=[0,.9],p1=[.28,.88],p2=[.38,.2],p3=[1,.12]; const a=(1-u)**3,b=3*(1-u)**2*u,c=3*(1-u)*u*u,d=u**3; return [X+W*(a*p0[0]+b*p1[0]+c*p2[0]+d*p3[0]),Y+H*(a*p0[1]+b*p1[1]+c*p2[1]+d*p3[1])]; };
+  x.strokeStyle=COR.s3; x.lineWidth=6; x.lineCap="round"; x.beginPath(); for(let i=0;i<=60;i++){ const [px,py]=P(i/60); i?x.lineTo(px,py):x.moveTo(px,py); } x.stroke();
+  const [dx,dy]=P(.62); x.fillStyle=COR.em; x.beginPath(); x.arc(dx,dy,16,0,Math.PI*2); x.fill(); }
+window.cartaoDose=async function(fmt,d,foto){ await fontes(); const W=1080,H=fmt==='story'?1920:1350; const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
+  x.fillStyle=COR.g; x.fillRect(0,0,W,H); const M=84; let y=fmt==='story'?250:96;
+  x.textBaseline="alphabetic"; x.fillStyle=COR.ink; x.font="900 56px Archivo, Arial"; x.fillText("DOSE",M,y+50); x.fillStyle=COR.em; x.fillText(".",M+x.measureText("DOSE").width,y+50);
+  if(foto){ const fy=y+100, fh=fmt==='story'?620:430; x.save(); rr(x,M,fy,W-2*M,fh,28); x.clip(); const k=Math.max((W-2*M)/foto.width,fh/foto.height); x.drawImage(foto,M+((W-2*M)-foto.width*k)/2,fy+(fh-foto.height*k)/2,foto.width*k,foto.height*k); x.restore(); y=fy+fh-20; }
+  else { curva(x,W-M-330,y-6,330,150); y+=40; }
+  y+=110; x.fillStyle=COR.mute; x.font="700 28px 'Archivo Narrow', Archivo, Arial"; x.fillText(d.eyebrow.toUpperCase().split("").join(String.fromCharCode(8202)),M,y);
+  if(d.titulo){ y+=20; x.fillStyle=COR.ink; const sz=fmt==='story'?92:80; x.font=`900 ${sz}px Archivo, Arial`; quebra(d.titulo,16).forEach(l=>{ y+=sz*.95; x.fillText(l.toUpperCase(),M,y); }); }
+  let BG=foto?(fmt==='story'?230:180):(fmt==='story'?280:240); const cabe=()=>{ x.font=`700 ${BG}px 'Archivo Narrow', Archivo, Arial`; const w1=x.measureText(String(d.big.v)).width; x.font=`700 ${Math.round(BG*.26)}px 'Archivo Narrow', Archivo, Arial`; return w1+10+x.measureText(d.big.u).width<=W-2*M; }; while(!cabe()&&BG>90) BG-=10;
+  y+=BG*.95; x.fillStyle=COR.ink; x.font=`700 ${BG}px 'Archivo Narrow', Archivo, Arial`; x.fillText(String(d.big.v),M-6,y); const bw=x.measureText(String(d.big.v)).width;
+  x.fillStyle=COR.bone; x.font=`700 ${Math.round(BG*.26)}px 'Archivo Narrow', Archivo, Arial`; x.fillText(d.big.u,M+bw+10,y);
+  const ks=d.ks.slice(0,fmt==='story'?6:(foto?2:4)); const KH=fmt==='story'?190:150, gap=24, colW=(W-2*M-gap)/2; y+=50;
+  ks.forEach((k,i)=>{ const X=M+(i%2)*(colW+gap), Y=y+Math.floor(i/2)*(KH+gap); x.fillStyle=COR.s1; rr(x,X,Y,colW,KH,24); x.fill(); x.fillStyle=COR.ink; x.font=`700 ${Math.round(KH*.46)}px 'Archivo Narrow', Archivo, Arial`; let v=String(k.v); while(x.measureText(v).width>colW-56&&v.length>3) v=v.slice(0,-1); x.fillText(v,X+30,Y+KH*.56); x.fillStyle=COR.mute; x.font="600 26px Archivo, Arial"; x.fillText(k.l,X+30,Y+KH*.84); });
+  y+=Math.ceil(ks.length/2)*(KH+gap);
+  const bot=fmt==='story'?H-220:H-70; const fy=Math.min(Math.max(y+70,bot-150),bot-90); x.fillStyle=COR.bone; x.font="italic 56px 'Instrument Serif', Georgia, serif"; x.fillText(d.frase,M,fy);
+  if(d.fonte){ x.fillStyle=COR.mute; x.font="500 22px Archivo, Arial"; x.fillText(d.fonte,M,fy+40); }
+  x.fillStyle=COR.mute; x.font="600 26px 'Archivo Narrow', Archivo, Arial"; x.fillText(SH.URL.toUpperCase(),M,bot); x.textAlign="right"; x.fillText("VIDA NA DOSE.",W-M,bot); x.textAlign="left";
+  return c; };
+
+// ---------- folha "A dose do dia" ----------
+let cur=null;
+const reg=(tipo,id)=>(tipo==='sessao'?S.logs:tipo==='cardio'?S.cardio:S.bjj).find(x=>x.id===id);
+function campos(a,e){ const r=a.rel||{}; const inp=(k,l,ph)=>`<div><label for="dd_${k}">${l}</label><input id="dd_${k}" data-k="${k}" ${k==='tempo'||k==='placar'?'':'type="number" inputmode="numeric"'} value="${esc(r[k]??(k==='fcMed'&&a.fc?a.fc:k==='metros'&&a.metros?a.metros:''))}" placeholder="${esc(ph)}" onchange="ddCampo(this)"></div>`;
+  const ex=EXTRA[e]||[]; const rel=RELOGIO(e);
+  return `${ex.length?`<div class="grid2" style="margin-top:4px">${ex.map(f=>inp(...f)).join("")}</div>`:""}
+   <details class="card sub" style="margin:10px 0 0;padding:10px 12px"><summary><b>Dados do relógio</b> <span class="tiny">· opcional, você corrige ou apaga</span></summary><div class="grid2" style="margin-top:6px">${rel.map(f=>inp(...f)).join("")}</div>
+   <p class="tiny" style="margin:6px 0 0">Copie do seu relógio ou do app dele. Campo vazio não aparece no cartão.${a.fonte==='strava'?' FC e tempo vieram do Strava.':''}</p></details>`; }
+SH.dose=async(tipo,id)=>{ const a=reg(tipo,id); if(!a) return; cur={tipo,id,fmt:(cur&&cur.fmt)||'feed',foto:null,blob:null}; const e=esporteDe(tipo,a);
+  sheet(`<div class="eyebrow" style="text-align:left">${esc(NOME[e])}</div><h3 style="margin-top:2px">A dose do dia</h3>
+   <div class="seg" style="margin:8px 0"><button class="${cur.fmt==='feed'?'on':''}" onclick="ddFmt('feed',this)">Feed 4:5</button><button class="${cur.fmt==='story'?'on':''}" onclick="ddFmt('story',this)">Story 9:16</button></div>
+   <div id="ddPrev" class="dd-prev" style="aspect-ratio:${cur.fmt==='story'?'9/16':'4/5'}"></div>
+   <div class="row" style="align-items:center;gap:10px;margin:10px 0 0"><label for="dd_min" style="margin:0;flex:none">Duração</label><input id="dd_min" data-k="min" type="number" inputmode="numeric" min="1" max="600" placeholder="min" value="${(tipo==='sessao'?a.dur:a.min)||''}" onchange="ddCampo(this)" style="max-width:110px;margin:0"><span class="tiny">min</span></div>
+   ${campos(a,e)}
+   <button class="btn em" style="margin-top:12px" onclick="ddPostar()">${I("share")} Postar</button>
+   ${window.GRUPOS&&window.CLOUD&&CLOUD.user()?`<button class="btn sec" style="margin-top:8px" onclick="ddGrupo()">${I("users")} Postar no grupo</button>`:""}
+   <div class="row" style="gap:8px;margin-top:8px"><button class="btn sm ghost" onclick="ddBaixar()">Baixar imagem</button><button class="btn sm ghost" onclick="closeSheet()">Agora não</button></div>`);
+  await render(); };
+async function render(){ if(!cur) return; const a=reg(cur.tipo,cur.id); if(!a) return; const c=await window.cartaoDose(cur.fmt,dados(cur.tipo,a),cur.foto);
+  const el=document.getElementById('ddPrev'); if(el){ el.innerHTML=""; const im=new Image(); im.alt="Prévia do cartão"; im.src=c.toDataURL("image/png"); el.appendChild(im); }
+  cur.blob=await new Promise(r=>c.toBlob(r,"image/png")); return cur.blob; }
+window.ddFmt=(f,b)=>{ cur.fmt=f; b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); const el=document.getElementById('ddPrev'); if(el) el.style.aspectRatio=f==='story'?'9/16':'4/5'; render(); };
+window.ddCampo=(inp)=>{ const a=reg(cur.tipo,cur.id); if(!a) return; const k=inp.dataset.k, raw=inp.value.trim();
+  if(k==='min'){ const v=n0(raw); if(cur.tipo==='sessao') a.dur=v?Math.min(600,Math.round(v)):null; else a.min=v?Math.min(600,Math.round(v)):null; }
+  else { a.rel=a.rel||{}; const txt=k==='tempo'||k==='placar'; const v=txt?(raw.slice(0,30)||null):n0(raw); if(v==null) delete a.rel[k]; else a.rel[k]=txt?v:Math.round(v); if(k==='fcMed'&&cur.tipo==='cardio') a.fc=a.rel.fcMed||null;
+    if(k==='tempo'&&a.rel.tempo){ const t=segs(a.rel.tempo); if(t) a.tempoProva=t; } }
+  save(); render(); };
+const nome=()=>`dose-${today()}.png`;
+window.ddPostar=async()=>{ try{ const blob=cur.blob||await render(); const file=new File([blob],nome(),{type:"image/png"}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:"DOSE",text:"Vida na dose."}); toast("Postado"); closeSheet(); } else { ddBaixar(); toast("Imagem salva. Poste de onde quiser"); } }catch(e){ if(e&&e.name!=="AbortError") toast("Não deu para postar; baixe a imagem"); } };
+window.ddBaixar=async()=>{ const blob=cur.blob||await render(); const u=URL.createObjectURL(blob); const l=document.createElement('a'); l.href=u; l.download=nome(); document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000); };
+window.ddGrupo=()=>{ const a=reg(cur.tipo,cur.id); if(!a) return; const d=dados(cur.tipo,a); const tipo=cur.tipo==='sessao'||cur.tipo==='cardio'?cur.tipo:'esporte';
+  window.gpPostarSheet(tipo,{titulo:d.titulo||NOME[d.e],linhas:[`${d.big.v} ${d.big.u}`,...d.ks.filter(k=>!/kcal/.test(k.l)).slice(0,2).map(k=>`${k.v} ${k.l}`)]}); };
+window.DOSE_DIA={dados,esporteDe};
+
+// ---------- abre sozinho ao salvar ----------
+// sessão e cardio já abriam o compartilhar: agora abrem a dose do dia.
+SH.sessao=id=>{ const l=S.logs.find(x=>x.id===id)||S.logs[S.logs.length-1]; if(l) SH.dose('sessao',l.id); };
+SH.cardio=id=>{ const c=S.cardio.find(x=>x.id===id)||S.cardio[S.cardio.length-1]; if(c) SH.dose('cardio',c.id); };
+SH.esporte=id=>{ const b=S.bjj.find(x=>x.id===id)||S.bjj[S.bjj.length-1]; if(b) SH.dose('esporte',b.id); };
+// esporte avulso, plano por esporte e sessão avulsa do plano: abrem também
+const depois=(fn)=>function(){ const ids=new Set([...(S.bjj||[]),...(S.cardio||[])].map(x=>x.id)); const r=fn.apply(this,arguments);
+  const b=(S.bjj||[]).find(x=>!ids.has(x.id)), c=(S.cardio||[]).find(x=>!ids.has(x.id));
+  if(b) setTimeout(()=>SH.dose('esporte',b.id),350); else if(c) setTimeout(()=>SH.dose('cardio',c.id),350); return r; };
+['salvaEsporte','salvaPlano','salvaAvulsa','salvaBjj'].forEach(k=>{ if(typeof window[k]==='function') window[k]=depois(window[k]); });
+})();
+
+</script>
+<script>
+// ================= DOSE · v7.9 — o clube (aprovado pelo Tiago em 09/11/2026) =================
+// 1. Comunidade em três partes só: Pontos, Grupos e Convites. Sem ranking da cidade, sem seguidores, sem curtidas contadas, sem feed aberto.
+// 2. Convite como objeto: numerado, 3 por mês, e quem abre vê o "Do excesso à dose" terminar no próprio nome.
+// 3. O encontro termina num cartão do grupo (depois da presença confirmada) e puxa o próximo: marcar de novo no ponto ou convidar.
+// 4. Cartão de membro no lugar do herói: número, desde quando, esportes, pontos, melhor medalha e semanas seguidas na dose.
+// Lentes pedidas pelo Tiago: Jobs (cortar), Zuckerberg (grupos pequenos e o ciclo convite → encontro → cartão), Altman (medir quem volta).
+(function(){
+const V=window.VIEWS, A=window.AFTER;
+const U=()=>window.CLOUD&&CLOUD.user();
+const G=()=>window.GRUPOS;
+const rpc=(f,a)=>G().rpc(f,a), api=(p,o)=>G().api(p,o);
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MES=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const nr=n=>String(n||0).padStart(4,'0');
+const nomeMembro=()=>(S.perfil&&S.perfil.nome)||(G()&&G().apelido&&G().apelido())||'Membro DOSE';
+const primeiro=s=>String(s||'').trim().split(/\s+/)[0]||'';
+const nomeEsp=k=>({musculacao:"Musculação"})[k]||(((window.SPORTS||[]).find(s=>s.id===k)||{}).nome)||k;
+const linkConvite=c=>`${location.origin}${location.pathname}#convite?c=${c}`;
+
+// ---------- membro ----------
+let membro=null;
+async function meuMembro(){ if(!U()) return null; if(membro) return membro; try{ const r=await rpc('meu_membro',{}); membro=(r&&r[0])||null; if(membro){ S.membro=membro; save(); } }catch(e){ membro=S.membro||null; } return membro; }
+function pontosFreq(){ const c={}; Object.values(S.encontros||{}).forEach(e=>{ if(e.ponto) c[e.ponto]=(c[e.ponto]||0)+1; }); return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]); }
+function melhorMedalha(){ try{ const L=medalhas().filter(m=>m.tier>0); if(!L.length) return null; L.sort((a,b)=>b.tier-a.tier||b.v/(b.t[2]||1)-a.v/(a.t[2]||1)); return L[0]; }catch(e){ return null; } }
+function cartaoMembro(){ const m=S.membro; const esps=[...((S.perfil.diasMusc||[]).length?['Musculação']:[]),...Object.keys(S.perfil.esportes||{}).filter(k=>k!=='outro').map(nomeEsp)];
+  const pts=pontosFreq(); const md=melhorMedalha(); const sem=window.streakSemanas?streakSemanas():0; const dias=new Set([...S.logs,...S.bjj,...S.cardio].filter(x=>x.data>=semanaIni()&&x.data<=today()).map(x=>x.data)).size;
+  const desde=m&&m.desde?(()=>{ const d=new Date(m.desde+"T12:00:00"); return `${MES[d.getMonth()]} de ${d.getFullYear()}`; })():null;
+  return `<div class="cm" role="group" aria-label="Cartão de membro">
+   <div class="cm-topo"><span class="cm-marca">DOSE<i>.</i></span><span class="cm-n" id="cmN">${m?`Nº <b>${nr(m.numero)}</b>`:U()?'Nº ····':'Sem número'}</span></div>
+   <button class="cm-nome" onclick="go('meuperfil')" aria-label="Editar meu perfil">${esc(S.perfil.nome||'Seu nome')}</button>
+   <p class="cm-desde serif">${desde?`Na dose desde ${desde}.`:U()?'Na dose.':'Entre na conta para receber seu número de membro.'}</p>
+   <dl class="cm-dl"><div><dt>Esportes</dt><dd>${esps.length?esps.slice(0,3).map(esc).join(' · '):'não informado'}</dd></div>
+    <div><dt>Pontos</dt><dd>${pts.length?pts.map(esc).join(' · '):'nenhum encontro ainda'}</dd></div>
+    <div><dt>Melhor medalha</dt><dd>${md?`${esc(md.cat)} · ${esc(TIER[md.tier])}`:'nenhuma ainda'}</dd></div></dl>
+   <div class="stats cm-stats" id="comStats"><div><b data-count="${sem}">${sem}</b><span>semanas seguidas na dose</span></div><div><b data-count="${dias}">${dias}</b><span>dias nesta semana</span></div><div><span data-k="gr"><b>—</b></span><span>grupos</span><span data-k="pos" hidden></span></div></div>
+   ${m&&m.convidado_por_nome?`<div class="tiny cm-conv">Convidado por ${esc(m.convidado_por_nome)}${m.convite_numero?` · convite Nº ${nr(m.convite_numero)}`:''}</div>`:''}
+   ${U()?'':`<button class="btn em sm" style="margin-top:12px" onclick="garantirConta(()=>route(),'Entrar no clube')">Entrar na conta</button>`}</div>`; }
+
+// ---------- Comunidade em três partes ----------
+const ABAS=[["pontos","Pontos"],["grupos","Grupos"],["convites","Convites"]];
+const _vc=V.comunidade; V.comunidade=(p)=>{ const h=_vc(p); const t=document.createElement('template'); t.innerHTML=h; const f=t.content;
+  const h1=f.querySelector('h1'); const hero=f.querySelector('.meuhero'); const mapa=f.querySelector('.mp4-entra'); const reg=f.querySelector('#comRegiao');
+  [h1,hero,mapa,reg].forEach(n=>n&&n.remove()); const resto=document.createElement('div'); resto.appendChild(f.cloneNode(true));
+  const aba=(p&&p.aba)||S.comAba||'pontos';
+  const painel=(k,html)=>`<section class="com-p" data-p="${k}" ${aba===k?'':'hidden'}>${html}</section>`;
+  return `${h1?h1.outerHTML:'<h1 class="sec">Comunidade</h1>'}${cartaoMembro()}
+   <div class="seg com-abas" role="tablist">${ABAS.map(([k,n])=>`<button role="tab" class="${aba===k?'on':''}" onclick="comAba('${k}',this)">${n}</button>`).join('')}</div>
+   ${painel('pontos',`${mapa?mapa.outerHTML:''}${reg?reg.outerHTML:''}`)}
+   ${painel('grupos',resto.innerHTML)}
+   ${painel('convites',`<div id="cvBox">${U()?'<div class="card sub small">carregando…</div>':`<div class="card"><p class="serif" style="margin:0 0 6px">Convite é coisa de membro. <i>Três por mês.</i></p><p class="small">Entre na sua conta para receber seu número e seus convites.</p><button class="btn em sm" onclick="garantirConta(()=>route(),'Para convidar')">Entrar na conta</button></div>`}</div>
+     <button class="lk" style="margin-top:6px" onclick="cvTenho()">Recebi um código de convite</button>`)}`; };
+window.comAba=(k,b)=>{ S.comAba=k; save(); document.querySelectorAll('.com-p').forEach(s=>s.hidden=s.dataset.p!==k); if(b) b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); };
+const _ac=A.comunidade; A.comunidade=(p)=>{ const r=_ac?_ac(p):null;
+  meuMembro().then(m=>{ const el=document.getElementById('cmN'); if(el&&m) el.innerHTML=`Nº <b>${nr(m.numero)}</b>`; const d=document.querySelector('.cm-desde'); if(d&&m&&m.desde){ const x=new Date(m.desde+"T12:00:00"); d.textContent=`Na dose desde ${MES[x.getMonth()]} de ${x.getFullYear()}.`; } });
+  cvCarregar(); sincEncontros(); return r; };
+
+// ---------- Convites ----------
+async function cvCarregar(){ const box=document.getElementById('cvBox'); if(!box||!U()) return;
+  try{ const L=await api(`convites?de=eq.${U().id}&select=numero,codigo,para_nome,criado,usado_em&order=criado.desc&limit=50`)||[];
+    const ini=new Date(); const mesRio=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).format(ini);
+    const doMes=L.filter(c=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit'}).format(new Date(c.criado))===mesRio).length; const livres=Math.max(0,3-doMes);
+    const mes=MES[+mesRio.slice(5,7)-1];
+    box.innerHTML=`<div class="card cv-cota"><div class="cv-pts" aria-hidden="true">${[0,1,2].map(i=>`<i class="${i<livres?'on':''}"></i>`).join('')}</div><div><b>${livres} ${livres===1?'convite livre':'convites livres'} em ${mes}</b><div class="tiny">Cada membro tem 3 por mês. Quem recebe ganha um número de membro.</div></div></div>
+     <button class="btn em" ${livres?'':'disabled'} onclick="cvNovo()">${livres?'Fazer um convite':'Novos convites no mês que vem'}</button>
+     ${L.length?`<h3>Seus convites</h3><div class="list">${L.map(c=>`<div class="item" onclick="cvVer('${c.codigo}')"><div class="n"><b class="mono">${nr(c.numero)}</b></div><div class="t"><b>${esc(c.para_nome)}</b><span>${c.usado_em?'Aceito. Já é da comunidade DOSE':'Aguardando'}</span></div><span class="arrow">›</span></div>`).join('')}</div>`:''}`; }
+  catch(e){ box.innerHTML=`<div class="card"><b>Não carregou</b><p class="small">${esc(e.message)}</p></div>`; } }
+window.cvNovo=()=>{ if(!U()) return garantirConta(cvNovo,'Para convidar');
+  sheet(`<h3>Fazer um convite</h3><p class="small">O convite vai com um número e com o seu nome. Escolha alguém que treina com você.</p>
+   <label for="cvPara">Nome de quem você vai convidar</label><input id="cvPara" maxlength="40" autocomplete="off" placeholder="Ex.: Ana">
+   <label for="cvDe">Como você assina</label><input id="cvDe" maxlength="40" value="${esc(primeiro(nomeMembro()))}">
+   <button class="btn em" style="margin-top:12px" onclick="cvCriar()">Criar convite</button><button class="btn sm ghost" style="margin-top:8px" onclick="closeSheet()">Agora não</button>`); setTimeout(()=>{ const i=document.getElementById('cvPara'); if(i) i.focus(); },60); };
+window.cvCriar=async()=>{ const para=(document.getElementById('cvPara').value||'').trim(), de=(document.getElementById('cvDe').value||'').trim(); if(para.length<2) return toast('Diga o nome de quem você vai convidar');
+  try{ const r=(await rpc('criar_convite',{p_para:para,p_de_nome:de}))[0]; cvMostrar({numero:r.numero,codigo:r.codigo,para_nome:para,de_nome:de||primeiro(nomeMembro())},true); cvCarregar(); }catch(e){ toast(e.message||'Não consegui criar agora'); } };
+window.cvVer=async(cod)=>{ try{ const r=(await rpc('ver_convite',{p_codigo:cod}))[0]; if(r) cvMostrar(Object.assign({codigo:cod},r),!r.usado); }catch(e){ toast(e.message); } };
+// o objeto do convite (mesmo desenho para quem manda e para quem recebe)
+const objeto=(cv,cls='')=>`<div class="cv-obj ${cls}" aria-label="Convite número ${cv.numero} para ${esc(cv.para_nome)}">
+  <div class="cv-topo"><span class="cm-marca">DOSE<i>.</i></span><span class="cv-n">Convite Nº <b data-num="${cv.numero}">${nr(cv.numero)}</b></span></div>
+  <div class="cv-para">${esc(cv.para_nome)}</div><p class="serif cv-frase">Vida na dose.</p>
+  <div class="cv-rod"><span>Convidado por ${esc(cv.de_nome)}</span><span class="mono">${esc(cv.codigo||'')}</span></div></div>`;
+function contar(el){ if(!el) return; const fim=+el.dataset.num; if(reduz()||!fim){ el.textContent=nr(fim); return; } const t0=performance.now(), D=900; const f=t=>{ const k=Math.min(1,(t-t0)/D), e=1-Math.pow(1-k,4); el.textContent=nr(Math.round(fim*e)); if(k<1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
+function cvMostrar(cv,enviar){ const link=linkConvite(cv.codigo);
+  sheet(`<h3>${enviar?'Seu convite':'Convite'}</h3>${objeto(cv,'sobe')}
+   ${enviar?`<button class="btn em" style="margin-top:14px" onclick="cvEnviar('${cv.codigo}',${cv.numero},'${esc(cv.para_nome).replace(/'/g,"\\'")}')">${I('share')} Enviar para ${esc(primeiro(cv.para_nome))}</button>
+   <button class="btn sm ghost" style="margin-top:8px" onclick="navigator.clipboard.writeText('${link}').then(()=>toast('Link copiado'))">Copiar link</button>`:`<p class="small" style="margin-top:12px">Aceito. ${esc(primeiro(cv.para_nome))} já é da comunidade DOSE.</p>`}`);
+  setTimeout(()=>contar(document.querySelector('#sheet .cv-n b')),200); }
+window.cvEnviar=async(cod,n,para)=>{ const link=linkConvite(cod); const text=`${primeiro(para)}, separei um dos meus convites da DOSE para você. Convite Nº ${nr(n)}. ${link}`;
+  try{ if(navigator.share) await navigator.share({title:'Convite DOSE',text}); else { await navigator.clipboard.writeText(text); toast('Convite copiado'); } }catch(e){} };
+window.cvTenho=()=>{ sheet(`<h3>Recebi um convite</h3><label for="cvCod">Código do convite</label><input id="cvCod" maxlength="12" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.12em" placeholder="8 letras e números"><button class="btn em" style="margin-top:12px" onclick="const c=document.getElementById('cvCod').value.trim();if(c){closeSheet();go('convite',{c})}">Abrir convite</button>`); };
+
+// ---------- Tela do convite (quem recebe) ----------
+V.convite=(p)=>{ if(window.setTitle) setTitle('Convite');
+  return `<div class="cvt"><div class="m4-exc" aria-hidden="true"><canvas></canvas></div><div id="cvtBox" class="cvt-box"><p class="small" style="text-align:center">Abrindo o convite…</p></div></div>`; };
+A.convite=async(p)=>{ document.body.classList.add('cvt-on'); const box=document.getElementById('cvtBox'); const c=(p&&p.c||'').toUpperCase();
+  const exc=document.querySelector('.cvt .m4-exc'); if(exc&&window.excessoDose&&!reduz()) window.excessoDose(exc); else if(exc) exc.remove();
+  let cv=null; try{ cv=(await rpc('ver_convite',{p_codigo:c}))[0]; }catch(e){}
+  if(!box) return; if(!cv){ box.innerHTML=`<h1 class="m2-kin">Convite não<br>encontrado<b class="m2-dot">.</b></h1><p class="small">Confira o código com quem te convidou.</p><button class="btn sec" onclick="go('${S.onboarded?'comunidade':'onboard'}')">Voltar</button>`; return; }
+  const atraso=reduz()?0:2300; const pal=[`${primeiro(cv.para_nome)},`,'na','dose'];
+  box.innerHTML=`<div class="eyebrow cvt-eb" style="animation-delay:${atraso}ms">Convite Nº <b data-num="${cv.numero}">0000</b></div>
+   <h1 class="m2-kin" aria-label="${esc(primeiro(cv.para_nome))}, na dose.">${pal.map((w,i)=>`<span class="w"><span style="animation-delay:${atraso+150+i*90}ms">${esc(w)}${i===pal.length-1?'<b class="m2-dot" style="animation-delay:'+(atraso+800)+'ms">.</b>':''}</span></span>`).join('')}</h1>
+   <p class="serif cvt-de" style="animation-delay:${atraso+700}ms">${esc(cv.de_nome)} separou um dos convites do mês para você.</p>
+   ${objeto(Object.assign({codigo:c},cv),'cvt-obj')}
+   <div class="cvt-acoes" style="animation-delay:${atraso+1300}ms">${cv.usado?`<p class="small">Este convite já foi aceito.</p><button class="btn sec" onclick="go('${S.onboarded?'comunidade':'onboard'}')">Continuar</button>`
+     :`<button class="btn em" onclick="cvAceitar('${c}')">Aceitar convite</button><p class="tiny" style="margin-top:8px">Você recebe seu número de membro. Precisa de uma conta.</p>`}</div>`;
+  setTimeout(()=>contar(box.querySelector('.cvt-eb b')),atraso+100); };
+window.cvAceitar=(c)=>garantirConta(async()=>{ try{ const r=(await rpc('aceitar_convite',{p_codigo:c}))[0]; membro=null; S.membro=Object.assign({},S.membro||{},r); save();
+  const box=document.getElementById('cvtBox'); if(box) box.querySelector('.cvt-acoes').innerHTML=`<div class="card cvt-ok"><div class="eyebrow" style="text-align:left">Membro</div><div class="cvt-num">Nº ${nr(r.numero)}</div><p class="small">Bem-vindo à comunidade DOSE.</p></div><button class="btn em" onclick="${S.onboarded?`go('comunidade',{aba:'pontos'})`:`go('onboard')`}">${S.onboarded?'Ver os pontos de treino':'Começar'}</button>`;
+ }catch(e){ toast(e.message||'Não consegui aceitar agora'); } },'Para aceitar o convite');
+// o convite abre mesmo antes do cadastro
+const _r=window.route; window.route=function(){ if(/^#convite/.test(location.hash)&&typeof S!=='undefined'&&!S.onboarded){ const q=Object.fromEntries(new URLSearchParams((location.hash.split('?')[1])||'')); const el=document.getElementById('view'); el.innerHTML=V.convite(q); window.scrollTo(0,0); A.convite(q); return; } document.body.classList.remove('cvt-on'); return _r.apply(this,arguments); };
+window.addEventListener('hashchange',()=>{ if(!/^#convite/.test(location.hash)) document.body.classList.remove('cvt-on'); });
+
+// ---------- O encontro termina num cartão ----------
+const horaRio=q=>{ const [h,m]=new Date(q).toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',hour12:false}).split(':').map(Number); return m?`${h}h${String(m).padStart(2,'0')}`:`${h}h`; };
+const diaRio=q=>new Date(q).toLocaleDateString('en-CA',{timeZone:'America/Sao_Paulo'});
+function guardar(t,n){ S.encontros=S.encontros||{}; const ant=S.encontros[t.id]||{}; S.encontros[t.id]={ponto:t.ponto,ponto_id:t.ponto_id||null,quando:t.quando,esporte:t.esporte,n:Math.max(n||0,ant.n||0),visto:ant.visto||false}; save(); return S.encontros[t.id]; }
+async function sincEncontros(){ if(!U()) return; try{
+  const r=await api(`treino_participantes?user_id=eq.${U().id}&presente=eq.true&select=treino_id,treinos_abertos(id,quando,ponto,ponto_id,esporte)`)||[]; const ts=r.map(x=>x.treinos_abertos).filter(Boolean); if(!ts.length) return;
+  const cont=await api(`treino_participantes?treino_id=in.(${ts.map(t=>t.id).join(',')})&presente=eq.true&select=treino_id`).catch(()=>[]); const c={}; (cont||[]).forEach(x=>c[x.treino_id]=(c[x.treino_id]||0)+1);
+  let novo=null; ts.forEach(t=>{ const e=guardar(t,(c[t.id]||1)+1); if(!e.visto) novo=t.id; }); if(novo) setTimeout(()=>encontro(novo),600); }catch(e){} }
+let ec=null;
+const dadosEnc=e=>({eyebrow:`Encontro · ${new Date(diaRio(e.quando)+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}).replace('.','')}`,titulo:e.ponto,big:{v:e.n,u:e.n===1?'pessoa':'pessoas'},ks:[{v:horaRio(e.quando),l:'horário'},{v:nomeEsp(e.esporte)||'Treino',l:'esporte'}],frase:'Apareceram. Na dose.',fonte:'Presença confirmada por quem organizou'});
+window.encontro=async(id)=>{ const e=(S.encontros||{})[id]; if(!e) return; e.visto=true; save(); ec={id,fmt:'feed',foto:null,blob:null};
+  sheet(`<div class="eyebrow" style="text-align:left">Presença confirmada</div><h3 style="margin-top:2px">O encontro</h3>
+   <div class="seg" style="margin:8px 0"><button class="on" onclick="ecFmt('feed',this)">Feed 4:5</button><button onclick="ecFmt('story',this)">Story 9:16</button></div>
+   <div id="ecPrev" class="dd-prev" style="aspect-ratio:4/5"></div>
+   <label class="btn sm sec" style="margin-top:10px">${I('plus')} Foto do grupo<input type="file" accept="image/*" hidden onchange="ecFoto(this)"></label><p class="tiny" style="margin:4px 0 0">A foto fica no seu aparelho e só sai se você postar.</p>
+   <button class="btn em" style="margin-top:12px" onclick="ecPostar()">${I('share')} Postar</button>
+   ${window.GRUPOS?`<button class="btn sec" style="margin-top:8px" onclick="ecGrupo()">${I('users')} Postar no grupo</button>`:''}
+   <h3 style="margin-top:18px">E o próximo?</h3><div class="grid2"><button class="btn sm sec" onclick="ecProximo()">Marcar o próximo aqui</button><button class="btn sm ghost" onclick="closeSheet();go('comunidade',{aba:'convites'})">Convidar quem não veio</button></div>
+   <button class="btn sm ghost" style="margin-top:8px" onclick="closeSheet()">Agora não</button>`);
+  await ecRender(); };
+async function ecRender(){ const e=(S.encontros||{})[ec.id]; const c=await window.cartaoDose(ec.fmt,dadosEnc(e),ec.foto); const el=document.getElementById('ecPrev'); if(el){ el.innerHTML=''; const im=new Image(); im.alt='Prévia do cartão do encontro'; im.src=c.toDataURL('image/png'); el.appendChild(im); } ec.blob=await new Promise(r=>c.toBlob(r,'image/png')); }
+window.ecProximo=()=>{ const e=(S.encontros||{})[ec.id]; closeSheet(); const i=(window.DOSE_PONTOS||[]).findIndex(p=>p.id===e.ponto_id); if(i>=0&&window.mpMarcar) return mpMarcar(i); if(window.rgNovo){ rgNovo(); setTimeout(()=>{ const p=document.getElementById('taP'); if(p) p.value=e.ponto||''; },30); } };
+window.ecFmt=(f,b)=>{ ec.fmt=f; b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); const el=document.getElementById('ecPrev'); if(el) el.style.aspectRatio=f==='story'?'9/16':'4/5'; ecRender(); };
+window.ecFoto=async(inp)=>{ const f=inp.files&&inp.files[0]; if(!f) return; try{ ec.foto=await createImageBitmap(f); }catch(e){ const im=new Image(); im.src=URL.createObjectURL(f); await im.decode(); ec.foto=im; } ecRender(); };
+window.ecPostar=async()=>{ try{ const file=new File([ec.blob],`dose-encontro-${today()}.png`,{type:'image/png'}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:'DOSE',text:'Vida na dose.'}); closeSheet(); } else { const u=URL.createObjectURL(ec.blob); const a=document.createElement('a'); a.href=u; a.download=file.name; document.body.appendChild(a); a.click(); a.remove(); toast('Imagem salva'); } }catch(e){} };
+window.ecGrupo=()=>{ const e=(S.encontros||{})[ec.id]; window.gpPostarSheet('encontro',{titulo:`Encontro · ${e.ponto}`,linhas:[`${e.n} ${e.n===1?'pessoa':'pessoas'}`,horaRio(e.quando)]}); };
+// quem organizou recebe o cartão logo depois de salvar a presença
+const _ps=window.rgPresSalvar; if(_ps) window.rgPresSalvar=async(...a)=>{ const s=window._rgPres; await _ps(...a); if(!s) return;
+  try{ const t=(await api(`treinos_abertos?id=eq.${s.id}&select=id,quando,ponto,ponto_id,esporte`))[0]; if(t&&s.sel.size){ guardar(t,s.sel.size+1); setTimeout(()=>encontro(t.id),400); } }catch(e){} };
+})();
+// "Convidar para a DOSE" passa a ser o convite numerado; aba antiga do ranking volta para treinos
+window.rgConvidarApp=()=>go('comunidade',{aba:'convites'});
+try{ if(S.regiao&&S.regiao.aba==='ranking'){ S.regiao.aba='treinos'; save(); } }catch(e){}
 
 </script>
 <script>

@@ -10,7 +10,7 @@ const cap=async(scr,pa,map)=>{ await p.evaluate(([s,a])=>go(s,a||{}),[scr,pa]); 
 await cap('hoje',null,{top:'.top',tabbar:'.tabbar',nadose:'.view .hero4.nadose',heroTreino:'.view > .ficha4',sres:'.view > .sem4-res',quick:'.view > .quick',semana:'.view > .semana4',corpo:'.view .card:has(.corpos)'});
 await cap('treino',null,{seg:'.view > .seg',fichas:'.view > .fichas',ltiles:'.view > .ltiles'});
 await cap('progresso',null,{coach:'.view > p.serif.coach',grid3:'.view > .grid3'});
-await cap('comunidade',null,{meuhero:'.view > .card.hero.meuhero',hscroll:'.view .hscroll'});
+await cap('comunidade',null,{meuhero:'.view > .cm',hscroll:'.view .hscroll'});
 await cap('esportes',{id:'corrida'},{evol:'.view .barras'});
 await cap('mais',null,{maisList:'.view > .list'});
 await cap('meuperfil',null,{perfilCard:'.view > .card:nth-of-type(2)'});
