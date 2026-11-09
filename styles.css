@@ -520,3 +520,42 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 .m4-exc{height:210px;margin:4px -4px 8px}
 .m4-exc canvas{width:100%;height:100%;display:block}
 .m4-espera .m2-dot{animation-delay:2.9s!important}
+
+/* v7.2 · nova Hoje: ficha em leque e semana em barras (rodada 2 do DOSE Studio) */
+.ficha4{position:relative;margin:18px 4px 26px}
+.ficha4 .f4{border-radius:18px;border:1px solid var(--line)}
+.ficha4 .f4b,.ficha4 .f4c{position:absolute;inset:0;transform-origin:50% 100%}
+.ficha4 .f4c{background:var(--s2);animation:f4c .9s var(--expo) .1s both}
+.ficha4 .f4b{background:var(--s3);animation:f4b .9s var(--expo) .2s both}
+@keyframes f4c{from{transform:none}to{transform:rotate(-6deg) translate(-8px,6px)}}
+@keyframes f4b{from{transform:none}to{transform:rotate(-3deg) translate(-3px,2px)}}
+.ficha4 .f4a{position:relative;min-width:0;overflow:hidden;background:var(--tx);color:var(--bg);padding:20px 18px 18px;animation:f4a .7s var(--ease) both}
+@keyframes f4a{from{transform:translateY(14px);opacity:0}}
+.ficha4 .f4a .eyebrow{color:var(--tx3);text-align:left}
+.ficha4 .f4a h2{font-size:36px;font-weight:900;letter-spacing:-.05em;line-height:.92;text-transform:uppercase;margin:8px 0 0;color:var(--bg)}
+.ficha4 .f4a h2 i{font-style:normal;color:var(--ember)}
+.ficha4 .f4-prox{margin:8px 0 0;font-size:14px;color:var(--tx3)}
+.ficha4 ol{list-style:none;padding:0;margin:16px 0 0;display:block;min-width:0}
+.ficha4 li{min-width:0;display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:700;border-top:1px solid color-mix(in srgb,var(--bg) 14%,transparent);padding:8px 0}
+.ficha4 li span:first-child{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ficha4 li .num{font-family:var(--num);color:var(--tx3);flex:none}
+.ficha4 li.mais{font-weight:500;color:var(--tx3)}
+.ficha4 .grid2{margin-top:14px}
+.ficha4 .f4a .tiny{color:var(--tx3);margin-top:8px}
+.semana4.barras{gap:8px;align-items:end}
+.semana4.barras .dia{height:118px;justify-content:space-between;flex-direction:column-reverse;padding:8px 0;border-radius:10px;background:var(--s1);border:1px solid var(--line);transform-origin:bottom}
+.semana4.barras .dia i{display:none}
+.semana4.barras .dia.feito{background:var(--tx);border-color:var(--tx);color:var(--bg);animation:barcresce .7s var(--expo) both}
+.semana4.barras .dia.desc{background:repeating-linear-gradient(135deg,var(--s2) 0 6px,var(--s1) 6px 12px);border-color:transparent}
+.semana4.barras .dia.hoje{outline:2px solid var(--ember);outline-offset:2px;border-color:var(--line);color:var(--tx)}
+.semana4.barras .dia.feito.hoje{color:var(--bg)}
+.semana4.barras .dia .ok{background:var(--bg);color:var(--tx)}
+@keyframes barcresce{from{transform:scaleY(0)}}
+.sem4-res{display:flex;justify-content:space-between;align-items:flex-end;margin:12px 0 4px;padding-top:12px;border-top:1px solid var(--line)}
+.sem4-res .eyebrow{text-align:left}
+.sem4-res .v{font-size:42px;font-weight:700;line-height:1}
+.sem4-res .v small{font-size:15px;color:var(--tx3)}
+.sem4-falta{border:2px solid var(--ember);color:var(--ember);font-weight:900;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:8px;transform:rotate(-4deg);animation:carimbo .5s var(--expo) .8s both}
+@keyframes carimbo{from{transform:rotate(-4deg) scale(1.5);opacity:0}to{transform:rotate(-4deg)}}
+.pl-sono{cursor:default}
+@media (prefers-reduced-motion:reduce){.ficha4 .f4,.semana4.barras .dia,.sem4-falta{animation:none!important}.ficha4 .f4c{transform:rotate(-6deg) translate(-8px,6px)}.ficha4 .f4b{transform:rotate(-3deg) translate(-3px,2px)}}

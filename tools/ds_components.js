@@ -7,7 +7,7 @@ await p.goto('file://'+path.join(DS,'overview.html'));await p.waitForTimeout(150
 const S={};
 const cap=async(scr,pa,map)=>{ await p.evaluate(([s,a])=>go(s,a||{}),[scr,pa]); await p.waitForTimeout(1300);
   for(const [k,sel] of Object.entries(map)) S[k]=await p.evaluate(sel=>{ const e=document.querySelector(sel); return e?e.outerHTML:''; },sel); };
-await cap('hoje',null,{top:'.top',tabbar:'.tabbar',nadose:'.view .hero4.nadose',tiles:'.view > .tiles',com:'.view > .card.com',heroTreino:'.view > .card.hero',quick:'.view > .quick',semana:'.view > .semana4',corpo:'.view .card:has(.corpos)'});
+await cap('hoje',null,{top:'.top',tabbar:'.tabbar',nadose:'.view .hero4.nadose',heroTreino:'.view > .ficha4',sres:'.view > .sem4-res',quick:'.view > .quick',semana:'.view > .semana4',corpo:'.view .card:has(.corpos)'});
 await cap('treino',null,{seg:'.view > .seg',fichas:'.view > .fichas',ltiles:'.view > .ltiles'});
 await cap('progresso',null,{coach:'.view > p.serif.coach',grid3:'.view > .grid3'});
 await cap('comunidade',null,{meuhero:'.view > .card.hero.meuhero',hscroll:'.view .hscroll'});

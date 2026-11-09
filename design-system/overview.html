@@ -554,6 +554,45 @@ details.ajustes summary{flex-direction:column;align-items:flex-start;gap:2px}
 .m4-exc canvas{width:100%;height:100%;display:block}
 .m4-espera .m2-dot{animation-delay:2.9s!important}
 
+/* v7.2 · nova Hoje: ficha em leque e semana em barras (rodada 2 do DOSE Studio) */
+.ficha4{position:relative;margin:18px 4px 26px}
+.ficha4 .f4{border-radius:18px;border:1px solid var(--line)}
+.ficha4 .f4b,.ficha4 .f4c{position:absolute;inset:0;transform-origin:50% 100%}
+.ficha4 .f4c{background:var(--s2);animation:f4c .9s var(--expo) .1s both}
+.ficha4 .f4b{background:var(--s3);animation:f4b .9s var(--expo) .2s both}
+@keyframes f4c{from{transform:none}to{transform:rotate(-6deg) translate(-8px,6px)}}
+@keyframes f4b{from{transform:none}to{transform:rotate(-3deg) translate(-3px,2px)}}
+.ficha4 .f4a{position:relative;min-width:0;overflow:hidden;background:var(--tx);color:var(--bg);padding:20px 18px 18px;animation:f4a .7s var(--ease) both}
+@keyframes f4a{from{transform:translateY(14px);opacity:0}}
+.ficha4 .f4a .eyebrow{color:var(--tx3);text-align:left}
+.ficha4 .f4a h2{font-size:36px;font-weight:900;letter-spacing:-.05em;line-height:.92;text-transform:uppercase;margin:8px 0 0;color:var(--bg)}
+.ficha4 .f4a h2 i{font-style:normal;color:var(--ember)}
+.ficha4 .f4-prox{margin:8px 0 0;font-size:14px;color:var(--tx3)}
+.ficha4 ol{list-style:none;padding:0;margin:16px 0 0;display:block;min-width:0}
+.ficha4 li{min-width:0;display:flex;justify-content:space-between;gap:10px;font-size:14px;font-weight:700;border-top:1px solid color-mix(in srgb,var(--bg) 14%,transparent);padding:8px 0}
+.ficha4 li span:first-child{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ficha4 li .num{font-family:var(--num);color:var(--tx3);flex:none}
+.ficha4 li.mais{font-weight:500;color:var(--tx3)}
+.ficha4 .grid2{margin-top:14px}
+.ficha4 .f4a .tiny{color:var(--tx3);margin-top:8px}
+.semana4.barras{gap:8px;align-items:end}
+.semana4.barras .dia{height:118px;justify-content:space-between;flex-direction:column-reverse;padding:8px 0;border-radius:10px;background:var(--s1);border:1px solid var(--line);transform-origin:bottom}
+.semana4.barras .dia i{display:none}
+.semana4.barras .dia.feito{background:var(--tx);border-color:var(--tx);color:var(--bg);animation:barcresce .7s var(--expo) both}
+.semana4.barras .dia.desc{background:repeating-linear-gradient(135deg,var(--s2) 0 6px,var(--s1) 6px 12px);border-color:transparent}
+.semana4.barras .dia.hoje{outline:2px solid var(--ember);outline-offset:2px;border-color:var(--line);color:var(--tx)}
+.semana4.barras .dia.feito.hoje{color:var(--bg)}
+.semana4.barras .dia .ok{background:var(--bg);color:var(--tx)}
+@keyframes barcresce{from{transform:scaleY(0)}}
+.sem4-res{display:flex;justify-content:space-between;align-items:flex-end;margin:12px 0 4px;padding-top:12px;border-top:1px solid var(--line)}
+.sem4-res .eyebrow{text-align:left}
+.sem4-res .v{font-size:42px;font-weight:700;line-height:1}
+.sem4-res .v small{font-size:15px;color:var(--tx3)}
+.sem4-falta{border:2px solid var(--ember);color:var(--ember);font-weight:900;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:8px;transform:rotate(-4deg);animation:carimbo .5s var(--expo) .8s both}
+@keyframes carimbo{from{transform:rotate(-4deg) scale(1.5);opacity:0}to{transform:rotate(-4deg)}}
+.pl-sono{cursor:default}
+@media (prefers-reduced-motion:reduce){.ficha4 .f4,.semana4.barras .dia,.sem4-falta{animation:none!important}.ficha4 .f4c{transform:rotate(-6deg) translate(-8px,6px)}.ficha4 .f4b{transform:rotate(-3deg) translate(-3px,2px)}}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <!-- Google Analytics 4 (propriedade "DOSE app", stream "DOSE web") -->
@@ -4284,6 +4323,72 @@ function rodar(){ const box=document.querySelector('.view .m4-exc'); if(!box||bo
   requestAnimationFrame(frame); }
 
 const _a=A.onboard; A.onboard=(p)=>{ if(_a) _a(p); rodar(); };
+})();
+
+</script>
+<script>
+// ================= DOSE · v7.2 — nova tela Hoje (rodada 2 do DOSE Studio, aprovada pelo Tiago em 08/11/2026) =================
+// Ordem: medidor "Você está na dose?" com os pilares → ficha do treino de hoje em leque → semana em barras → mapa dos músculos → atalhos.
+// Saem da Hoje: blocos de números (energia e peso), cartão da comunidade, caminho de 14 dias e volume da semana (continuam nas outras abas).
+// Pilar Sono só aparece quando há check-in com sono. Dia sem treino: a ficha vira "Dia de descanso" com o próximo treino.
+(function(){
+const V=window.VIEWS;
+const fmtN=v=>String(v).replace('.',',');
+
+function ficha(hero){
+  const eb=(hero.querySelector('.eyebrow')||{}).textContent||'Hoje';
+  const nome=(hero.querySelector('b')||{}).textContent||'';
+  const acoes=hero.querySelector('.grid2'); const nota=hero.querySelector('p.tiny');
+  let lista='';
+  try{ const p=programa(), ps=p.sessoes[proximaSessaoId()];
+    if(ps&&ps.nome===nome){ const sl=ps.slots||[]; const series=sl.reduce((a,s)=>a+(s.sets||0),0);
+      lista=sl.slice(0,3).map(s=>`<li><span>${esc((EX[s.ex]||{}).nome||s.ex)}</span><span class="num">${s.sets}×${esc(String(s.reps||'').replace('–','-'))}</span></li>`).join('')
+        +`<li class="mais"><span>${sl.length>3?`+${sl.length-3} exercícios`:`${sl.length} exercícios`}</span><span class="num">${series} séries</span></li>`; } }catch(e){}
+  const descanso=/Descanso/i.test(eb);
+  const div=document.createElement('div'); div.className='ficha4';
+  div.innerHTML=`<div class="f4 f4c" aria-hidden="true"></div><div class="f4 f4b" aria-hidden="true"></div>
+    <div class="f4 f4a"><div class="eyebrow">${descanso?'Hoje':esc(eb)}</div>
+      <h2>${descanso?'Dia de descanso<i>.</i>':esc(nome)+'<i>.</i>'}</h2>
+      ${descanso&&nome?`<p class="f4-prox">Próximo treino, ${esc(nome)}</p>`:''}
+      ${lista?`<ol>${lista}</ol>`:''}</div>`;
+  const a=div.querySelector('.f4a'); if(acoes) a.appendChild(acoes); if(nota) a.appendChild(nota);
+  return div;
+}
+
+function semana(s4){
+  s4.classList.add('barras');
+  const dias=[...s4.querySelectorAll('.dia')]; const feitos=dias.filter(d=>d.classList.contains('feito')).length;
+  const plan=dias.filter(d=>d.classList.contains('feito')||d.querySelector('i.m,i.e')).length;
+  dias.forEach(d=>{ if(!d.classList.contains('feito')&&!d.querySelector('i.m,i.e')) d.classList.add('desc'); });
+  const r=document.createElement('div'); r.className='sem4-res';
+  const falta=Math.max(0,plan-feitos);
+  r.innerHTML=`<div><div class="eyebrow">Feitos na semana</div><div class="v num">${feitos}<small> de ${plan}</small></div></div>${plan&&falta?`<span class="sem4-falta">${falta===1?'Falta 1':'Faltam '+falta}</span>`:''}`;
+  return r;
+}
+
+function sono(raiz){
+  const ck=[...(S.checkins||[])].reverse().find(c=>c&&c.sono!=null); const pil=raiz.querySelector('.nadose .pilares'); if(!ck||!pil) return;
+  const d=document.createElement('div'); d.className='pilar'; d.innerHTML=`<div class="pl-top pl-sono"><b>Sono</b><span class="tiny">check-in de ${esc(fmtD(ck.data))}</span><span class="pl-v">${fmtN(ck.sono)} h</span></div>`;
+  pil.appendChild(d);
+}
+
+const _h=V.hoje; V.hoje=(p)=>{ const html=_h(p);
+  try{
+    const t=document.createElement('template'); t.innerHTML=html; const r=t.content;
+    // sai da Hoje
+    r.querySelectorAll('.tiles, #cardCom').forEach(x=>x.remove());
+    const cam=r.querySelector('svg.caminho'); if(cam&&cam.closest('.card')) cam.closest('.card').remove();
+    [...r.querySelectorAll('h3')].filter(h=>/Volume da semana/.test(h.textContent)).forEach(h=>{ const n=h.nextElementSibling; if(n&&n.classList.contains('card')) n.remove(); h.remove(); });
+    // ficha
+    const hero=[...r.querySelectorAll('.card.hero')].find(x=>x.querySelector('.grid2')); if(hero) hero.replaceWith(ficha(hero));
+    // semana em barras + resumo, depois mapa e atalhos
+    const s4=r.querySelector('.semana4'); const res=s4?semana(s4):null; if(s4&&res) s4.after(res);
+    const corpo=[...r.querySelectorAll('.card')].find(c=>c.querySelector('.corpos')); const quick=r.querySelector('.quick');
+    if(quick){ const ref=corpo||res||s4; if(ref) ref.after(quick); }
+    sono(r);
+    const out=document.createElement('div'); out.appendChild(r); return out.innerHTML;
+  }catch(e){ return html; }
+};
 })();
 
 </script>
