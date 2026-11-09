@@ -17,7 +17,7 @@ O dono é o Tiago. Fale com ele em português do Brasil, resposta primeiro e det
 - Relação entre pessoas = "comunidade DOSE". "Grupo", nunca "turma".
 - Comunidade fala só de treino. Não mencionar romance, nem para permitir nem para proibir.
 - Sem promessa de corpo, sem antes e depois, sem "sem desculpas", "sua melhor versão", emoji como pontuação.
-- "Vida na dose." vem antes de "A dose certa" (apoio). Cortar de vez "A dose certa" e "Registrado, não prometido." é proposta ainda pendente do Tiago.
+- "Vida na dose." vem antes de "A dose certa" (apoio). "A dose certa" fica (decisão do Tiago em 09/11/2026). Cortar "Registrado, não prometido." continua pendente.
 
 ## Arquitetura
 - HTML + CSS + JS puros, sem build de framework. Estado global `S` em localStorage (`guia-treino-v1`).
@@ -26,6 +26,7 @@ O dono é o Tiago. Fale com ele em português do Brasil, resposta primeiro e det
 - Novas funções entram em arquivo próprio que envolve a função antiga (`const _x=V.x; V.x=(p)=>...`).
 - Ordem de carga em `index.html` importa: arquivo que envolve outro vem depois dele.
 - Backend: Supabase (projeto `typfaauucqkztdhmbhqb`, plano grátis). A chave publicável fica no código; nenhuma outra.
+- Strava e Saúde do iPhone desligados em 09/11/2026: funções `health-sync`, `strava-auth` e `strava-sync` respondem 410; código original em `supabase/arquivo-2026-11-09/`.
 - Planos por esporte: `planos.js` (base) + `treino2.js` (Hyrox e corrida ampliados, ritmo VDOT, playlist).
 - Motion: `motion2.js` (8 movimentos aprovados), `botoes.js` (animação por tipo de botão) e `motion3.js` (mapa dos músculos, ícones e medalhas). Regras no Brand Book §7.
 - Telas aprovadas no DOSE Studio: `boasvindas.js` (Do excesso à dose) , `hoje2.js` (Hoje: medidor, ficha em leque, semana em barras) , `abertura.js` (abertura do dia para membros) , `dieta.js` (Minha dieta importada com check por refeição) , `mapa.js` (Pontos de treino do Rio, MapLibre + OpenFreeMap, aberto/fechado) , `comunidade2.js` (treino no ponto, presença confirmada, medalha Ponto), `dose.js` (a dose do dia: cartão por esporte e dados do relógio) , `clube.js` (Comunidade em Pontos, Grupos e Convites; convite numerado, cartão do encontro e cartão de membro; sem ranking da cidade) , `grupo6.js` (grupo de até 6 montado pelo app no ponto e horário escolhidos), `umtoque.js` (sessão em um toque, Segui a dieta hoje, o de sempre, refeição salva, esporte em um toque) , `primeira.js` (Primeira dose: convite se completa no primeiro treino juntos em 14 dias; medalhas Padrinho e Primeira dose) e `progressao.js` (progressão de carga animada na abertura do exercício; mostra a decisão do coach, nunca calcula diferente).

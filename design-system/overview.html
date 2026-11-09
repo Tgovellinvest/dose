@@ -2610,7 +2610,8 @@ window.addEventListener('online',()=>{ if(C.user()) C.empurrar().catch(()=>{}); 
 const FN=`${URL_}/functions/v1`;
 C.STRAVA_CLIENT_ID=''; // preenchido quando o app DOSE for criado em strava.com/settings/api (ID público; o segredo fica só no Supabase)
 C.stravaConnect=async()=>{ if(!C.STRAVA_CLIENT_ID) throw new Error("Strava ainda não configurado neste app"); const t=await token(); if(!t) throw new Error("Entre na conta primeiro"); const u=new URL('https://www.strava.com/oauth/authorize'); u.searchParams.set('client_id',C.STRAVA_CLIENT_ID); u.searchParams.set('redirect_uri',`${FN}/strava-auth`); u.searchParams.set('response_type','code'); u.searchParams.set('approval_prompt','auto'); u.searchParams.set('scope','read,activity:read_all'); u.searchParams.set('state',t); location.href=u.toString(); };
-C.stravaStatus=async()=>{ const u=C.user(); if(!u) return null; const r=await fetch(`${URL_}/rest/v1/strava_tokens?user_id=eq.${u.id}&select=athlete_id,last_sync`,{headers:await AH()}); if(!r.ok) return null; const rows=await r.json(); return rows[0]||null; };
+C.stravaStatus=async()=>null; // v8.4: Strava desligado (decisão do Tiago em 09/11/2026); funções no Supabase respondem 410
+C._stravaStatusAntigo=async()=>{ const u=C.user(); if(!u) return null; const r=await fetch(`${URL_}/rest/v1/strava_tokens?user_id=eq.${u.id}&select=athlete_id,last_sync`,{headers:await AH()}); if(!r.ok) return null; const rows=await r.json(); return rows[0]||null; };
 C.stravaDesconectar=async()=>{ const u=C.user(); if(!u) return; const r=await fetch(`${URL_}/rest/v1/strava_tokens?user_id=eq.${u.id}`,{method:'DELETE',headers:await AH()}); if(!r.ok) throw new Error(await errMsg(r)); };
 // Puxa atividades novas e grava em cardio (ou bjj quando for arte marcial), sem duplicar (chave strava_id).
 C.stravaSync=async()=>{ const st=await C.stravaStatus(); if(!st) throw new Error("Strava não conectado"); const r=await fetch(`${FN}/strava-sync`,{method:'POST',headers:await AH(),body:JSON.stringify({after:st.last_sync||null})}); const j=await r.json().catch(()=>({})); if(!r.ok||j.error) throw new Error(j.error==='refresh'?"Strava pediu nova autorização. Conecte de novo.":"Erro ao falar com o Strava ("+(j.error||r.status)+")");
@@ -2668,9 +2669,7 @@ window.V_conta=function(){ setTimeout(()=>window.ajustaLogin&&ajustaLogin(),0); 
   return `<div class="card"><b>${esc(u.email||u.nome||"Sua conta")}</b><p class="small">Sincronização automática ligada. Último envio: ${last?last.toLocaleString('pt-BR'):"ainda não"}.</p>
     <div class="grid2" style="margin-top:10px"><button class="btn sec" onclick="contaSync('push')">Enviar agora</button><button class="btn sec" onclick="contaSync('pull')">Baixar da conta</button></div>
     <button class="btn ghost" style="margin-top:8px" onclick="contaSair()">Sair (os dados ficam no aparelho)</button></div>
-    <div class="card" id="cardIntegra"><b>Conectar apps</b><p class="small">Treinos do relógio e de apps de corrida entram pelo Strava. Passos, sono e batimentos você anota no check-in, olhando no app do seu relógio ou celular. Nada sai do DOSE para eles.</p>
-      <div class="row" style="justify-content:space-between;align-items:center;margin-top:8px"><div><b>Strava</b><div class="tiny" id="stravaInfo">verificando…</div></div><div id="stravaBtn"></div></div>
-      <button class="btn sm ghost" style="margin-top:10px" onclick="integraSync()">Buscar novidades agora</button></div>
+    <div class="card" id="cardIntegra"><b>Dados do relógio</b><p class="small">Passos, sono e batimentos você anota no check-in. FC, cadência e calorias do treino entram na dose do dia, quando você salva a atividade. Nada sai do DOSE para outros apps.</p></div>
     <div class="card"><b>Privacidade</b><p class="small">Apagar os dados da conta remove o histórico do servidor; o que está neste aparelho continua. Para encerrar a conta por completo, apague os dados e escreva para o e-mail de suporte indicado no site.</p><button class="btn danger sm" onclick="contaApagar()">Apagar meus dados da conta</button></div>`;
 };
 const v=id=>(document.getElementById(id)||{}).value||"";
