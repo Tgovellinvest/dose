@@ -98,7 +98,7 @@ function gpDetalheHTML(det){ const u=C().user(); const g=det.g; const pl=placar(
    <div class="card" style="margin-top:16px"><button class="btn sm ghost" onclick="gpSair('${g.id}',${dono})">${dono?"Apagar grupo (sou o dono)":"Sair do grupo"}</button></div>`; }
 
 // ---------- Ações ----------
-window.gpNovo=()=>{ const t=today(); const fim=new Date(); fim.setDate(fim.getDate()+42); sheet(`<h3>Criar grupo</h3><label>Nome</label><input id="gpNome" maxlength="40" placeholder="Ex.: Turma das 6h"><label>Descrição (opcional)</label><input id="gpDesc" maxlength="200" placeholder="Quem é, combinado, regra da casa">
+window.gpNovo=()=>{ const t=today(); const fim=new Date(); fim.setDate(fim.getDate()+42); sheet(`<h3>Criar grupo</h3><label>Nome</label><input id="gpNome" maxlength="40" placeholder="Ex.: Grupo das 6h"><label>Descrição (opcional)</label><input id="gpDesc" maxlength="200" placeholder="Quem é, combinado, regra da casa">
    <label>Desafio</label><div class="chips" id="gpTipo">${[["dias","Dias ativos"],["treinos","Treinos"],["km","Km"]].map(([k,n],i)=>`<button class="chip ${i===0?'on':''}" data-k="${k}" onclick="[...gpTipo.children].forEach(c=>c.classList.remove('on'));this.classList.add('on')">${n}</button>`).join("")}</div>
    <div class="grid2"><div><label>Meta</label><input id="gpMeta" type="number" min="1" value="4"></div><div><label>Por</label><select id="gpPer"><option value="semana">semana</option><option value="total">total do período</option></select></div></div>
    <div class="grid2"><div><label>Começa</label><input id="gpIni" type="date" value="${t}"></div><div><label>Termina</label><input id="gpFim" type="date" value="${fim.ymd()}"></div></div>
