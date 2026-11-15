@@ -23,8 +23,8 @@ jobs:
         run: |
           falhas=""
           checa () { # nome url [header]
-            if [ -n "$3" ]; then code=$(curl -s -o /tmp/r -w '%{http_code}' --max-time 25 -H "$3" -H "apikey: $KEY" -A 'DOSE-saude/1.0 (github.com/Tgovellinvest/dose)' "$2");
-            else code=$(curl -s -o /tmp/r -w '%{http_code}' --max-time 25 -A 'DOSE-saude/1.0 (github.com/Tgovellinvest/dose)' "$2"); fi
+            if [ -n "$3" ]; then code=$(curl -s -o /tmp/r -w '%{http_code}' --max-time 25 -H "$3" -H "apikey: $KEY" -A 'DOSE-saude/1.0 (github.com/Tgovellinvest/dose)' "$2") || code="${code:-000}";
+            else code=$(curl -s -o /tmp/r -w '%{http_code}' --max-time 25 -A 'DOSE-saude/1.0 (github.com/Tgovellinvest/dose)' "$2") || code="${code:-000}"; fi
             echo "$1: $code"
             case "$code" in 2*) ;; *) falhas="$falhas\n- **$1** respondeu $code ($2)";; esac
           }
@@ -41,6 +41,7 @@ jobs:
           printf "%b" "$falhas" > /tmp/falhas.md
           if [ -s /tmp/falhas.md ]; then echo "falhou=1" >> "$GITHUB_OUTPUT"; else echo "falhou=0" >> "$GITHUB_OUTPUT"; fi
       - name: Avisar ou encerrar o alerta
+        if: always()
         uses: actions/github-script@v7
         env:
           FALHOU: ${{ steps.teste.outputs.falhou }}
