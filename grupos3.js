@@ -6,6 +6,8 @@
 // Motion: cubic-bezier(.16,1,.3,1); barras chegam e param; sem loop, bounce, brilho ou confete. Reduzir movimento = estado final direto.
 (function(){
 const G=window.GRUPOS; if(!G) return;
+// versão nova no ar: recarrega uma vez, se não houver tela aberta por cima (evita ficar preso na versão antiga em cache)
+if('serviceWorker' in navigator&&navigator.serviceWorker.controller){ let rl=false; navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(rl) return; rl=true; setTimeout(()=>{ const sh=document.getElementById('sheet'); if(!sh||sh.classList.contains('hidden')) location.reload(); },400); }); }
 const U=()=>window.CLOUD&&CLOUD.user();
 const rpc=(f,a)=>G.rpc(f,a);
 const $=id=>document.getElementById(id);
