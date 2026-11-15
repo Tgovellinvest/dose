@@ -122,8 +122,9 @@ async function sincEncontros(){ if(!U()) return; try{
   const r=await api(`treino_participantes?user_id=eq.${U().id}&presente=eq.true&select=treino_id,treinos_abertos(id,quando,ponto,ponto_id,esporte)`)||[]; const ts=r.map(x=>x.treinos_abertos).filter(Boolean); if(!ts.length) return;
   const cont=await api(`treino_participantes?treino_id=in.(${ts.map(t=>t.id).join(',')})&presente=eq.true&select=treino_id`).catch(()=>[]); const c={}; (cont||[]).forEach(x=>c[x.treino_id]=(c[x.treino_id]||0)+1);
   let novo=null; ts.forEach(t=>{ const e=guardar(t,(c[t.id]||1)+1); if(!e.visto) novo=t.id; }); if(novo) setTimeout(()=>encontro(novo),600); }catch(e){} }
+window.sincEncontros=sincEncontros;
 let ec=null;
-const dadosEnc=e=>({eyebrow:`Encontro · ${new Date(diaRio(e.quando)+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}).replace('.','')}`,titulo:e.ponto,big:{v:e.n,u:e.n===1?'pessoa':'pessoas'},ks:[{v:horaRio(e.quando),l:'horário'},{v:nomeEsp(e.esporte)||'Treino',l:'esporte'}],frase:'Apareceram. Na dose.',fonte:'Presença confirmada por quem organizou'});
+const dadosEnc=e=>({eyebrow:`Encontro · ${new Date(diaRio(e.quando)+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}).replace('.','')}`,titulo:e.ponto,big:{v:e.n,u:e.n===1?'pessoa':'pessoas'},ks:[{v:horaRio(e.quando),l:'horário'},{v:nomeEsp(e.esporte)||'Treino',l:'esporte'}],frase:'Apareceram. Na dose.',fonte:'Presença confirmada por cada pessoa'});
 window.encontro=async(id)=>{ const e=(S.encontros||{})[id]; if(!e) return; e.visto=true; save(); ec={id,fmt:'feed',foto:null,blob:null};
   sheet(`<div class="eyebrow" style="text-align:left">Presença confirmada</div><h3 style="margin-top:2px">O encontro</h3>
    <div class="seg" style="margin:8px 0"><button class="on" onclick="ecFmt('feed',this)">Feed 4:5</button><button onclick="ecFmt('story',this)">Story 9:16</button></div>

@@ -4151,7 +4151,7 @@ async function abaTreinos(s){ const ts=await R.treinos(s.esp,usaRaio(s)?s.raio:n
   const contatos=await rpc('contatos_mutuos',{}).catch(()=>[]);
   return `${futuros.length?futuros.map(card).join(""):`<div class="vazio"><p class="serif">Nenhum treino aberto de ${esc(nomeEsp(s.esp))} por aqui. <i>Seja o primeiro.</i></p></div>`}
    <button class="btn em" style="margin-top:8px" onclick="rgNovo()">${I("plus")} Criar treino aberto</button>
-   ${passados.length?`<h3>Treinou junto?</h3>${passados.map(t=>`<div class="card" style="padding:12px 14px"><b>${fmtQuando(t.quando)}</b> <span class="tiny">· ${esc(t.ponto)}</span><p class="small" style="margin:6px 0">Marque com quem treinaria de novo. Se for mútuo, vocês veem o Instagram um do outro.</p><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm sec" style="width:auto" onclick="rgDeNovo('${t.id}')">Treinaria de novo com…</button>${t.criador===eu?`<button class="btn sm ghost" style="width:auto" onclick="rgPresenca('${t.id}')">Marcar presença</button>`:''}</div></div>`).join("")}`:""}
+   ${passados.length?`<h3>Treinou junto?</h3>${passados.map(t=>`<div class="card" style="padding:12px 14px"><b>${fmtQuando(t.quando)}</b> <span class="tiny">· ${esc(t.ponto)}</span><p class="small" style="margin:6px 0">Marque com quem treinaria de novo. Se for mútuo, vocês veem o Instagram um do outro.</p><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm sec" style="width:auto" onclick="rgDeNovo('${t.id}')">Treinaria de novo com…</button>${t.criador!==eu?`<button class="btn sm ghost" style="width:auto" onclick="prPresenca('${t.id}')">Estive lá</button>`:''}</div></div>`).join("")}`:""}
    ${(contatos||[]).length?`<h3>Seus contatos de treino</h3><div class="list">${contatos.map(c=>`<div class="item"><div class="t"><b>${esc(c.apelido)}</b><span>${c.instagram?`@${esc(String(c.instagram).replace(/^@/,''))}`:"sem Instagram cadastrado"}</span></div>${c.instagram?`<a class="arrow" href="https://instagram.com/${encodeURIComponent(String(c.instagram).replace(/^@/,''))}" target="_blank" rel="noopener">Abrir ›</a>`:""}</div>`).join("")}</div>`:""}
    <p class="tiny" style="margin-top:8px">Local do treino sempre público. Sem chat: o contato só aparece quando os dois marcam "treinaria de novo".</p>`; }
 
@@ -4183,7 +4183,7 @@ window.rgNovo=(para)=>{ const s=st(); const p=R.cache.perfil; const d=new Date()
    <button class="btn em" style="margin-top:12px" onclick="rgCriar()">Criar e gerar link</button><p class="tiny">Quem estiver fora da faixa de nível pode pedir vaga; você aceita ou não.</p>`); };
 window.rgCriar=async()=>{ const s=st(), p=R.cache.perfil; const q=taQ.value, ponto=taP.value.trim(); if(!q) return toast("Escolha dia e hora"); if(ponto.length<3) return toast("Diga o local do treino"); if(new Date(q)<new Date()) return toast("Escolha um horário futuro");
   let n1=+taN1.value, n2=+taN2.value; if(n1>n2) [n1,n2]=[n2,n1];
-  try{ const r=await api('treinos_abertos',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({criador:U().id,esporte:s.esp,cidade_norm:p.cidade_norm,bairro:taB.value.trim()||null,ponto,quando:new Date(q).toISOString(),nivel_min:n1,nivel_max:n2,vagas:Math.max(1,Math.min(30,+taV.value||5)),tipo:(document.querySelector('#taT .on')||{}).dataset?.k||'amistoso',ponto_id:window._mpPonto||null,descricao:taD.value.trim()||null,lat:R.posValida()?st().lat:null,lng:R.posValida()?st().lng:null})});
+  try{ const r=await api('treinos_abertos',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({criador:U().id,esporte:s.esp,cidade_norm:p.cidade_norm,bairro:taB.value.trim()||null,ponto,quando:new Date(q).toISOString(),nivel_min:n1,nivel_max:n2,vagas:Math.max(1,Math.min(30,+taV.value||5)),tipo:(document.querySelector('#taT .on')||{}).dataset?.k||'amistoso',ponto_id:window._mpPonto||null,descricao:taD.value.trim()||null,lat:(window.DOSE_PONTOS||[]).find(x=>x.id===window._mpPonto)?(window.DOSE_PONTOS.find(x=>x.id===window._mpPonto).c[1]):(R.posValida()?st().lat:null),lng:(window.DOSE_PONTOS||[]).find(x=>x.id===window._mpPonto)?(window.DOSE_PONTOS.find(x=>x.id===window._mpPonto).c[0]):(R.posValida()?st().lng:null)})});
     closeSheet(); toast("Treino criado"); s.aba='treinos'; save(); await A_regiao(); if(r&&r[0]) rgCompart(r[0].id); }catch(e){ toast(e.message); } };
 window.rgCompart=async(id)=>{ const link=`${location.origin}${location.pathname}#comunidade?t=${id}`; const text=`Bora treinar junto? Abri um treino na DOSE: ${link}`; try{ if(navigator.share) await navigator.share({title:"DOSE · treino aberto",text}); else { await navigator.clipboard.writeText(text); toast("Link copiado"); } }catch(e){} };
 window.rgEntrar=async(id,n1,n2)=>{ const n=R.meuNivel(st().esp); const status=n!=null&&(n<n1||n>n2)?'pedido':'confirmado';
@@ -5213,8 +5213,9 @@ async function sincEncontros(){ if(!U()) return; try{
   const r=await api(`treino_participantes?user_id=eq.${U().id}&presente=eq.true&select=treino_id,treinos_abertos(id,quando,ponto,ponto_id,esporte)`)||[]; const ts=r.map(x=>x.treinos_abertos).filter(Boolean); if(!ts.length) return;
   const cont=await api(`treino_participantes?treino_id=in.(${ts.map(t=>t.id).join(',')})&presente=eq.true&select=treino_id`).catch(()=>[]); const c={}; (cont||[]).forEach(x=>c[x.treino_id]=(c[x.treino_id]||0)+1);
   let novo=null; ts.forEach(t=>{ const e=guardar(t,(c[t.id]||1)+1); if(!e.visto) novo=t.id; }); if(novo) setTimeout(()=>encontro(novo),600); }catch(e){} }
+window.sincEncontros=sincEncontros;
 let ec=null;
-const dadosEnc=e=>({eyebrow:`Encontro · ${new Date(diaRio(e.quando)+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}).replace('.','')}`,titulo:e.ponto,big:{v:e.n,u:e.n===1?'pessoa':'pessoas'},ks:[{v:horaRio(e.quando),l:'horário'},{v:nomeEsp(e.esporte)||'Treino',l:'esporte'}],frase:'Apareceram. Na dose.',fonte:'Presença confirmada por quem organizou'});
+const dadosEnc=e=>({eyebrow:`Encontro · ${new Date(diaRio(e.quando)+'T12:00:00').toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'2-digit'}).replace('.','')}`,titulo:e.ponto,big:{v:e.n,u:e.n===1?'pessoa':'pessoas'},ks:[{v:horaRio(e.quando),l:'horário'},{v:nomeEsp(e.esporte)||'Treino',l:'esporte'}],frase:'Apareceram. Na dose.',fonte:'Presença confirmada por cada pessoa'});
 window.encontro=async(id)=>{ const e=(S.encontros||{})[id]; if(!e) return; e.visto=true; save(); ec={id,fmt:'feed',foto:null,blob:null};
   sheet(`<div class="eyebrow" style="text-align:left">Presença confirmada</div><h3 style="margin-top:2px">O encontro</h3>
    <div class="seg" style="margin:8px 0"><button class="on" onclick="ecFmt('feed',this)">Feed 4:5</button><button onclick="ecFmt('story',this)">Story 9:16</button></div>
@@ -6087,6 +6088,55 @@ const _md=window.medalhas; if(_md) window.medalhas=function(){ const L=_md.apply
 
 const _ac=window.AFTER&&AFTER.comunidade; if(window.AFTER) AFTER.comunidade=function(p){ const r=_ac?_ac.apply(this,arguments):null; sinc(); return r; };
 setTimeout(sinc,6000);
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.16 — presença individual com foto (aprovada pelo Tiago em 15/11/2026) =================
+// Cada participante confirma a própria presença: foto feita na hora pela câmera (não sai do aparelho, não é guardada),
+// no intervalo do horário do treino até 3 h depois, e com a localização perto do ponto (conferida no banco, função confirmar_presenca).
+// Quem organizou não marca mais os outros. O organizador conta quando ao menos uma pessoa confirma (regra _esteve do banco).
+(function(){
+const U=()=>window.CLOUD&&CLOUD.user();
+const api=(p,o)=>window.GRUPOS.api(p,o);
+const rpc=(f,a)=>window.GRUPOS.rpc(f,a);
+const MSG={cedo:'O treino ainda não começou. A confirmação abre no horário marcado.',tarde:'Passou de 3 horas do horário do treino. Já não dá para confirmar.',longe:'Você está longe do ponto do treino.',sem_local:'Esse treino não tem local para conferir.',sem_posicao:'Preciso da sua localização para confirmar.',nao_confirmado:'Só quem está confirmado no treino confirma presença.',sem_conta:'Entre na sua conta para confirmar.',presenca_so_pela_funcao:'Não consegui confirmar agora.'};
+const erro=e=>{ const m=String((e&&e.message)||e||''); const k=Object.keys(MSG).find(x=>m.includes(x)); return k?MSG[k]:'Não consegui confirmar agora. Tente de novo.'; };
+let pr=null;
+const pos=()=>new Promise((ok,no)=>{ if(!navigator.geolocation) return no(new Error('sem_posicao')); navigator.geolocation.getCurrentPosition(p=>ok(p.coords),()=>no(new Error('sem_posicao')),{enableHighAccuracy:true,timeout:12000,maximumAge:0}); });
+
+window.prPresenca=async(id)=>{ if(!U()){ toast('Entre na sua conta para confirmar'); return; }
+  try{ const t=(await api(`treinos_abertos?id=eq.${id}&select=id,quando,ponto`))[0]; if(!t) return toast('Treino não encontrado');
+    const q=new Date(t.quando).getTime(), agora=Date.now(); if(agora<q) return toast(MSG.cedo); if(agora>q+3*3600e3) return toast(MSG.tarde);
+    pr={id,ocupado:false};
+    sheet(`<div class="eyebrow" style="text-align:left">Presença</div><h3 style="margin-top:2px">Estive lá</h3>
+     <p class="small">${esc(t.ponto)}. Uma foto sua treinando libera a confirmação. A foto não sai do aparelho e não é guardada.</p>
+     <label class="btn em" style="margin-top:10px">${I('plus')} Tirar a foto<input id="prFoto" type="file" accept="image/*" capture="environment" hidden onchange="prFoto(this)"></label>
+     <p class="tiny" id="prSt" style="margin:10px 0 0" role="status" aria-live="polite">Depois da foto, o app confere onde você está. Cada presença vale 5 pontos nos seus grupos.</p>
+     <button class="btn sm ghost" style="margin-top:10px" onclick="closeSheet()">Agora não</button>`);
+  }catch(e){ toast('Não consegui abrir agora'); } };
+
+window.prFoto=async(inp)=>{ const f=inp.files&&inp.files[0]; if(!f||!pr||pr.ocupado) return; pr.ocupado=true; const st=document.getElementById('prSt'); const msg=t=>{ if(st) st.textContent=t; };
+  try{ inp.value=''; msg('Conferindo o ponto…'); const c=await pos();
+    const r=await rpc('confirmar_presenca',{p_treino:pr.id,p_lat:c.latitude,p_lng:c.longitude});
+    S.presencasPonto=(S.presencasPonto||0)+1; save(); if(window.GRUPOS&&GRUPOS.cache) GRUPOS.cache.detalhe={};
+    closeSheet(); toast('Presença confirmada · +5 pontos nos seus grupos'); if(window.sincEncontros) setTimeout(window.sincEncontros,500); if(window.A_regiao) try{ A_regiao(); }catch(e){}
+  }catch(e){ msg(erro(e)); }
+  finally{ if(pr) pr.ocupado=false; } };
+
+// quem organizou já não marca os outros
+window.rgPresenca=()=>toast('Cada pessoa confirma a própria presença, com uma foto.');
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.16 — "Quem está dentro também está lá" (pedido do Tiago em 15/11/2026) =================
+// Cartão discreto, sem banner nem lembrete: fim da Comunidade e da Conta. Conta @dose.use no Instagram e no TikTok (conferidas no Brand Book).
+(function(){
+const V=window.VIEWS;
+const card=()=>`<div class="card sg-seg" style="margin-top:18px"><div class="eyebrow" style="text-align:left">Fora do app</div><b>Quem está dentro também está lá.</b><p class="small" style="margin:4px 0 10px">@dose.use no Instagram e no TikTok.</p><div class="row" style="gap:8px;flex-wrap:wrap"><a class="btn sm sec" style="width:auto" href="https://www.instagram.com/dose.use/" target="_blank" rel="noopener">Instagram</a><a class="btn sm sec" style="width:auto" href="https://www.tiktok.com/@dose.use" target="_blank" rel="noopener">TikTok</a></div></div>`;
+const _vc=V.comunidade; if(_vc) V.comunidade=(p)=>{ const h=_vc(p); return h+(/sg-seg/.test(h)?'':card()); };
+const _vm=V.mais; if(_vm) V.mais=(p)=>{ const h=_vm(p); return (p&&p.t==='conta')?h+(/sg-seg/.test(h)?'':card()):h; };
 })();
 
 </script>
