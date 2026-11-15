@@ -806,3 +806,5 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 .gn-tr{display:flex;flex-direction:column;gap:10px}.gn-t{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--s1);animation:gnT .5s var(--expo) both;animation-delay:calc(var(--i)*80ms)}
 .gn-t .ic{color:var(--tx2);margin-top:2px}.gn-t.eu .ic{color:var(--ember)}@keyframes gnT{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.gn-pr i::after,.gn-ct rect,.gn-des,.gn-rod,.gn-cod i,.gn-fim,.gn-c{transition:none!important}#gnCorpo.gn-in,.gn-t{animation:none!important}.gn-c{opacity:1;transform:none}}
+
+.gn-dt{gap:10px;margin-top:8px}.gn-dt input{width:100%}

@@ -29,10 +29,12 @@ const PADRAO={dias:{meta:4,per:'semana'},treinos:{meta:12,per:'total'},km:{meta:
 const MAPA={'7dias':'c5','mes':'c4','100km':'k100'}; // modelos da aba Comunidade
 
 let st={};
-const novo=(pre)=>{ const c=cat(pre||'c4'); st={p:1,nome:'',desc:'',pre:c.id,tipo:c.tipo,meta:c.meta,per:c.per,sem:c.sem,ini:today(),criando:false,g:null,_t:[]}; };
+const novo=(pre)=>{ const c=cat(pre||'c4'); st={p:1,nome:'',desc:'',pre:c.id,tipo:c.tipo,meta:c.meta,per:c.per,sem:c.sem,ini:today(),fimC:null,criando:false,g:null,_t:[]}; };
 const T=(fn,ms)=>{ st._t.push(setTimeout(fn,ms)); };
 const limpaT=()=>{ (st._t||[]).forEach(clearTimeout); st._t=[]; };
-const desafio=()=>{ const c=cat(st.pre); const seq=st.tipo==='seq'; return {tipo:st.tipo,meta:seq?null:c.todo?st.sem*7:st.meta,periodo:(c.todo||seq)?'total':st.per,ini:st.ini,fim:G.shift(st.ini,st.sem*7-1)}; };
+const fimDe=()=>st.fimC&&st.fimC>=st.ini?st.fimC:G.shift(st.ini,st.sem*7-1);
+const nDias=()=>Math.round((new Date(fimDe()+'T12:00:00')-new Date(st.ini+'T12:00:00'))/864e5)+1;
+const desafio=()=>{ const c=cat(st.pre); const seq=st.tipo==='seq'; return {tipo:st.tipo,meta:seq?null:c.todo?nDias():st.meta,periodo:(c.todo||seq)?'total':st.per,ini:st.ini,fim:fimDe()}; };
 
 // ---------- estrutura ----------
 function casca(){ return `<div class="gn" role="group" aria-label="Criar grupo">
@@ -71,16 +73,19 @@ function ajuste(){ const c=cat(st.pre), seq=st.tipo==='seq', todo=!!c.todo; cons
   const meta=(!seq&&!todo)?`<div class="gn-lin"><span>Meta</span><div class="gn-step"><button type="button" aria-label="Menos" onclick="gnMeta(-1)">−</button><b class="num">${st.meta}</b><button type="button" aria-label="Mais" onclick="gnMeta(1)">+</button></div><small>${UNID[st.tipo]}</small></div>
     <div class="seg gn-seg"><button class="${st.per==='semana'?'on':''}" onclick="gnPer('semana')">por semana</button><button class="${st.per==='total'?'on':''}" onclick="gnPer('total')">no período</button></div>`:'';
   el.innerHTML=`${c.livre?`<div class="chips" style="margin-top:10px">${Object.keys(UNID).map(k=>`<button type="button" class="chip ${st.tipo===k?'on':''}" onclick="gnTipo('${k}')">${k==='dias'?'Dias ativos':k==='min'?'Minutos':UNID[k][0].toUpperCase()+UNID[k].slice(1)}</button>`).join('')}</div>`:''}${meta}
-   <div class="gn-lin" style="margin-top:12px"><span>Duração</span></div><div class="chips">${[2,4,6,8].map(n=>`<button type="button" class="chip ${st.sem===n?'on':''}" onclick="gnSem(${n})">${n} sem</button>`).join('')}</div>
-   <p class="tiny" style="margin:6px 0 0">Começa ${st.ini===today()?'hoje':fmtD(st.ini)} · termina ${fmtD(ds.fim)}. <button type="button" class="lk" onclick="gnData()">${st.ini===today()?'Outra data':'Começar hoje'}</button></p>
-   <input id="gnIni" type="date" value="${st.ini}" hidden onchange="gnIni(this.value)">`; card(); }
+   <div class="gn-lin" style="margin-top:12px"><span>Duração</span></div><div class="chips">${[2,4,6,8].map(n=>`<button type="button" class="chip ${!st.fimC&&st.sem===n?'on':''}" onclick="gnSem(${n})">${n} sem</button>`).join('')}<button type="button" class="chip ${st.fimC?'on':''}" onclick="gnPeriodo()">Período</button></div>
+   ${st.fimC?`<div class="grid2 gn-dt"><div><label>Começa</label><input id="gnIni" type="date" min="${today()}" value="${st.ini}" onchange="gnIni(this.value)"></div><div><label>Termina</label><input id="gnFim" type="date" min="${st.ini}" value="${fimDe()}" onchange="gnFim(this.value)"></div></div><p class="tiny" style="margin:6px 0 0">${nDias()} ${nDias()===1?'dia':'dias'}, de ${fmtD(st.ini)} a ${fmtD(fimDe())}. Até 1 ano.</p>`
+   :`<p class="tiny" style="margin:6px 0 0">Começa ${st.ini===today()?'hoje':fmtD(st.ini)} · termina ${fmtD(ds.fim)}. <button type="button" class="lk" onclick="gnData()">${st.ini===today()?'Outra data':'Começar hoje'}</button></p>
+   <input id="gnIni" type="date" value="${st.ini}" hidden onchange="gnIni(this.value)">`}`; card(); }
 window.gnPre=id=>{ const c=cat(id); st.pre=id; st.tipo=c.tipo; st.meta=c.meta; st.per=c.per; st.sem=c.sem; document.querySelectorAll('.gn-c').forEach(b=>b.classList.toggle('on',b.dataset.id===id)); ajuste(); };
 window.gnTipo=k=>{ st.tipo=k; st.meta=PADRAO[k].meta; st.per=PADRAO[k].per; ajuste(); };
 window.gnMeta=d=>{ const p=PASSO[st.tipo]||1; const max=st.per==='semana'&&st.tipo==='dias'?7:9999; st.meta=Math.max(p,Math.min(max,(st.meta||p)+d*p)); ajuste(); };
 window.gnPer=v=>{ st.per=v; if(st.tipo==='dias'&&v==='semana') st.meta=Math.min(st.meta,7); ajuste(); };
-window.gnSem=n=>{ st.sem=n; ajuste(); };
+window.gnSem=n=>{ st.sem=n; st.fimC=null; ajuste(); };
+window.gnPeriodo=()=>{ st.fimC=st.fimC||fimDe(); ajuste(); };
+window.gnFim=v=>{ if(!v||v<st.ini) return toast('O fim tem que ser depois do começo'); if(Math.round((new Date(v+'T12:00:00')-new Date(st.ini+'T12:00:00'))/864e5)>365) return toast('O período vai até 1 ano'); st.fimC=v; ajuste(); };
 window.gnData=()=>{ if(st.ini!==today()){ st.ini=today(); ajuste(); return; } const i=$('gnIni'); if(!i) return; i.hidden=false; i.min=today(); try{ i.showPicker&&i.showPicker(); }catch(e){} i.focus(); };
-window.gnIni=v=>{ if(v&&v>=today()){ st.ini=v; ajuste(); } };
+window.gnIni=v=>{ if(v&&v>=today()){ st.ini=v; if(st.fimC&&st.fimC<v) st.fimC=v; ajuste(); } };
 
 // ---------- navegação ----------
 function passo(n){ st.p=n; progresso(); card(); if(n===1) p1(); else if(n===2) p2(); else p3(); }
