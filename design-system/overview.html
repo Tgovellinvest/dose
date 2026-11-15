@@ -842,6 +842,19 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 
 .gn-dt{gap:10px;margin-top:8px}.gn-dt input{width:100%}
 
+/* ===== v8.11 · enquete no grupo, editar grupo e criar no topo da Comunidade ===== */
+.cm-topo{margin:6px 0 14px;gap:10px}
+.eq{background:var(--s1);border-radius:16px;padding:16px;margin:12px 0;opacity:0;transform:translateY(8px);transition:opacity .5s var(--expo),transform .5s var(--expo)}.eq.on{opacity:1;transform:none}
+.eq-top{display:flex;justify-content:space-between;font-family:var(--num);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3)}
+.eq-p{display:block;margin:10px 0 12px;font-weight:900;font-size:19px;letter-spacing:-.02em;line-height:1.15;overflow-wrap:anywhere}
+.eq-l{display:flex;flex-direction:column;gap:8px}
+.eq-o{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--tx);text-align:left;overflow:hidden;font:inherit;font-size:14px;cursor:pointer}
+.eq-b{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(244,242,237,.10);transition:width .9s var(--expo) .15s}.eq.on .eq-b{width:var(--p)}.eq.sem .eq-b{transition:none}
+.eq-o.eu{border-color:var(--ember)}.eq-o.eu .eq-b{background:color-mix(in srgb,var(--ember) 26%,transparent)}
+.eq-t{position:relative;display:flex;flex-direction:column;gap:2px;font-weight:600}.eq-t small{font-weight:400;font-size:11.5px;color:var(--tx2)}.eq-n{position:relative;font-size:15px;font-weight:700}
+.eq-rod{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--tx2)}
+@media (prefers-reduced-motion:reduce){.eq,.eq-b{transition:none!important}.eq{opacity:1;transform:none}}
+
 </style>
 <style>
 /* ================= DOSE · v8.1 — "Luxo silencioso", só o que o Tiago aprovou no DOSE Studio (09/11/2026) =================
@@ -3066,16 +3079,18 @@ V.grupos=(p)=>{ if(window.setTitle) setTitle("Grupos"); if(!C().user()) return `
    <div id="gpLista" style="margin-top:12px"><div class="card sub small">carregando…</div></div>
    <p class="tiny">Grupos são fechados: só entra quem tem o código. O ranking premia constância (dias em que você treinou), não carga. Até 50 pessoas por grupo.</p>`; };
 A.grupos=async(p)=>{ if(!C().user()) return; if(p.c&&!p.g){ setTimeout(()=>gpEntrar(p.c),200); }
-  try{ if(p.g){ const det=await G.detalhe(p.g); const el=document.getElementById('gpDet'); if(el) el.innerHTML=gpDetalheHTML(det); } else { const gs=await G.listar(); const el=document.getElementById('gpLista'); if(!el) return; const pos=await G.posicoes(gs).catch(()=>({})); el.innerHTML=gs.length?`<div class="list">${gs.map(g=>`<div class="item" onclick="go('grupos',{g:'${g.id}'})"><div class="n">${I("users")}</div><div class="t"><b>${esc(g.nome)}</b><span>${pos[g.id]?`${pos[g.id].pos}º de ${pos[g.id].n} na semana · `:''}${esc(descDesafio(g.desafio))}</span></div><span class="arrow">›</span></div>`).join("")}</div>`:`<div class="vazio"><p class="serif">Quem aparece, conta. <i>Chame quem treina com você.</i></p><p class="small">Crie um grupo e mande o código, ou peça o código de um que já existe.</p></div>`; } }
+  try{ if(p.g){ const det=await G.detalhe(p.g); const el=document.getElementById('gpDet'); if(el){ el.innerHTML=gpDetalheHTML(det); if(window.gpPos) gpPos(det); } } else { const gs=await G.listar(); const el=document.getElementById('gpLista'); if(!el) return; const pos=await G.posicoes(gs).catch(()=>({})); el.innerHTML=gs.length?`<div class="list">${gs.map(g=>`<div class="item" onclick="go('grupos',{g:'${g.id}'})"><div class="n">${I("users")}</div><div class="t"><b>${esc(g.nome)}</b><span>${pos[g.id]?`${pos[g.id].pos}º de ${pos[g.id].n} na semana · `:''}${esc(descDesafio(g.desafio))}</span></div><span class="arrow">›</span></div>`).join("")}</div>`:`<div class="vazio"><p class="serif">Quem aparece, conta. <i>Chame quem treina com você.</i></p><p class="small">Crie um grupo e mande o código, ou peça o código de um que já existe.</p></div>`; } }
   catch(e){ const el=document.getElementById('gpLista')||document.getElementById('gpDet'); if(el) el.innerHTML=`<div class="card"><b>Não carregou</b><p class="small">${esc(e.message)}</p></div>`; } };
 function gpDetalheHTML(det){ const u=C().user(); const g=det.g; if(window._gpRk.gid!==g.id){ const MT={treinos:'treinos',km:'km',min:'min',seq:'seq'}[(g.desafio||{}).tipo]; window._gpRk=MT?{per:'desafio',met:MT,gid:g.id}:{per:'semana',met:'pontos',gid:g.id}; } const pl=placar(det); const dono=g.dono===u.id; const link=`${location.origin}${location.pathname}#grupos?c=${g.codigo}`;
   const nomeDe=id=>{ const m=det.membros.find(x=>x.user_id===id); return m?m.apelido:"alguém"; };
   return `<h1>${esc(g.nome)}</h1>${g.descricao?`<p class="small">${esc(g.descricao)}</p>`:""}
    <div class="card hero"><div class="row" style="justify-content:space-between;align-items:center"><div><div class="eyebrow">Desafio</div><b>${esc(descDesafio(g.desafio))}</b><div class="tiny">${pl.ativo?"em andamento":"encerrado"}${(()=>{const me=pl.lista.find(o=>o.m.user_id===u.id);return me&&me.pct!=null?` · você: ${Math.round(me.pct*100)}%`:''})()} · ${det.membros.length} ${det.membros.length===1?"pessoa":"pessoas"}</div></div>${I("flag",28)}</div></div>
+   <div id="gpEnq"></div>
    <div id="gpRank">${rankingHTML(det)}</div>
    ${window.gpTrofeus?gpTrofeus(det):""}
    <p class="tiny">Conta dias em que a pessoa registrou treino, esporte ou cardio no DOSE. Ninguém vê sua carga, seu peso ou sua dieta.</p>
-   <div class="card"><b>Convidar</b><p class="small">Código <span class="mono" style="font-size:18px;letter-spacing:.12em">${esc(g.codigo)}</span></p><div class="grid2"><button class="btn sm sec" onclick="gpConvidar('${esc(g.nome)}','${esc(g.codigo)}')">${I("share")} Enviar convite</button><button class="btn sm ghost" onclick="navigator.clipboard.writeText('${link}').then(()=>toast('Link copiado'))">Copiar link</button></div></div>
+   <div class="card"><b>Convidar</b><p class="small">Código <span class="mono" style="font-size:18px;letter-spacing:.12em">${esc(g.codigo)}</span></p><div class="grid2"><button class="btn sm sec" onclick="gpConvidar('${esc(g.nome)}','${esc(g.codigo)}')">${I("share")} Enviar convite</button><button class="btn sm ghost" onclick="navigator.clipboard.writeText('${link}').then(()=>toast('Link copiado'))">Copiar link</button></div>
+   <div class="grid2" style="margin-top:8px"><button class="btn sm sec" onclick="gpEnqNova('${g.id}')">Criar enquete</button>${dono?`<button class="btn sm ghost" onclick="gpEditar('${g.id}')">Editar grupo</button>`:'<span></span>'}</div></div>
    <h3>Registros</h3>${det.posts.length?det.posts.map(p=>{ const reag=(p.grupo_reacoes||[]).length; const eu=(p.grupo_reacoes||[]).some(r=>r.user_id===u.id); return `<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="row" style="gap:10px;align-items:flex-start"><div class="n">${I(TIPOPOST[p.tipo]||"card")}</div><div><b>${esc(nomeDe(p.user_id))}</b> <span class="tiny">· ${fmtD(p.data)}</span><div class="small">${esc(p.resumo.titulo||"")}</div><div class="tiny">${(p.resumo.linhas||[]).map(esc).join(" · ")}</div></div></div><button class="btn sm ${eu?'em':'ghost'}" style="width:auto;padding:6px 10px" onclick="gpReagir('${p.id}',${eu?0:1},'${g.id}')">${I("flame",16)}</button></div>${p.user_id===u.id?`<button class="btn sm ghost" style="width:auto;margin-top:6px;padding:4px 8px" onclick="gpApagarPost('${p.id}','${g.id}')">apagar</button>`:""}</div>`; }).join(""):`<div class="card sub small">Ainda sem registros. Ao finalizar um treino ou corrida, toque em "Postar no grupo" na tela de compartilhar.</div>`}
    <div class="card" style="margin-top:16px"><button class="btn sm ghost" onclick="gpSair('${g.id}',${dono})">${dono?"Apagar grupo (sou o dono)":"Sair do grupo"}</button></div>`; }
 
@@ -5869,6 +5884,77 @@ function trofeus(det){ const u=window.CLOUD&&CLOUD.user(); if(!u) return ''; con
     if(quando.length){ const q0=quando.filter(o=>o.data===quando[0].data); out.push({t:'Primeiro a chegar na meta',q:q0.slice(0,3).map(nm).join(', '),d:`em ${fmtD(quando[0].data)}`,eu:q0.some(o=>o.m.user_id===u.id)}); } }
   return `<h3>Troféus</h3>${out.length?`<div class="gn-tr">${out.map((o,i)=>`<div class="gn-t ${o.eu?'eu':''}" style="--i:${i}"><span class="ic">${I('trophy',22)}</span><div><b>${esc(o.t)}</b><div class="small">${o.q}</div><div class="tiny">${esc(o.d)}</div></div></div>`).join('')}</div>`:`<div class="card sub small">Os troféus aparecem quando o primeiro cumprir. Ficam só dentro do grupo.</div>`}<p class="tiny">Cada troféu sai do placar do grupo. Não vai para o perfil público nem para ranking da cidade.</p>`; }
 window.gpTrofeus=trofeus;
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.11 — editar grupo depois de criado + enquete no grupo (aprovado pelo Tiago em 14/11/2026) =================
+// Editar (só o dono): nome, descrição e data de fim. Objetivo e meta não mudam depois de criado, para não mexer no placar de quem já treina.
+// Enquete (qualquer membro): pergunta livre até 120 caracteres + 2 a 4 opções; dura 24 h ou 7 dias; voto único que dá para trocar;
+// anônima por padrão (só o total), com a opção "mostrar quem votou"; quem criou ou o dono apaga. Dados em funções do banco (voto nunca exposto por tabela).
+// Resultado só aparece depois de votar (ou para quem criou), para o voto não ser puxado pelo que já está na frente.
+// Motion: cubic-bezier(.16,1,.3,1); barras chegam e param; sem loop, bounce, brilho ou confete. Reduzir movimento = estado final direto.
+(function(){
+const G=window.GRUPOS; if(!G) return;
+const U=()=>window.CLOUD&&CLOUD.user();
+const rpc=(f,a)=>G.rpc(f,a);
+const $=id=>document.getElementById(id);
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pri=s=>String(s||'').trim().split(/\s+/)[0]||'alguém';
+const falta=iso=>{ const ms=new Date(iso).getTime()-Date.now(); if(ms<=0) return 'encerrada'; const h=Math.floor(ms/36e5), d=Math.floor(h/24); return d>=1?`faltam ${d} d${h%24?` ${h%24} h`:''}`:h>=1?`faltam ${h} h`:`faltam ${Math.max(1,Math.round(ms/6e4))} min`; };
+let gid=null, enqs=[];
+
+// ---------- enquetes no grupo ----------
+window.gpPos=async(det)=>{ gid=det.g.id; window._gpDono=!!(U()&&det.g.dono===U().id); await carregar(); };
+async function carregar(animar){ const el=$('gpEnq'); if(!el||!gid) return; try{ enqs=await rpc('enquetes_grupo',{p_grupo:gid})||[]; }catch(e){ enqs=[]; } el.innerHTML=enqs.map(cartao).join(''); toca(el); }
+function cartao(e){ const u=U(); const eu=u&&u.id; const ver=e.meu!=null||e.criador===eu; const tot=Number(e.total)||0; const dono=e.criador===eu; const ops=e.opcoes||[];
+  const lista=ops.map((t,i)=>{ const n=Number((e.contagem||[])[i])||0; const p=tot?Math.round(n/tot*100):0; const nomes=e.mostra_quem&&e.votantes?e.votantes.filter(v=>v.opcao===i).map(v=>pri(v.apelido)).join(', '):'';
+    return `<button type="button" class="eq-o ${e.meu===i?'eu':''}" onclick="gpVotar('${e.id}',${i})" aria-pressed="${e.meu===i}"><i class="eq-b" style="--p:${ver?p:0}%"></i><span class="eq-t">${esc(t)}${ver&&nomes?`<small>${esc(nomes)}</small>`:''}</span>${ver?`<span class="eq-n num">${p}%</span>`:''}</button>`; }).join('');
+  return `<div class="eq ${ver?'vis':''}" data-id="${e.id}"><div class="eq-top"><span>Enquete · ${esc(pri(e.criador_apelido))}</span><span>${falta(e.expira_em)}</span></div>
+   <b class="eq-p">${esc(e.pergunta)}</b><div class="eq-l">${lista}</div>
+   <div class="eq-rod"><span>${tot} ${tot===1?'voto':'votos'}${e.mostra_quem?'':' · anônima'}${!ver?' · vote para ver o resultado':''}</span>${(dono||(window._gpDono))?`<button class="lk" onclick="gpEnqApagar('${e.id}')">apagar</button>`:''}</div></div>`; }
+function toca(el){ const cs=[...el.querySelectorAll('.eq')]; if(!cs.length) return; if(reduz()){ cs.forEach(c=>c.classList.add('on','sem')); return; } requestAnimationFrame(()=>requestAnimationFrame(()=>cs.forEach((c,i)=>setTimeout(()=>c.classList.add('on'),i*80)))); }
+window.gpVotar=async(id,i)=>{ try{ await rpc('votar_enquete',{p_id:id,p_opcao:i}); await carregar(); }catch(e){ toast(e.message||'Não consegui votar agora'); } };
+window.gpEnqApagar=async(id)=>{ if(!confirm('Apagar esta enquete para todo mundo?')) return; try{ await rpc('apagar_enquete',{p_id:id}); await carregar(); toast('Enquete apagada'); }catch(e){ toast(e.message); } };
+
+// ---------- nova enquete ----------
+let q={q:'',ops:['',''],quem:false,h:24};
+const SUG=['Que horas treinamos sábado?','Qual percurso?','Qual treino de quinta?'];
+function ler(){ const a=$('eqQ'); if(a) q.q=a.value; q.ops=q.ops.map((_,i)=>{ const x=$('eqO'+i); return x?x.value:q.ops[i]; }); }
+function desenha(){ $('sheetBody').innerHTML=`<h3>Nova enquete</h3><label>Pergunta</label><input id="eqQ" maxlength="120" placeholder="Ex.: Que horas treinamos sábado?" value="${esc(q.q)}" autocomplete="off">
+   <div class="chips" style="margin-top:6px">${SUG.map((s,i)=>`<button type="button" class="chip" onclick="eqSug(${i})">${esc(s)}</button>`).join('')}</div>
+   <label>Opções</label>${q.ops.map((o,i)=>`<input id="eqO${i}" maxlength="40" placeholder="Opção ${i+1}" value="${esc(o)}" autocomplete="off" style="margin-bottom:8px">`).join('')}
+   ${q.ops.length<4?`<button type="button" class="lk" onclick="eqMais()">+ Opção</button>`:''}
+   <div class="gn-lin" style="margin-top:14px"><span>Duração</span></div><div class="chips"><button type="button" class="chip ${q.h===24?'on':''}" onclick="eqH(24)">24 horas</button><button type="button" class="chip ${q.h===168?'on':''}" onclick="eqH(168)">Fixada, 7 dias</button></div>
+   <div class="chips" style="margin-top:6px"><button type="button" class="chip ${q.quem?'on':''}" onclick="eqQuem()">Mostrar quem votou</button></div>
+   <p class="tiny" style="margin:6px 0 0">${q.quem?'Todo mundo do grupo vê o nome de quem votou em cada opção.':'Anônima: o grupo vê só o total de cada opção.'}</p>
+   <button class="btn em" id="eqGo" style="margin-top:14px" onclick="eqPublicar()">Publicar</button><p class="tiny">Só o grupo vê. Quem criou ou o dono pode apagar.</p>`; }
+window.gpEnqNova=(id)=>{ if(!U()) return; gid=id; q={q:'',ops:['',''],quem:false,h:24}; sheet(''); desenha(); };
+window.eqSug=i=>{ ler(); q.q=SUG[i]; desenha(); };
+window.eqMais=()=>{ ler(); if(q.ops.length<4) q.ops.push(''); desenha(); };
+window.eqH=h=>{ ler(); q.h=h; desenha(); };
+window.eqQuem=()=>{ ler(); q.quem=!q.quem; desenha(); };
+window.eqPublicar=async()=>{ ler(); const ops=q.ops.map(x=>x.trim()).filter(Boolean); if(q.q.trim().length<2) return toast('Escreva a pergunta'); if(ops.length<2) return toast('Use pelo menos 2 opções'); const b=$('eqGo'); if(b){ b.disabled=true; b.textContent='Publicando…'; }
+  try{ await rpc('criar_enquete',{p_grupo:gid,p_pergunta:q.q.trim(),p_opcoes:ops,p_mostra:q.quem,p_horas:q.h}); closeSheet(); toast('Enquete publicada'); await carregar(); const el=$('gpEnq'); el&&el.scrollIntoView&&el.scrollIntoView({behavior:reduz()?'auto':'smooth',block:'start'}); }
+  catch(e){ toast(e.message||'Não consegui publicar agora'); const b2=$('eqGo'); if(b2){ b2.disabled=false; b2.textContent='Publicar'; } } };
+
+// ---------- editar grupo (só o dono) ----------
+window.gpEditar=(id)=>{ const det=G.cache.detalhe[id]; if(!det) return; const g=det.g, d=g.desafio||{}; const hoje=today(); const ini=d.ini||String(g.criado_em||hoje).slice(0,10); const max=G.shift(ini,365);
+  sheet(`<h3>Editar grupo</h3><label>Nome</label><input id="geNome" maxlength="40" value="${esc(g.nome)}" autocomplete="off"><label>Descrição (opcional)</label><input id="geDesc" maxlength="200" value="${esc(g.descricao||'')}" autocomplete="off">
+   ${d.fim?`<label>Termina em</label><input id="geFim" type="date" min="${hoje>ini?hoje:ini}" max="${max}" value="${d.fim}"><p class="tiny" style="margin:6px 0 0">Começou em ${fmtD(ini)}. Dá para estender ou encurtar.</p>`:''}
+   <p class="tiny" style="margin:10px 0 0">O objetivo (${esc(G.descDesafio(Object.assign({},d,{fim:null})))}) não muda depois de criado, para não mexer no placar de quem já treina.</p>
+   <button class="btn em" id="geGo" style="margin-top:14px" onclick="gpEditarOk('${id}')">Salvar</button>`); };
+window.gpEditarOk=async(id)=>{ const det=G.cache.detalhe[id]; if(!det) return; const g=det.g, d=Object.assign({},g.desafio||{}); const nome=($('geNome').value||'').trim(); if(nome.length<2) return toast('Dê um nome ao grupo');
+  const fimEl=$('geFim'); if(fimEl&&fimEl.value){ const ini=d.ini||String(g.criado_em||today()).slice(0,10); if(fimEl.value<ini) return toast('O fim tem que ser depois do começo'); if(fimEl.value<today()) return toast('O fim não pode ser uma data que já passou'); d.fim=fimEl.value; }
+  const b=$('geGo'); if(b){ b.disabled=true; b.textContent='Salvando…'; }
+  try{ const r=await G.api(`grupos?id=eq.${id}`,{method:'PATCH',headers:{'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify({nome,descricao:($('geDesc').value||'').trim(),desafio:d})});
+    if(!r||!r.length) throw new Error('Só o dono do grupo edita');
+    G.cache.grupos=null; try{ await G.sincronizar(id,d); }catch(e){} closeSheet(); toast('Grupo atualizado'); route(); }
+  catch(e){ toast(e.message||'Não consegui salvar agora'); const b2=$('geGo'); if(b2){ b2.disabled=false; b2.textContent='Salvar'; } } };
+
+// ---------- Criar grupo no começo da Comunidade ----------
+const topo=()=>`<div class="grid2 cm-topo"><button class="btn em" onclick="gpNovo()">${I('plus')} Criar grupo</button><button class="btn sec" onclick="gpEntrar('')">${I('link')} Tenho código</button></div>`;
+{ const V=window.VIEWS; const _c=V.comunidade; if(_c) V.comunidade=(p)=>{ const h=_c(p); const i=h.indexOf('</h1>'); return i>=0?h.slice(0,i+5)+topo()+h.slice(i+5):topo()+h; }; }
 })();
 
 </script>

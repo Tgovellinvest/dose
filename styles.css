@@ -808,3 +808,16 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 @media (prefers-reduced-motion:reduce){.gn-pr i::after,.gn-ct rect,.gn-des,.gn-rod,.gn-cod i,.gn-fim,.gn-c{transition:none!important}#gnCorpo.gn-in,.gn-t{animation:none!important}.gn-c{opacity:1;transform:none}}
 
 .gn-dt{gap:10px;margin-top:8px}.gn-dt input{width:100%}
+
+/* ===== v8.11 · enquete no grupo, editar grupo e criar no topo da Comunidade ===== */
+.cm-topo{margin:6px 0 14px;gap:10px}
+.eq{background:var(--s1);border-radius:16px;padding:16px;margin:12px 0;opacity:0;transform:translateY(8px);transition:opacity .5s var(--expo),transform .5s var(--expo)}.eq.on{opacity:1;transform:none}
+.eq-top{display:flex;justify-content:space-between;font-family:var(--num);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3)}
+.eq-p{display:block;margin:10px 0 12px;font-weight:900;font-size:19px;letter-spacing:-.02em;line-height:1.15;overflow-wrap:anywhere}
+.eq-l{display:flex;flex-direction:column;gap:8px}
+.eq-o{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--tx);text-align:left;overflow:hidden;font:inherit;font-size:14px;cursor:pointer}
+.eq-b{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(244,242,237,.10);transition:width .9s var(--expo) .15s}.eq.on .eq-b{width:var(--p)}.eq.sem .eq-b{transition:none}
+.eq-o.eu{border-color:var(--ember)}.eq-o.eu .eq-b{background:color-mix(in srgb,var(--ember) 26%,transparent)}
+.eq-t{position:relative;display:flex;flex-direction:column;gap:2px;font-weight:600}.eq-t small{font-weight:400;font-size:11.5px;color:var(--tx2)}.eq-n{position:relative;font-size:15px;font-weight:700}
+.eq-rod{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--tx2)}
+@media (prefers-reduced-motion:reduce){.eq,.eq-b{transition:none!important}.eq{opacity:1;transform:none}}
