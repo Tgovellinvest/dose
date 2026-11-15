@@ -97,6 +97,7 @@ function gpDetalheHTML(det){ const u=C().user(); const g=det.g; if(window._gpRk.
   return `<h1>${esc(g.nome)}</h1>${g.descricao?`<p class="small">${esc(g.descricao)}</p>`:""}
    <div class="card hero"><div class="row" style="justify-content:space-between;align-items:center"><div><div class="eyebrow">Desafio</div><b>${esc(descDesafio(g.desafio))}</b><div class="tiny">${pl.ativo?"em andamento":"encerrado"}${(()=>{const me=pl.lista.find(o=>o.m.user_id===u.id);return me&&me.pct!=null?` · você: ${Math.round(me.pct*100)}%`:''})()} · ${det.membros.length} ${det.membros.length===1?"pessoa":"pessoas"}</div></div>${I("flag",28)}</div></div>
    <div id="gpEnq"></div>
+   ${window.gpColetiva?gpColetiva(det):""}
    <div id="gpRank">${rankingHTML(det)}</div>
    ${window.gpTrofeus?gpTrofeus(det):""}
    <p class="tiny">Conta dias em que a pessoa registrou treino, esporte ou cardio no DOSE. Ninguém vê sua carga, seu peso ou sua dieta.</p>

@@ -831,3 +831,11 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 
 /* v8.12.1 — ponto de enquete nova */
 .eq-pt{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ember);margin-left:8px;vertical-align:middle}
+
+/* v8.13 — meta do grupo (soma coletiva) */
+.gn-col{margin-top:10px}
+.gn-colb{height:6px;border-radius:3px;background:var(--s2,#17181B);margin:10px 0 8px;overflow:hidden}
+.gn-colb i{display:block;height:100%;width:var(--p);background:var(--bone);border-radius:3px;animation:gnCol 1.1s var(--expo,cubic-bezier(.16,1,.3,1)) .1s both}
+.gn-col.ok .gn-colb i{background:var(--ember)}
+@keyframes gnCol{from{width:0}to{width:var(--p)}}
+@media (prefers-reduced-motion:reduce){.gn-colb i{animation:none}}

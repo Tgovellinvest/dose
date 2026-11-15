@@ -29,12 +29,12 @@ const PADRAO={dias:{meta:4,per:'semana'},treinos:{meta:12,per:'total'},km:{meta:
 const MAPA={'7dias':'c5','mes':'c4','100km':'k100'}; // modelos da aba Comunidade
 
 let st={};
-const novo=(pre)=>{ const c=cat(pre||'c4'); st={p:1,nome:'',desc:'',pre:c.id,tipo:c.tipo,meta:c.meta,per:c.per,sem:c.sem,ini:today(),fimC:null,sm:false,criando:false,g:null,_t:[]}; };
+const novo=(pre)=>{ const c=cat(pre||'c4'); st={p:1,nome:'',desc:'',pre:c.id,tipo:c.tipo,meta:c.meta,per:c.per,sem:c.sem,ini:today(),fimC:null,sm:false,colOn:false,col:null,criando:false,g:null,_t:[]}; };
 const T=(fn,ms)=>{ st._t.push(setTimeout(fn,ms)); };
 const limpaT=()=>{ (st._t||[]).forEach(clearTimeout); st._t=[]; };
 const fimDe=()=>st.fimC&&st.fimC>=st.ini?st.fimC:G.shift(st.ini,st.sem*7-1);
 const nDias=()=>Math.round((new Date(fimDe()+'T12:00:00')-new Date(st.ini+'T12:00:00'))/864e5)+1;
-const desafio=()=>{ const c=cat(st.pre); const semMeta=st.tipo==='seq'||st.sm; return {tipo:st.tipo,meta:semMeta?null:c.todo?nDias():st.meta,periodo:(c.todo||semMeta)?'total':st.per,ini:st.ini,fim:fimDe()}; };
+const desafio=()=>{ const c=cat(st.pre); const semMeta=st.tipo==='seq'||st.sm; const o={tipo:st.tipo,meta:semMeta?null:c.todo?nDias():st.meta,periodo:(c.todo||semMeta)?'total':st.per,ini:st.ini,fim:fimDe()}; if(st.colOn&&st.tipo!=='seq'&&st.col>0) o.coletiva=st.col; return o; };
 
 // ---------- estrutura ----------
 function casca(){ return `<div class="gn" role="group" aria-label="Criar grupo">
@@ -70,6 +70,13 @@ function p2(){ $('gnCorpo').innerHTML=`<div class="eyebrow" style="text-align:le
    <p class="tiny">O placar conta dias em que cada um registrou treino no DOSE. Sem carga, sem peso, sem dieta.</p>`; ajuste(); entra();
   const lq=$('gnLeque'); if(reduz()) lq.classList.add('abre','sem'); else requestAnimationFrame(()=>requestAnimationFrame(()=>lq.classList.add('abre'))); }
 const TIPOS=[['treinos','Treinos'],['dias','Dias ativos'],['km','Km'],['min','Minutos'],['seq','Sequência']];
+const DEFCOL={dias:20,treinos:30,km:100,min:600};
+const colBloco=()=>{ const u=UNID[st.tipo]; if(!st.col||st.colUn!==st.tipo){ st.col=DEFCOL[st.tipo]; st.colUn=st.tipo; }
+  return `<div class="gn-lin" style="margin-top:14px"><span>Meta do grupo</span>${st.colOn?`<div class="gn-step"><button type="button" aria-label="Menos" onclick="gnCol(-1)">−</button><b class="num">${st.col}</b><button type="button" aria-label="Mais" onclick="gnCol(1)">+</button></div><small>${u} juntos</small>`:`<small>opcional</small>`}</div>
+   <div class="chips" style="margin-top:6px"><button type="button" class="chip ${st.colOn?'on':''}" onclick="gnColOn()">Somar o grupo todo</button></div>
+   ${st.colOn?`<p class="tiny" style="margin:6px 0 0">O grupo soma ${u} no período e mostra a barra no topo. Não muda depois de criado. O valor inicial é uma sugestão: ajuste ao tamanho do seu grupo.</p>`:''}`; };
+window.gnColOn=()=>{ st.colOn=!st.colOn; ajuste(); };
+window.gnCol=d=>{ const p=(PASSO[st.tipo]||1)*5; st.col=Math.max(p,Math.min(99999,(st.col||p)+d*p)); ajuste(); };
 function ajuste(){ const c=cat(st.pre), seq=st.tipo==='seq', todo=!!c.todo; const el=$('gnAj'); if(!el) return; const n=nDias();
   const meta=(seq||todo)?`<p class="tiny" style="margin:8px 0 0">${seq?'Sem meta: vence quem tiver a maior sequência.':'Meta: um treino por dia, todos os dias do período.'}</p>`
    :`<div class="gn-lin" style="margin-top:14px"><span>Meta</span>${st.sm?`<small>vence quem somar mais ${UNID[st.tipo]}</small>`:`<div class="gn-step"><button type="button" aria-label="Menos" onclick="gnMeta(-1)">−</button><b class="num">${st.meta}</b><button type="button" aria-label="Mais" onclick="gnMeta(1)">+</button></div><small>${UNID[st.tipo]}</small>`}</div>
@@ -77,6 +84,7 @@ function ajuste(){ const c=cat(st.pre), seq=st.tipo==='seq', todo=!!c.todo; cons
     <div class="chips" style="margin-top:6px"><button type="button" class="chip ${st.sm?'on':''}" onclick="gnSemMeta()">Sem meta</button></div>`;
   el.innerHTML=`<div class="gn-lin" style="margin-top:14px"><span>Objetivo</span></div><div class="chips">${TIPOS.map(([k,nm])=>`<button type="button" class="chip ${st.tipo===k?'on':''}" onclick="gnTipo('${k}')">${nm}</button>`).join('')}</div>
    ${meta}
+   ${seq?'':colBloco()}
    <div class="gn-lin" style="margin-top:14px"><span>Período</span></div>
    <div class="grid2 gn-dt"><div><label>Começa</label><input id="gnIni" type="date" min="${today()}" value="${st.ini}" onchange="gnIni(this.value)"></div><div><label>Termina</label><input id="gnFim" type="date" min="${st.ini}" value="${fimDe()}" onchange="gnFim(this.value)"></div></div>
    <div class="chips" style="margin-top:6px">${[2,4,6,8].map(k=>`<button type="button" class="chip ${!st.fimC&&st.sem===k?'on':''}" onclick="gnSem(${k})">${k} sem</button>`).join('')}</div>
@@ -140,6 +148,11 @@ function trofeus(det){ const u=window.CLOUD&&CLOUD.user(); if(!u) return ''; con
   // primeiro a chegar na meta (período total)
   if(d.meta&&d.periodo==='total'&&['dias','treinos','km','min'].includes(d.tipo)){ const quando=det.membros.map(m=>{ const X=det.dias.filter(x=>x.user_id===m.user_id&&x.treinos>0&&x.data>=pl.ini&&x.data<=pl.fim).sort((a,b)=>a.data<b.data?-1:1); let acc=0; for(const x of X){ acc+=d.tipo==='km'?Number(x.km):d.tipo==='treinos'?x.treinos:d.tipo==='min'?x.min:1; if(acc>=d.meta) return {m,data:x.data}; } return null; }).filter(Boolean).sort((a,b)=>a.data<b.data?-1:1);
     if(quando.length){ const q0=quando.filter(o=>o.data===quando[0].data); out.push({t:'Primeiro a chegar na meta',q:q0.slice(0,3).map(nm).join(', '),d:`em ${fmtD(quando[0].data)}`,eu:q0.some(o=>o.m.user_id===u.id)}); } }
+  { const d2=det.g.desafio||{}; if(d2.coletiva>0&&UNID[d2.tipo]){ const r2=G.ranking(det,'desafio',d2.tipo); const t2=r2.L.reduce((a,o)=>a+(Number(o[d2.tipo])||0),0); if(t2>=d2.coletiva) out.push({t:'O grupo bateu a meta',q:'Todo mundo do grupo',d:`${d2.coletiva} ${UNID[d2.tipo]} juntos`,eu:true}); } }
   return `<h3>Troféus</h3>${out.length?`<div class="gn-tr">${out.map((o,i)=>`<div class="gn-t ${o.eu?'eu':''}" style="--i:${i}"><span class="ic">${I('trophy',22)}</span><div><b>${esc(o.t)}</b><div class="small">${o.q}</div><div class="tiny">${esc(o.d)}</div></div></div>`).join('')}</div>`:`<div class="card sub small">Os troféus aparecem quando o primeiro cumprir. Ficam só dentro do grupo.</div>`}<p class="tiny">Cada troféu sai do placar do grupo. Não vai para o perfil público nem para ranking da cidade.</p>`; }
+
+function coletiva(det){ const d=det.g.desafio||{}; if(!(d.coletiva>0)||!UNID[d.tipo]) return ''; const r=G.ranking(det,'desafio',d.tipo); const tot=Math.round(r.L.reduce((a,o)=>a+(Number(o[d.tipo])||0),0)*10)/10; const pct=Math.min(1,tot/d.coletiva); const f=v=>String(v).replace('.',','); const ok=tot>=d.coletiva;
+  return `<div class="card gn-col ${ok?'ok':''}" style="--p:${Math.round(pct*100)}%"><div class="row" style="justify-content:space-between;align-items:baseline"><b>Meta do grupo</b><span class="num">${f(tot)} de ${f(d.coletiva)} <small>${UNID[d.tipo]}</small></span></div><div class="gn-colb"><i></i></div><div class="tiny">${ok?'O grupo bateu a meta.':`Faltam ${f(Math.round((d.coletiva-tot)*10)/10)} ${UNID[d.tipo]} para o grupo todo.`}</div></div>`; }
+window.gpColetiva=coletiva;
 window.gpTrofeus=trofeus;
 })();
