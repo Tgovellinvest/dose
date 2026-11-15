@@ -855,6 +855,13 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 .eq-rod{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--tx2)}
 @media (prefers-reduced-motion:reduce){.eq,.eq-b{transition:none!important}.eq{opacity:1;transform:none}}
 
+/* v8.12 — cartão de membro compacto por padrão; ranking com só a métrica do desafio */
+.cm.cm-c{padding:14px 18px 12px}
+.cm.cm-c .cm-dl,.cm.cm-c .cm-conv{display:none}
+.cm.cm-c .cm-nome{font-size:22px;margin-top:8px}
+.cm.cm-c .cm-desde{font-size:15px;margin-top:2px}
+.cm-tg{display:block;margin-top:10px}
+
 </style>
 <style>
 /* ================= DOSE · v8.1 — "Luxo silencioso", só o que o Tiago aprovou no DOSE Studio (09/11/2026) =================
@@ -3061,7 +3068,7 @@ function rankingHTML(det){ const u=C().user(); const {per,met}=window._gpRk; con
   const seta=o=>{ if(!ant||ant[o.m.user_id]==null) return ""; const dlt=ant[o.m.user_id]-o.pos; return dlt>0?`<span class="rk up">▲${dlt}</span>`:dlt<0?`<span class="rk dn">▼${-dlt}</span>`:`<span class="rk eq">=</span>`; };
   return `<div class="row" style="justify-content:space-between;align-items:baseline"><h3 style="margin:0">Ranking</h3><button class="btn sm ghost" style="width:auto;padding:4px 10px" onclick="gpComoPontua()">Como pontua</button></div>
    <div class="seg" id="gpPer">${[["semana","Semana"],["mes","Mês"],["desafio","Desafio"]].map(([k,n])=>`<button class="${per===k?'on':''}" onclick="gpRk('per','${k}','${det.g.id}')">${n}</button>`).join("")}</div>
-   <div class="chips" style="margin-top:8px;flex-wrap:nowrap;overflow-x:auto">${METRICAS.map(([k,n])=>`<button class="chip ${met===k?'on':''}" style="white-space:nowrap;flex:0 0 auto" onclick="gpRk('met','${k}','${det.g.id}')">${n}</button>`).join("")}</div>
+   <div class="chips" style="margin-top:8px;flex-wrap:nowrap;overflow-x:auto">${(window._gpRk.mais?METRICAS:METRICAS.filter(([k])=>k===met)).map(([k,n])=>`<button class="chip ${met===k?'on':''}" style="white-space:nowrap;flex:0 0 auto" onclick="gpRk('met','${k}','${det.g.id}')">${n}</button>`).join("")}${window._gpRk.mais?'':`<button class="chip" style="white-space:nowrap;flex:0 0 auto" onclick="gpRk('mais',1,'${det.g.id}')">Outras métricas</button>`}</div>
    ${podio}
    ${frase?`<div class="card sub small" style="margin-top:10px">${esc(frase)}</div>`:""}
    <div class="card" style="padding:4px 14px;margin-top:10px">${L.map(o=>`<div class="row rkrow ${o.m.user_id===u.id?'eu':''}"><div class="row" style="gap:12px;align-items:center"><span class="num pos">${o.pos}º</span><div><b>${esc(o.m.apelido)}${o.m.user_id===u.id?' <span class="tiny">(você)</span>':''}</b> ${seta(o)}<div class="tiny">${o.dias} dia${o.dias===1?"":"s"} · ${o.treinos} treino${o.treinos===1?"":"s"}${o.km?` · ${fmt(o.km)} km`:""}${o.seq>1?` · ${o.seq} seguidos`:""}</div></div></div><b class="num">${fmt(o[met])}<span class="tiny"> ${met==='pontos'?'pts':''}</span></b></div>`).join("")}</div>
@@ -5094,7 +5101,7 @@ function melhorMedalha(){ try{ const L=medalhas().filter(m=>m.tier>0); if(!L.len
 function cartaoMembro(){ const m=S.membro; const esps=[...((S.perfil.diasMusc||[]).length?['Musculação']:[]),...Object.keys(S.perfil.esportes||{}).filter(k=>k!=='outro').map(nomeEsp)];
   const pts=pontosFreq(); const md=melhorMedalha(); const sem=window.streakSemanas?streakSemanas():0; const dias=new Set([...S.logs,...S.bjj,...S.cardio].filter(x=>x.data>=semanaIni()&&x.data<=today()).map(x=>x.data)).size;
   const desde=m&&m.desde?(()=>{ const d=new Date(m.desde+"T12:00:00"); return `${MES[d.getMonth()]} de ${d.getFullYear()}`; })():null;
-  return `<div class="cm" role="group" aria-label="Cartão de membro">
+  return `<div class="cm ${S.cmAberto?'':'cm-c'}" id="cmCard" role="group" aria-label="Cartão de membro">
    <div class="cm-topo"><span class="cm-marca">DOSE<i>.</i></span><span class="cm-n" id="cmN">${m?`Nº <b>${nr(m.numero)}</b>`:U()?'Nº ····':'Sem número'}</span></div>
    <button class="cm-nome" onclick="go('meuperfil')" aria-label="Editar meu perfil">${esc(S.perfil.nome||'Seu nome')}</button>
    <p class="cm-desde serif">${desde?`Na dose desde ${desde}.`:U()?'Na dose.':'Entre na conta para receber seu número de membro.'}</p>
@@ -5103,7 +5110,9 @@ function cartaoMembro(){ const m=S.membro; const esps=[...((S.perfil.diasMusc||[
     <div><dt>Melhor medalha</dt><dd>${md?`${esc(md.cat)} · ${esc(TIER[md.tier])}`:'nenhuma ainda'}</dd></div></dl>
    <div class="stats cm-stats" id="comStats"><div><b data-count="${sem}">${sem}</b><span>semanas seguidas na dose</span></div><div><b data-count="${dias}">${dias}</b><span>dias nesta semana</span></div><div><span data-k="gr"><b>—</b></span><span>grupos</span><span data-k="pos" hidden></span></div></div>
    ${m&&m.convidado_por_nome?`<div class="tiny cm-conv">Convidado por ${esc(m.convidado_por_nome)}${m.convite_numero?` · convite Nº ${nr(m.convite_numero)}`:''}</div>`:''}
-   ${U()?'':`<button class="btn em sm" style="margin-top:12px" onclick="garantirConta(()=>route(),'Entrar no clube')">Entrar na conta</button>`}</div>`; }
+   ${U()?'':`<button class="btn em sm" style="margin-top:12px" onclick="garantirConta(()=>route(),'Entrar no clube')">Entrar na conta</button>`}
+   <button class="lk cm-tg" id="cmTg" onclick="cmToggle()" aria-expanded="${S.cmAberto?'true':'false'}">${S.cmAberto?'Recolher cartão':'Ver cartão completo'}</button></div>`; }
+window.cmToggle=()=>{ S.cmAberto=!S.cmAberto; save(); const c=document.getElementById('cmCard'),b=document.getElementById('cmTg'); if(c) c.classList.toggle('cm-c',!S.cmAberto); if(b){ b.textContent=S.cmAberto?'Recolher cartão':'Ver cartão completo'; b.setAttribute('aria-expanded',S.cmAberto?'true':'false'); } };
 
 // ---------- Comunidade em três partes ----------
 const ABAS=[["pontos","Pontos"],["grupos","Grupos"],["convites","Convites"]];

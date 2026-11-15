@@ -25,7 +25,7 @@ function melhorMedalha(){ try{ const L=medalhas().filter(m=>m.tier>0); if(!L.len
 function cartaoMembro(){ const m=S.membro; const esps=[...((S.perfil.diasMusc||[]).length?['Musculação']:[]),...Object.keys(S.perfil.esportes||{}).filter(k=>k!=='outro').map(nomeEsp)];
   const pts=pontosFreq(); const md=melhorMedalha(); const sem=window.streakSemanas?streakSemanas():0; const dias=new Set([...S.logs,...S.bjj,...S.cardio].filter(x=>x.data>=semanaIni()&&x.data<=today()).map(x=>x.data)).size;
   const desde=m&&m.desde?(()=>{ const d=new Date(m.desde+"T12:00:00"); return `${MES[d.getMonth()]} de ${d.getFullYear()}`; })():null;
-  return `<div class="cm" role="group" aria-label="Cartão de membro">
+  return `<div class="cm ${S.cmAberto?'':'cm-c'}" id="cmCard" role="group" aria-label="Cartão de membro">
    <div class="cm-topo"><span class="cm-marca">DOSE<i>.</i></span><span class="cm-n" id="cmN">${m?`Nº <b>${nr(m.numero)}</b>`:U()?'Nº ····':'Sem número'}</span></div>
    <button class="cm-nome" onclick="go('meuperfil')" aria-label="Editar meu perfil">${esc(S.perfil.nome||'Seu nome')}</button>
    <p class="cm-desde serif">${desde?`Na dose desde ${desde}.`:U()?'Na dose.':'Entre na conta para receber seu número de membro.'}</p>
@@ -34,7 +34,9 @@ function cartaoMembro(){ const m=S.membro; const esps=[...((S.perfil.diasMusc||[
     <div><dt>Melhor medalha</dt><dd>${md?`${esc(md.cat)} · ${esc(TIER[md.tier])}`:'nenhuma ainda'}</dd></div></dl>
    <div class="stats cm-stats" id="comStats"><div><b data-count="${sem}">${sem}</b><span>semanas seguidas na dose</span></div><div><b data-count="${dias}">${dias}</b><span>dias nesta semana</span></div><div><span data-k="gr"><b>—</b></span><span>grupos</span><span data-k="pos" hidden></span></div></div>
    ${m&&m.convidado_por_nome?`<div class="tiny cm-conv">Convidado por ${esc(m.convidado_por_nome)}${m.convite_numero?` · convite Nº ${nr(m.convite_numero)}`:''}</div>`:''}
-   ${U()?'':`<button class="btn em sm" style="margin-top:12px" onclick="garantirConta(()=>route(),'Entrar no clube')">Entrar na conta</button>`}</div>`; }
+   ${U()?'':`<button class="btn em sm" style="margin-top:12px" onclick="garantirConta(()=>route(),'Entrar no clube')">Entrar na conta</button>`}
+   <button class="lk cm-tg" id="cmTg" onclick="cmToggle()" aria-expanded="${S.cmAberto?'true':'false'}">${S.cmAberto?'Recolher cartão':'Ver cartão completo'}</button></div>`; }
+window.cmToggle=()=>{ S.cmAberto=!S.cmAberto; save(); const c=document.getElementById('cmCard'),b=document.getElementById('cmTg'); if(c) c.classList.toggle('cm-c',!S.cmAberto); if(b){ b.textContent=S.cmAberto?'Recolher cartão':'Ver cartão completo'; b.setAttribute('aria-expanded',S.cmAberto?'true':'false'); } };
 
 // ---------- Comunidade em três partes ----------
 const ABAS=[["pontos","Pontos"],["grupos","Grupos"],["convites","Convites"]];

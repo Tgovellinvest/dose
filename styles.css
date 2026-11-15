@@ -821,3 +821,10 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 .eq-t{position:relative;display:flex;flex-direction:column;gap:2px;font-weight:600}.eq-t small{font-weight:400;font-size:11.5px;color:var(--tx2)}.eq-n{position:relative;font-size:15px;font-weight:700}
 .eq-rod{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:12px;color:var(--tx2)}
 @media (prefers-reduced-motion:reduce){.eq,.eq-b{transition:none!important}.eq{opacity:1;transform:none}}
+
+/* v8.12 — cartão de membro compacto por padrão; ranking com só a métrica do desafio */
+.cm.cm-c{padding:14px 18px 12px}
+.cm.cm-c .cm-dl,.cm.cm-c .cm-conv{display:none}
+.cm.cm-c .cm-nome{font-size:22px;margin-top:8px}
+.cm.cm-c .cm-desde{font-size:15px;margin-top:2px}
+.cm-tg{display:block;margin-top:10px}
