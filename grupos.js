@@ -5,8 +5,9 @@
 const V=window.VIEWS, A=window.AFTER; const C=()=>window.CLOUD;
 const URL_='https://typfaauucqkztdhmbhqb.supabase.co'; const KEY='sb_publishable_MwvaO9YLPu_PwR_MqVQm-Q_QCAEPJHI';
 async function AH(){ const h=await C()._ah(); return h; }
-const api=async(path,opt={})=>{ const r=await fetch(`${URL_}/rest/v1/${path}`,Object.assign({headers:await AH()},opt,{headers:Object.assign(await AH(),opt.headers||{})})); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||j.msg||j.hint||m; }catch(e){} throw new Error(trad(m)); } const t=await r.text(); return t?JSON.parse(t):null; };
-const rpc=async(fn,args)=>{ const r=await fetch(`${URL_}/rest/v1/rpc/${fn}`,{method:'POST',headers:await AH(),body:JSON.stringify(args)}); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||m; }catch(e){} throw new Error(trad(m)); } return r.json(); };
+const SEMNET=()=>{ throw new Error('Sem conexão com o servidor agora. Tente de novo em instantes.'); };
+const api=async(path,opt={})=>{ const r=await fetch(`${URL_}/rest/v1/${path}`,Object.assign({headers:await AH()},opt,{headers:Object.assign(await AH(),opt.headers||{})})).catch(SEMNET); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||j.msg||j.hint||m; }catch(e){} throw new Error(trad(m)); } const t=await r.text(); return t?JSON.parse(t):null; };
+const rpc=async(fn,args)=>{ const r=await fetch(`${URL_}/rest/v1/rpc/${fn}`,{method:'POST',headers:await AH(),body:JSON.stringify(args)}).catch(SEMNET); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||m; }catch(e){} throw new Error(trad(m)); } return r.json(); };
 const trad=m=>({sessao:"Entre na conta primeiro",codigo:"Código não encontrado",cheio:"Grupo cheio (50 pessoas)",limite:"Você já criou 5 grupos"})[String(m).trim()]||m;
 const apelido=()=>{ const u=C().user(); return (S.perfil.nome||"").split(" ")[0]||(u&&u.nome?u.nome.split(" ")[0]:u&&u.email?u.email.split("@")[0]:"alguém"); };
 const G={cache:{grupos:null,detalhe:{}}};
@@ -35,8 +36,12 @@ function placar(det){ const d=det.g.desafio||{}; const t=today(); const ini=d.in
   det.dias.forEach(x=>{ const o=por[x.user_id]; if(!o||x.data<ini||x.data>fim) return; o.dias++; o.treinos+=x.treinos; o.km+=Number(x.km)||0; o.min+=x.min||0; if(x.data>=semIni) o.semana++; });
   // sequência de dias/semanas cumpridos
   const metaSem=d.periodo==='semana'?(d.meta||3):null;
-  Object.values(por).forEach(o=>{ const v=d.tipo==='km'?o.km:d.tipo==='treinos'?o.treinos:o.dias; o.valor=Math.round(v*10)/10; o.meta=d.meta||null;
-    o.pct=d.meta?Math.min(1,(d.periodo==='semana'?(d.tipo==='km'?det.dias.filter(x=>x.user_id===o.m.user_id&&x.data>=semIni).reduce((a,x)=>a+Number(x.km),0):o.semana):v)/d.meta):null; });
+  const seqMax=o=>{ const ds=[...new Set(det.dias.filter(x=>x.user_id===o.m.user_id&&x.data>=ini&&x.data<=fim&&x.treinos>0).map(x=>x.data))].sort(); let best=0,cur=0,prev=null; ds.forEach(x=>{ cur=prev&&shift(prev,1)===x?cur+1:1; prev=x; if(cur>best) best=cur; }); return best; };
+  Object.values(por).forEach(o=>{ const meus=det.dias.filter(x=>x.user_id===o.m.user_id);
+    const v=d.tipo==='km'?o.km:d.tipo==='treinos'?o.treinos:d.tipo==='min'?o.min:d.tipo==='seq'?seqMax(o):o.dias; o.valor=Math.round(v*10)/10; o.meta=d.meta||null;
+    const sem=meus.filter(x=>x.data>=semIni&&x.data<=fim);
+    const vs=d.tipo==='km'?sem.reduce((a,x)=>a+Number(x.km),0):d.tipo==='treinos'?sem.reduce((a,x)=>a+x.treinos,0):d.tipo==='min'?sem.reduce((a,x)=>a+x.min,0):o.semana;
+    o.pct=d.meta?Math.min(1,(d.periodo==='semana'?vs:v)/d.meta):null; });
   const lista=Object.values(por).sort((a,b)=>(b.pct??b.valor)-(a.pct??a.valor)||b.dias-a.dias);
   return {lista,ini,fim,ativo,metaSem,d}; }
 // ---------- Ranking (só entre membros do grupo) ----------
@@ -74,7 +79,7 @@ function rankingHTML(det){ const u=C().user(); const {per,met}=window._gpRk; con
    <p class="tiny">${per==='semana'?'Semana de segunda a hoje':per==='mes'?'Mês corrente':'Período do desafio'} · ${fmtD(r.ini)} a ${fmtD(r.fim)}. Setas comparam com ${per==='semana'?'a semana passada':'7 dias atrás'}. Ranking só entre membros: ninguém de fora vê.</p>`; }
 window.gpRk=(k,v,gid)=>{ window._gpRk[k]=v; const det=G.cache.detalhe[gid]; const el=document.getElementById('gpRank'); if(det&&el) el.innerHTML=rankingHTML(det); };
 window.gpComoPontua=()=>sheet(`<h3>Como pontua</h3><ul class="small"><li><b>10 pontos</b> por dia com treino, esporte ou cardio registrado no DOSE.</li><li><b>+2</b> no dia em que registrar 2 atividades (máximo 1 bônus por dia).</li><li><b>+5</b> por semana em que bater a meta de dias do desafio.</li><li><b>+5</b> por treino aberto da comunidade em que quem organizou confirmou a sua presença.</li><li>Empate: ganha quem tem mais dias ativos.</li></ul><p class="small">A pontuação premia aparecer com constância, não volume. Treinar 3 vezes no mesmo dia não vale mais que voltar amanhã.</p><p class="tiny">Km, minutos e sequência têm ranking próprio. Carga, peso e dieta nunca entram.</p>`);
-const descDesafio=d=>{ if(!d||!d.tipo) return "Sem desafio: só o placar de dias ativos."; const un={dias:"dias ativos",km:"km",treinos:"treinos"}[d.tipo]; return `${d.meta} ${un} ${d.periodo==='semana'?"por semana":"no total"}${d.fim?` · até ${fmtD(d.fim)}`:""}`; };
+const descDesafio=d=>{ if(!d||!d.tipo) return "Sem desafio: só o placar de dias ativos."; if(d.tipo==='seq') return `Maior sequência de dias treinando${d.fim?` · até ${fmtD(d.fim)}`:""}`; const un={dias:"dias ativos",km:"km",treinos:"treinos",min:"minutos"}[d.tipo]||"dias ativos"; return `${d.meta} ${un} ${d.periodo==='semana'?"por semana":"no total"}${d.fim?` · até ${fmtD(d.fim)}`:""}`; };
 const TIPOPOST={sessao:"strength",cardio:"run",esporte:"flame",encontro:"pin",semana:"calendar",mes:"calendar",medalha:"trophy",objetivo:"target"};
 
 // ---------- Views ----------
@@ -92,6 +97,7 @@ function gpDetalheHTML(det){ const u=C().user(); const g=det.g; const pl=placar(
   return `<h1>${esc(g.nome)}</h1>${g.descricao?`<p class="small">${esc(g.descricao)}</p>`:""}
    <div class="card hero"><div class="row" style="justify-content:space-between;align-items:center"><div><div class="eyebrow">Desafio</div><b>${esc(descDesafio(g.desafio))}</b><div class="tiny">${pl.ativo?"em andamento":"encerrado"}${(()=>{const me=pl.lista.find(o=>o.m.user_id===u.id);return me&&me.pct!=null?` · você: ${Math.round(me.pct*100)}%`:''})()} · ${det.membros.length} ${det.membros.length===1?"pessoa":"pessoas"}</div></div>${I("flag",28)}</div></div>
    <div id="gpRank">${rankingHTML(det)}</div>
+   ${window.gpTrofeus?gpTrofeus(det):""}
    <p class="tiny">Conta dias em que a pessoa registrou treino, esporte ou cardio no DOSE. Ninguém vê sua carga, seu peso ou sua dieta.</p>
    <div class="card"><b>Convidar</b><p class="small">Código <span class="mono" style="font-size:18px;letter-spacing:.12em">${esc(g.codigo)}</span></p><div class="grid2"><button class="btn sm sec" onclick="gpConvidar('${esc(g.nome)}','${esc(g.codigo)}')">${I("share")} Enviar convite</button><button class="btn sm ghost" onclick="navigator.clipboard.writeText('${link}').then(()=>toast('Link copiado'))">Copiar link</button></div></div>
    <h3>Registros</h3>${det.posts.length?det.posts.map(p=>{ const reag=(p.grupo_reacoes||[]).length; const eu=(p.grupo_reacoes||[]).some(r=>r.user_id===u.id); return `<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="row" style="gap:10px;align-items:flex-start"><div class="n">${I(TIPOPOST[p.tipo]||"card")}</div><div><b>${esc(nomeDe(p.user_id))}</b> <span class="tiny">· ${fmtD(p.data)}</span><div class="small">${esc(p.resumo.titulo||"")}</div><div class="tiny">${(p.resumo.linhas||[]).map(esc).join(" · ")}</div></div></div><button class="btn sm ${eu?'em':'ghost'}" style="width:auto;padding:6px 10px" onclick="gpReagir('${p.id}',${eu?0:1},'${g.id}')">${I("flame",16)}</button></div>${p.user_id===u.id?`<button class="btn sm ghost" style="width:auto;margin-top:6px;padding:4px 8px" onclick="gpApagarPost('${p.id}','${g.id}')">apagar</button>`:""}</div>`; }).join(""):`<div class="card sub small">Ainda sem registros. Ao finalizar um treino ou corrida, toque em "Postar no grupo" na tela de compartilhar.</div>`}
@@ -119,7 +125,7 @@ G.posicoes=async(gs)=>{ if(!gs.length) return {}; const u=C().user(); const ids=
   const [m,d]=await Promise.all([api(`grupo_membros?grupo_id=in.(${ids})&select=grupo_id,user_id,apelido`),api(`grupo_dias?grupo_id=in.(${ids})&data=gte.${si}&select=grupo_id,user_id,data,treinos,km,min&limit=5000`)]);
   const out={}; gs.forEach(g=>{ const det={g:Object.assign({criado_em:g.criado_em||today()},g),membros:m.filter(x=>x.grupo_id===g.id),dias:d.filter(x=>x.grupo_id===g.id)}; const r=ranking(det,'semana','pontos'); const eu=r.L.find(o=>o.m.user_id===u.id); if(eu){ const ac=r.L.filter(o=>o.pontos>eu.pontos).sort((a,b)=>a.pontos-b.pontos)[0]; out[g.id]={pos:eu.pos,n:r.L.length,pontos:eu.pontos,nome:g.nome,acima:ac?{nome:ac.m.apelido,dif:ac.pontos-eu.pontos}:null}; } }); return out; };
 G.temGrupos=()=>!!(G.cache.grupos&&G.cache.grupos.length);
-G.api=api; G.rpc=rpc; G.apelido=apelido;
+G.api=api; G.rpc=rpc; G.apelido=apelido; G.ranking=ranking; G.placar=placar; G.semanaDe=semanaDe; G.shift=shift; G.descDesafio=descDesafio;
 window.GRUPOS=G;
 // Ao abrir com conta: sincroniza dias dos grupos (silencioso, 1x por abertura)
 window.addEventListener('load',()=>{ setTimeout(()=>{ if(C().user()&&navigator.onLine) G.listar().then(()=>G.sincronizarTodos()).catch(()=>{}); },6000); });

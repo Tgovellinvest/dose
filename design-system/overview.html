@@ -813,6 +813,33 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 @media (prefers-reduced-motion:reduce){.vd *{transition:none!important}}
 .aj-ap{margin-top:12px}.dd-print{margin-top:4px}
 
+/* ===== v8.10 · criar grupo em 3 etapas e troféus ===== */
+.gn-pr{display:flex;gap:6px;margin:2px 0 14px}.gn-pr i{flex:1;height:3px;border-radius:2px;background:var(--s3);position:relative;overflow:hidden}
+.gn-pr i::after{content:"";position:absolute;inset:0;background:var(--ember);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--expo)}.gn-pr i.on::after{transform:scaleX(1)}
+.gn-card{position:relative;background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:18px;overflow:hidden}
+.gn-ct{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.gn-ct rect{fill:none;stroke:var(--ember);stroke-width:1.5;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .9s var(--expo)}
+.gn-card.desenha .gn-ct rect,.gn-card.feito .gn-ct rect{stroke-dashoffset:0}
+.gn-top{display:flex;justify-content:space-between;font-family:var(--num);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
+.gn-nome{margin:22px 0 0;font-weight:900;font-size:30px;letter-spacing:-.04em;text-transform:uppercase;line-height:.95;overflow-wrap:anywhere;min-height:30px;transition:color .3s var(--expo)}.gn-nome.vazio{color:var(--tx3)}
+.gn-des,.gn-rod{min-height:20px;opacity:0;transform:translateY(6px);transition:opacity .5s var(--expo),transform .5s var(--expo)}.gn-des.on,.gn-rod.on{opacity:1;transform:none}
+.gn-des{margin-top:8px;color:var(--bone);font-size:16px}.gn-rod{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--tx2)}
+.gn-cod{display:flex;gap:6px;margin-top:16px;font-family:var(--num);font-size:30px;font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.gn-cod i{font-style:normal;min-width:.72em;text-align:center;color:var(--tx3);opacity:.5;transition:opacity .4s var(--expo),transform .4s var(--expo),color .4s var(--expo);transform:translateY(4px)}.gn-cod i.on{opacity:1;color:var(--tx);transform:none}
+#gnCorpo.gn-in{animation:gnIn .45s var(--expo) both}@keyframes gnIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.gn-leque{display:flex;gap:10px;overflow-x:auto;padding:10px 2px 14px;margin:0 -2px;scrollbar-width:none;scroll-snap-type:x proximity}.gn-leque::-webkit-scrollbar{display:none}
+.gn-c{flex:0 0 132px;text-align:left;display:flex;flex-direction:column;gap:4px;padding:14px;border-radius:16px;background:var(--s1);border:1px solid var(--line);color:var(--tx);scroll-snap-align:start;min-height:122px;
+ transform:translateX(calc(var(--i)*-142px)) scale(.92);opacity:0;z-index:calc(20 - var(--i));transition:transform .7s var(--expo) calc(var(--i)*45ms),opacity .5s var(--expo) calc(var(--i)*45ms),border-color .3s var(--expo),background .3s var(--expo)}
+.gn-leque.abre .gn-c{transform:none;opacity:1}.gn-leque.sem .gn-c{transition:none}
+.gn-leque.abre .gn-c.on{transform:translateY(-6px);border-color:var(--ember);background:var(--bg);transition-delay:0s}
+.gn-c .ic{color:var(--tx2)}.gn-c.on .ic{color:var(--ember)}.gn-c b{font-size:14px;line-height:1.15}.gn-c small{color:var(--tx2);font-size:11.5px;line-height:1.25}
+.gn-lin{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;font-size:13px;color:var(--tx2)}
+.gn-step{display:flex;align-items:center;gap:12px}.gn-step button{width:36px;height:36px;border-radius:50%;background:var(--s2);border:1px solid var(--line);color:var(--tx);font-size:20px;line-height:1}.gn-step button:active{transform:scale(.94)}.gn-step b{min-width:3ch;text-align:center;font-size:22px}
+.gn-seg{margin-top:8px}.gn-err{color:var(--stop);font-size:13px;margin:8px 0 0;min-height:0}.gn-err:empty{display:none}
+.gn-fim{opacity:0;transform:translateY(8px);transition:opacity .5s var(--expo),transform .5s var(--expo)}.gn-fim.on{opacity:1;transform:none}.gn-fr{font-size:14px;color:var(--tx2);margin:14px 0}
+.gn-tr{display:flex;flex-direction:column;gap:10px}.gn-t{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--s1);animation:gnT .5s var(--expo) both;animation-delay:calc(var(--i)*80ms)}
+.gn-t .ic{color:var(--tx2);margin-top:2px}.gn-t.eu .ic{color:var(--ember)}@keyframes gnT{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.gn-pr i::after,.gn-ct rect,.gn-des,.gn-rod,.gn-cod i,.gn-fim,.gn-c{transition:none!important}#gnCorpo.gn-in,.gn-t{animation:none!important}.gn-c{opacity:1;transform:none}}
+
 </style>
 <style>
 /* ================= DOSE · v8.1 — "Luxo silencioso", só o que o Tiago aprovou no DOSE Studio (09/11/2026) =================
@@ -2952,8 +2979,9 @@ window.cardSemana=()=>SH.abrir('semana');
 const V=window.VIEWS, A=window.AFTER; const C=()=>window.CLOUD;
 const URL_='https://typfaauucqkztdhmbhqb.supabase.co'; const KEY='sb_publishable_MwvaO9YLPu_PwR_MqVQm-Q_QCAEPJHI';
 async function AH(){ const h=await C()._ah(); return h; }
-const api=async(path,opt={})=>{ const r=await fetch(`${URL_}/rest/v1/${path}`,Object.assign({headers:await AH()},opt,{headers:Object.assign(await AH(),opt.headers||{})})); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||j.msg||j.hint||m; }catch(e){} throw new Error(trad(m)); } const t=await r.text(); return t?JSON.parse(t):null; };
-const rpc=async(fn,args)=>{ const r=await fetch(`${URL_}/rest/v1/rpc/${fn}`,{method:'POST',headers:await AH(),body:JSON.stringify(args)}); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||m; }catch(e){} throw new Error(trad(m)); } return r.json(); };
+const SEMNET=()=>{ throw new Error('Sem conexão com o servidor agora. Tente de novo em instantes.'); };
+const api=async(path,opt={})=>{ const r=await fetch(`${URL_}/rest/v1/${path}`,Object.assign({headers:await AH()},opt,{headers:Object.assign(await AH(),opt.headers||{})})).catch(SEMNET); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||j.msg||j.hint||m; }catch(e){} throw new Error(trad(m)); } const t=await r.text(); return t?JSON.parse(t):null; };
+const rpc=async(fn,args)=>{ const r=await fetch(`${URL_}/rest/v1/rpc/${fn}`,{method:'POST',headers:await AH(),body:JSON.stringify(args)}).catch(SEMNET); if(!r.ok){ let m=r.statusText; try{ const j=await r.json(); m=j.message||m; }catch(e){} throw new Error(trad(m)); } return r.json(); };
 const trad=m=>({sessao:"Entre na conta primeiro",codigo:"Código não encontrado",cheio:"Grupo cheio (50 pessoas)",limite:"Você já criou 5 grupos"})[String(m).trim()]||m;
 const apelido=()=>{ const u=C().user(); return (S.perfil.nome||"").split(" ")[0]||(u&&u.nome?u.nome.split(" ")[0]:u&&u.email?u.email.split("@")[0]:"alguém"); };
 const G={cache:{grupos:null,detalhe:{}}};
@@ -2982,8 +3010,12 @@ function placar(det){ const d=det.g.desafio||{}; const t=today(); const ini=d.in
   det.dias.forEach(x=>{ const o=por[x.user_id]; if(!o||x.data<ini||x.data>fim) return; o.dias++; o.treinos+=x.treinos; o.km+=Number(x.km)||0; o.min+=x.min||0; if(x.data>=semIni) o.semana++; });
   // sequência de dias/semanas cumpridos
   const metaSem=d.periodo==='semana'?(d.meta||3):null;
-  Object.values(por).forEach(o=>{ const v=d.tipo==='km'?o.km:d.tipo==='treinos'?o.treinos:o.dias; o.valor=Math.round(v*10)/10; o.meta=d.meta||null;
-    o.pct=d.meta?Math.min(1,(d.periodo==='semana'?(d.tipo==='km'?det.dias.filter(x=>x.user_id===o.m.user_id&&x.data>=semIni).reduce((a,x)=>a+Number(x.km),0):o.semana):v)/d.meta):null; });
+  const seqMax=o=>{ const ds=[...new Set(det.dias.filter(x=>x.user_id===o.m.user_id&&x.data>=ini&&x.data<=fim&&x.treinos>0).map(x=>x.data))].sort(); let best=0,cur=0,prev=null; ds.forEach(x=>{ cur=prev&&shift(prev,1)===x?cur+1:1; prev=x; if(cur>best) best=cur; }); return best; };
+  Object.values(por).forEach(o=>{ const meus=det.dias.filter(x=>x.user_id===o.m.user_id);
+    const v=d.tipo==='km'?o.km:d.tipo==='treinos'?o.treinos:d.tipo==='min'?o.min:d.tipo==='seq'?seqMax(o):o.dias; o.valor=Math.round(v*10)/10; o.meta=d.meta||null;
+    const sem=meus.filter(x=>x.data>=semIni&&x.data<=fim);
+    const vs=d.tipo==='km'?sem.reduce((a,x)=>a+Number(x.km),0):d.tipo==='treinos'?sem.reduce((a,x)=>a+x.treinos,0):d.tipo==='min'?sem.reduce((a,x)=>a+x.min,0):o.semana;
+    o.pct=d.meta?Math.min(1,(d.periodo==='semana'?vs:v)/d.meta):null; });
   const lista=Object.values(por).sort((a,b)=>(b.pct??b.valor)-(a.pct??a.valor)||b.dias-a.dias);
   return {lista,ini,fim,ativo,metaSem,d}; }
 // ---------- Ranking (só entre membros do grupo) ----------
@@ -3021,7 +3053,7 @@ function rankingHTML(det){ const u=C().user(); const {per,met}=window._gpRk; con
    <p class="tiny">${per==='semana'?'Semana de segunda a hoje':per==='mes'?'Mês corrente':'Período do desafio'} · ${fmtD(r.ini)} a ${fmtD(r.fim)}. Setas comparam com ${per==='semana'?'a semana passada':'7 dias atrás'}. Ranking só entre membros: ninguém de fora vê.</p>`; }
 window.gpRk=(k,v,gid)=>{ window._gpRk[k]=v; const det=G.cache.detalhe[gid]; const el=document.getElementById('gpRank'); if(det&&el) el.innerHTML=rankingHTML(det); };
 window.gpComoPontua=()=>sheet(`<h3>Como pontua</h3><ul class="small"><li><b>10 pontos</b> por dia com treino, esporte ou cardio registrado no DOSE.</li><li><b>+2</b> no dia em que registrar 2 atividades (máximo 1 bônus por dia).</li><li><b>+5</b> por semana em que bater a meta de dias do desafio.</li><li><b>+5</b> por treino aberto da comunidade em que quem organizou confirmou a sua presença.</li><li>Empate: ganha quem tem mais dias ativos.</li></ul><p class="small">A pontuação premia aparecer com constância, não volume. Treinar 3 vezes no mesmo dia não vale mais que voltar amanhã.</p><p class="tiny">Km, minutos e sequência têm ranking próprio. Carga, peso e dieta nunca entram.</p>`);
-const descDesafio=d=>{ if(!d||!d.tipo) return "Sem desafio: só o placar de dias ativos."; const un={dias:"dias ativos",km:"km",treinos:"treinos"}[d.tipo]; return `${d.meta} ${un} ${d.periodo==='semana'?"por semana":"no total"}${d.fim?` · até ${fmtD(d.fim)}`:""}`; };
+const descDesafio=d=>{ if(!d||!d.tipo) return "Sem desafio: só o placar de dias ativos."; if(d.tipo==='seq') return `Maior sequência de dias treinando${d.fim?` · até ${fmtD(d.fim)}`:""}`; const un={dias:"dias ativos",km:"km",treinos:"treinos",min:"minutos"}[d.tipo]||"dias ativos"; return `${d.meta} ${un} ${d.periodo==='semana'?"por semana":"no total"}${d.fim?` · até ${fmtD(d.fim)}`:""}`; };
 const TIPOPOST={sessao:"strength",cardio:"run",esporte:"flame",encontro:"pin",semana:"calendar",mes:"calendar",medalha:"trophy",objetivo:"target"};
 
 // ---------- Views ----------
@@ -3039,6 +3071,7 @@ function gpDetalheHTML(det){ const u=C().user(); const g=det.g; const pl=placar(
   return `<h1>${esc(g.nome)}</h1>${g.descricao?`<p class="small">${esc(g.descricao)}</p>`:""}
    <div class="card hero"><div class="row" style="justify-content:space-between;align-items:center"><div><div class="eyebrow">Desafio</div><b>${esc(descDesafio(g.desafio))}</b><div class="tiny">${pl.ativo?"em andamento":"encerrado"}${(()=>{const me=pl.lista.find(o=>o.m.user_id===u.id);return me&&me.pct!=null?` · você: ${Math.round(me.pct*100)}%`:''})()} · ${det.membros.length} ${det.membros.length===1?"pessoa":"pessoas"}</div></div>${I("flag",28)}</div></div>
    <div id="gpRank">${rankingHTML(det)}</div>
+   ${window.gpTrofeus?gpTrofeus(det):""}
    <p class="tiny">Conta dias em que a pessoa registrou treino, esporte ou cardio no DOSE. Ninguém vê sua carga, seu peso ou sua dieta.</p>
    <div class="card"><b>Convidar</b><p class="small">Código <span class="mono" style="font-size:18px;letter-spacing:.12em">${esc(g.codigo)}</span></p><div class="grid2"><button class="btn sm sec" onclick="gpConvidar('${esc(g.nome)}','${esc(g.codigo)}')">${I("share")} Enviar convite</button><button class="btn sm ghost" onclick="navigator.clipboard.writeText('${link}').then(()=>toast('Link copiado'))">Copiar link</button></div></div>
    <h3>Registros</h3>${det.posts.length?det.posts.map(p=>{ const reag=(p.grupo_reacoes||[]).length; const eu=(p.grupo_reacoes||[]).some(r=>r.user_id===u.id); return `<div class="card" style="padding:12px 14px"><div class="row" style="justify-content:space-between;align-items:flex-start"><div class="row" style="gap:10px;align-items:flex-start"><div class="n">${I(TIPOPOST[p.tipo]||"card")}</div><div><b>${esc(nomeDe(p.user_id))}</b> <span class="tiny">· ${fmtD(p.data)}</span><div class="small">${esc(p.resumo.titulo||"")}</div><div class="tiny">${(p.resumo.linhas||[]).map(esc).join(" · ")}</div></div></div><button class="btn sm ${eu?'em':'ghost'}" style="width:auto;padding:6px 10px" onclick="gpReagir('${p.id}',${eu?0:1},'${g.id}')">${I("flame",16)}</button></div>${p.user_id===u.id?`<button class="btn sm ghost" style="width:auto;margin-top:6px;padding:4px 8px" onclick="gpApagarPost('${p.id}','${g.id}')">apagar</button>`:""}</div>`; }).join(""):`<div class="card sub small">Ainda sem registros. Ao finalizar um treino ou corrida, toque em "Postar no grupo" na tela de compartilhar.</div>`}
@@ -3066,7 +3099,7 @@ G.posicoes=async(gs)=>{ if(!gs.length) return {}; const u=C().user(); const ids=
   const [m,d]=await Promise.all([api(`grupo_membros?grupo_id=in.(${ids})&select=grupo_id,user_id,apelido`),api(`grupo_dias?grupo_id=in.(${ids})&data=gte.${si}&select=grupo_id,user_id,data,treinos,km,min&limit=5000`)]);
   const out={}; gs.forEach(g=>{ const det={g:Object.assign({criado_em:g.criado_em||today()},g),membros:m.filter(x=>x.grupo_id===g.id),dias:d.filter(x=>x.grupo_id===g.id)}; const r=ranking(det,'semana','pontos'); const eu=r.L.find(o=>o.m.user_id===u.id); if(eu){ const ac=r.L.filter(o=>o.pontos>eu.pontos).sort((a,b)=>a.pontos-b.pontos)[0]; out[g.id]={pos:eu.pos,n:r.L.length,pontos:eu.pontos,nome:g.nome,acima:ac?{nome:ac.m.apelido,dif:ac.pontos-eu.pontos}:null}; } }); return out; };
 G.temGrupos=()=>!!(G.cache.grupos&&G.cache.grupos.length);
-G.api=api; G.rpc=rpc; G.apelido=apelido;
+G.api=api; G.rpc=rpc; G.apelido=apelido; G.ranking=ranking; G.placar=placar; G.semanaDe=semanaDe; G.shift=shift; G.descDesafio=descDesafio;
 window.GRUPOS=G;
 // Ao abrir com conta: sincroniza dias dos grupos (silencioso, 1x por abertura)
 window.addEventListener('load',()=>{ setTimeout(()=>{ if(C().user()&&navigator.onLine) G.listar().then(()=>G.sincronizarTodos()).catch(()=>{}); },6000); });
@@ -5686,6 +5719,145 @@ const _d=SH.dose; SH.dose=async(...a)=>{ const r=await _d(...a); const det=docum
   const box=document.createElement('div'); box.className='dd-print'; box.innerHTML=`<label class="btn sm sec" style="width:auto;margin-top:8px">${I('plus')} Ler do print do relógio<input type="file" accept="image/*" hidden onchange="ddPrint(this)"></label><p class="tiny" id="ddPrintSt" style="margin:6px 0 0">A leitura acontece no seu aparelho. O print não sai dele.</p>`;
   det.querySelector('summary').insertAdjacentElement('afterend',box); }
   return r; };
+})();
+
+</script>
+<script>
+// ================= DOSE · v8.10 — criar grupo em 3 etapas + troféus dentro do grupo (aprovado pelo Tiago em 14/11/2026) =================
+// Etapas: 1) nome e descrição, 2) o desafio (leque de cartões), 3) o convite (cartão do grupo carimbado).
+// Motions aprovados: (1) cartão que se monta enquanto digita, (2) três traços de progresso, (3) desafios em leque, (5) carimbo do convite.
+// Regras: cubic-bezier(.16,1,.3,1), chega e para, sem loop, bounce, brilho ou confete. Um toque pula para o fim. Reduzir movimento = estado final direto.
+// Desafios só com dado que o app já registra (dias, treinos, km, minutos, sequência). Carga, peso e dieta nunca entram.
+// Troféus: sempre derivados do placar do grupo (nada inventado); valem só dentro do grupo.
+(function(){
+const G=window.GRUPOS; if(!G) return;
+const reduz=()=>window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+const eIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+
+const CAT=[
+ {id:'c3',nome:'3 dias por semana',sub:'Constância leve',tipo:'dias',meta:3,per:'semana',sem:4,ic:'calendar'},
+ {id:'c4',nome:'4 dias por semana',sub:'Constância firme',tipo:'dias',meta:4,per:'semana',sem:6,ic:'flag'},
+ {id:'c5',nome:'5 dias por semana',sub:'Ritmo alto',tipo:'dias',meta:5,per:'semana',sem:4,ic:'flame'},
+ {id:'t12',nome:'Treinos no período',sub:'Quem junta mais treinos',tipo:'treinos',meta:12,per:'total',sem:4,ic:'strength'},
+ {id:'k30',nome:'30 km',sub:'Corrida, pedal ou caminhada',tipo:'km',meta:30,per:'total',sem:4,ic:'run'},
+ {id:'k50',nome:'50 km',sub:'Corrida, pedal ou caminhada',tipo:'km',meta:50,per:'total',sem:4,ic:'run'},
+ {id:'k100',nome:'100 km',sub:'Para quem já tem base',tipo:'km',meta:100,per:'total',sem:4,ic:'run'},
+ {id:'m300',nome:'300 min por semana',sub:'Tempo em movimento',tipo:'min',meta:300,per:'semana',sem:4,ic:'heart'},
+ {id:'seq',nome:'Maior sequência',sub:'Dias seguidos treinando',tipo:'seq',meta:null,per:'total',sem:4,ic:'flame'},
+ {id:'todo',nome:'Todo dia',sub:'Um treino por dia',tipo:'dias',meta:null,per:'total',sem:2,ic:'target',todo:true},
+ {id:'livre',nome:'Livre',sub:'Você define',tipo:'dias',meta:4,per:'semana',sem:4,ic:'plus',livre:true}];
+const cat=id=>CAT.find(c=>c.id===id)||CAT[1];
+const UNID={dias:'dias ativos',treinos:'treinos',km:'km',min:'minutos'};
+const PASSO={dias:1,treinos:1,km:5,min:30};
+const PADRAO={dias:{meta:4,per:'semana'},treinos:{meta:12,per:'total'},km:{meta:30,per:'total'},min:{meta:300,per:'semana'}};
+const MAPA={'7dias':'c5','mes':'c4','100km':'k100'}; // modelos da aba Comunidade
+
+let st={};
+const novo=(pre)=>{ const c=cat(pre||'c4'); st={p:1,nome:'',desc:'',pre:c.id,tipo:c.tipo,meta:c.meta,per:c.per,sem:c.sem,ini:today(),criando:false,g:null,_t:[]}; };
+const T=(fn,ms)=>{ st._t.push(setTimeout(fn,ms)); };
+const limpaT=()=>{ (st._t||[]).forEach(clearTimeout); st._t=[]; };
+const desafio=()=>{ const c=cat(st.pre); const seq=st.tipo==='seq'; return {tipo:st.tipo,meta:seq?null:c.todo?st.sem*7:st.meta,periodo:(c.todo||seq)?'total':st.per,ini:st.ini,fim:G.shift(st.ini,st.sem*7-1)}; };
+
+// ---------- estrutura ----------
+function casca(){ return `<div class="gn" role="group" aria-label="Criar grupo">
+  <div class="gn-pr" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="gn-card" id="gnCard"><svg class="gn-ct" aria-hidden="true"><rect rx="18" ry="18" pathLength="1"/></svg>
+   <div class="gn-top"><span>Grupo</span><span id="gnQ">Novo</span></div>
+   <div class="gn-nome vazio" id="gnNome">Nome do grupo</div>
+   <div class="gn-des" id="gnDes"></div>
+   <div class="gn-cod" id="gnCod" aria-label="Código do convite">${[...Array(7)].map(()=>'<i>·</i>').join('')}</div>
+   <div class="gn-rod" id="gnRod"></div></div>
+  <div id="gnCorpo"></div></div>`; }
+
+function card(){ const n=$('gnNome'); if(!n) return; const nome=(st.nome||'').trim(); n.textContent=nome||'Nome do grupo'; n.classList.toggle('vazio',!nome);
+  const d=$('gnDes'), r=$('gnRod'); if(st.p>=2){ const ds=desafio(); d.textContent=G.descDesafio(ds).replace(/ · até \d+\/\d+$/,'').replace('no total','no período'); d.classList.add('on'); r.textContent=`Começa ${fmtD(ds.ini)} · termina ${fmtD(ds.fim)}`; r.classList.add('on'); } else { d.classList.remove('on'); r.classList.remove('on'); }
+  const q=$('gnQ'); if(q) q.textContent=st.p===3?'Pronto':'Novo'; }
+
+function progresso(){ document.querySelectorAll('.gn-pr i').forEach((i,k)=>i.classList.toggle('on',k<st.p)); }
+function entra(){ const c=$('gnCorpo'); if(!c) return; c.classList.remove('gn-in'); void c.offsetWidth; c.classList.add('gn-in'); }
+
+// ---------- etapa 1 ----------
+function p1(){ $('gnCorpo').innerHTML=`<label>Nome</label><input id="gpNome" maxlength="40" placeholder="Ex.: Grupo das 6h" value="${esc(st.nome)}" autocomplete="off" oninput="gnNome(this.value)" onkeydown="if(event.key==='Enter')gnProx()">
+   <label>Descrição (opcional)</label><input id="gpDesc" maxlength="200" placeholder="Quem é, combinado, regra da casa" value="${esc(st.desc)}" autocomplete="off" oninput="gnDesc(this.value)">
+   <button class="btn em" style="margin-top:16px" onclick="gnProx()">Continuar</button>
+   <p class="tiny">Grupo fechado: só entra quem tem o código. Até 50 pessoas.</p>`; entra(); setTimeout(()=>{ const i=$('gpNome'); if(i){ if(i.value&&i.value!==st.nome){ st.nome=i.value; card(); } } },160); }
+window.gnNome=v=>{ st.nome=v; card(); }; window.gnDesc=v=>{ st.desc=v; };
+
+// ---------- etapa 2 ----------
+function p2(){ $('gnCorpo').innerHTML=`<div class="eyebrow" style="text-align:left;margin:4px 0 2px">Escolha o desafio</div>
+   <div class="gn-leque" id="gnLeque">${CAT.map((c,i)=>`<button type="button" class="gn-c ${c.id===st.pre?'on':''}" data-id="${c.id}" style="--i:${i}" onclick="gnPre('${c.id}')"><span class="ic">${I(c.ic,22)}</span><b>${esc(c.nome)}</b><small>${esc(c.sub)}</small></button>`).join('')}</div>
+   <div id="gnAj"></div>
+   <p class="gn-err" id="gnErr" role="alert"></p>
+   <div class="grid2" style="margin-top:12px"><button class="btn ghost" onclick="gnVoltar()">Voltar</button><button class="btn em" id="gnGo" onclick="gnCriar()">Criar grupo</button></div>
+   <p class="tiny">O placar conta dias em que cada um registrou treino no DOSE. Sem carga, sem peso, sem dieta.</p>`; ajuste(); entra();
+  const lq=$('gnLeque'); if(reduz()) lq.classList.add('abre','sem'); else requestAnimationFrame(()=>requestAnimationFrame(()=>lq.classList.add('abre'))); }
+function ajuste(){ const c=cat(st.pre), seq=st.tipo==='seq', todo=!!c.todo; const el=$('gnAj'); if(!el) return; const ds=desafio();
+  const meta=(!seq&&!todo)?`<div class="gn-lin"><span>Meta</span><div class="gn-step"><button type="button" aria-label="Menos" onclick="gnMeta(-1)">−</button><b class="num">${st.meta}</b><button type="button" aria-label="Mais" onclick="gnMeta(1)">+</button></div><small>${UNID[st.tipo]}</small></div>
+    <div class="seg gn-seg"><button class="${st.per==='semana'?'on':''}" onclick="gnPer('semana')">por semana</button><button class="${st.per==='total'?'on':''}" onclick="gnPer('total')">no período</button></div>`:'';
+  el.innerHTML=`${c.livre?`<div class="chips" style="margin-top:10px">${Object.keys(UNID).map(k=>`<button type="button" class="chip ${st.tipo===k?'on':''}" onclick="gnTipo('${k}')">${k==='dias'?'Dias ativos':k==='min'?'Minutos':UNID[k][0].toUpperCase()+UNID[k].slice(1)}</button>`).join('')}</div>`:''}${meta}
+   <div class="gn-lin" style="margin-top:12px"><span>Duração</span></div><div class="chips">${[2,4,6,8].map(n=>`<button type="button" class="chip ${st.sem===n?'on':''}" onclick="gnSem(${n})">${n} sem</button>`).join('')}</div>
+   <p class="tiny" style="margin:6px 0 0">Começa ${st.ini===today()?'hoje':fmtD(st.ini)} · termina ${fmtD(ds.fim)}. <button type="button" class="lk" onclick="gnData()">${st.ini===today()?'Outra data':'Começar hoje'}</button></p>
+   <input id="gnIni" type="date" value="${st.ini}" hidden onchange="gnIni(this.value)">`; card(); }
+window.gnPre=id=>{ const c=cat(id); st.pre=id; st.tipo=c.tipo; st.meta=c.meta; st.per=c.per; st.sem=c.sem; document.querySelectorAll('.gn-c').forEach(b=>b.classList.toggle('on',b.dataset.id===id)); ajuste(); };
+window.gnTipo=k=>{ st.tipo=k; st.meta=PADRAO[k].meta; st.per=PADRAO[k].per; ajuste(); };
+window.gnMeta=d=>{ const p=PASSO[st.tipo]||1; const max=st.per==='semana'&&st.tipo==='dias'?7:9999; st.meta=Math.max(p,Math.min(max,(st.meta||p)+d*p)); ajuste(); };
+window.gnPer=v=>{ st.per=v; if(st.tipo==='dias'&&v==='semana') st.meta=Math.min(st.meta,7); ajuste(); };
+window.gnSem=n=>{ st.sem=n; ajuste(); };
+window.gnData=()=>{ if(st.ini!==today()){ st.ini=today(); ajuste(); return; } const i=$('gnIni'); if(!i) return; i.hidden=false; i.min=today(); try{ i.showPicker&&i.showPicker(); }catch(e){} i.focus(); };
+window.gnIni=v=>{ if(v&&v>=today()){ st.ini=v; ajuste(); } };
+
+// ---------- navegação ----------
+function passo(n){ st.p=n; progresso(); card(); if(n===1) p1(); else if(n===2) p2(); else p3(); }
+window.gnProx=()=>{ if(st.p===1){ st.nome=(($('gpNome')||{}).value||st.nome||'').trim(); st.desc=(($('gpDesc')||{}).value||st.desc||'').trim(); if(st.nome.length<2) return toast('Dê um nome ao grupo'); passo(2); } };
+window.gnVoltar=()=>{ if(st.p===2) passo(1); };
+window.gnCriar=async()=>{ if(st.criando) return; st.criando=true; const b=$('gnGo'), er=$('gnErr'); if(er) er.textContent=''; if(b){ b.disabled=true; b.textContent='Criando…'; }
+  try{ const g=await G.criar(st.nome,st.desc,desafio()); st.g=g; if(!g.codigo){ try{ const r=await G.api(`grupos?id=eq.${g.id}&select=codigo`); g.codigo=r[0]&&r[0].codigo; }catch(e){} } G.cache.grupos=null; passo(3); }
+  catch(e){ st.criando=false; const b2=$('gnGo'); if(b2){ b2.disabled=false; b2.textContent='Criar grupo'; } const er2=$('gnErr'); if(er2) er2.textContent=e.message||'Não consegui criar agora. Tente de novo.'; } };
+
+// ---------- etapa 3: carimbo do convite ----------
+function p3(){ const g=st.g||{}; const cod=String(g.codigo||'').toUpperCase(); const link=`${location.origin}${location.pathname}#grupos?c=${cod}`;
+  $('gnCod').innerHTML=[...(cod||'·······')].map(()=>'<i>·</i>').join(''); $('gnCod').dataset.cod=cod;
+  $('gnCorpo').innerHTML=`<div class="gn-fim" id="gnFim"><p class="gn-fr">Grupo criado. Quem tem o código entra. O placar conta dias com treino registrado, sem carga, sem peso, sem dieta.</p>
+   <button class="btn em" onclick="gpConvidar('${esc(st.nome).replace(/'/g,"\\'")}','${esc(cod)}')">${I('share')} Convidar</button>
+   <div class="grid2" style="margin-top:8px"><button class="btn sec" onclick="navigator.clipboard.writeText('${link}').then(()=>toast('Link copiado'))">Copiar link</button><button class="btn ghost" onclick="gnAbrir()">Abrir o grupo</button></div></div>`;
+  const cd=$('gnCard'); cd.classList.add('p3'); medir(); cd.addEventListener('click',fimAnim); carimba(); }
+window.gnAbrir=()=>{ const id=st.g&&st.g.id; closeSheet(); toast('Grupo criado'); if(id) go('grupos',{g:id}); };
+function medir(){ const cd=$('gnCard'), sv=cd.querySelector('.gn-ct'), r=sv.querySelector('rect'); const W=cd.offsetWidth, H=cd.offsetHeight; sv.setAttribute('viewBox',`0 0 ${W} ${H}`); r.setAttribute('x',1); r.setAttribute('y',1); r.setAttribute('width',W-2); r.setAttribute('height',H-2); }
+function letras(){ const el=$('gnCod'); const cod=el.dataset.cod||''; [...el.children].forEach((i,k)=>{ i.textContent=cod[k]||'·'; i.classList.add('on'); }); }
+function fimAnim(){ if(st._fim) return; st._fim=true; limpaT(); const cd=$('gnCard'); if(!cd) return; cd.classList.add('feito'); letras(); const f=$('gnFim'); f&&f.classList.add('on'); }
+function carimba(){ st._fim=false; const cd=$('gnCard'); if(reduz()){ fimAnim(); return; }
+  requestAnimationFrame(()=>requestAnimationFrame(()=>cd.classList.add('desenha')));
+  const cod=$('gnCod'); const cs=[...cod.children]; const t0=1050;
+  cs.forEach((i,k)=>T(()=>{ i.textContent=(cod.dataset.cod||'')[k]||'·'; i.classList.add('on'); },t0+k*90));
+  T(()=>{ cd.classList.add('feito'); },t0+cs.length*90+100); T(()=>{ const f=$('gnFim'); f&&f.classList.add('on'); },t0+cs.length*90+250); T(()=>{ st._fim=true; },t0+cs.length*90+900); }
+
+// ---------- abrir ----------
+function abre(pre){ novo(pre); sheet(casca()); progresso(); card(); p1(); }
+window.gpNovo=()=>window.garantirConta?garantirConta(()=>abre(),'Para criar o grupo'):abre();
+window.comModelo=k=>{ if(!(window.CLOUD&&CLOUD.user())) return garantirConta(()=>comModelo(k),'Para criar o desafio'); abre(MAPA[k]||'c4'); setTimeout(()=>{ const i=$('gpNome'); const nm={'7dias':'7 dias','mes':'Mês sem falhar','100km':'100 km'}[k]; if(i&&nm&&!i.value){ i.value=nm; gnNome(nm); } },60); };
+
+// ---------- troféus (derivados do placar; só dentro do grupo) ----------
+function longest(set,ini,fim){ const ds=[...set].filter(x=>x>=ini&&x<=fim).sort(); let best=0,cur=0,prev=null; ds.forEach(x=>{ cur=prev&&G.shift(prev,1)===x?cur+1:1; prev=x; if(cur>best) best=cur; }); return best; }
+function trofeus(det){ const u=window.CLOUD&&CLOUD.user(); if(!u) return ''; const g=det.g, d=g.desafio||{}; const pl=G.placar(det); const out=[];
+  const nm=o=>esc(o.m.apelido)+(o.m.user_id===u.id?' (você)':'');
+  const add=(t,L,det_)=>{ if(L.length) out.push({t,q:L.slice(0,3).map(nm).join(', ')+(L.length>3?` e mais ${L.length-3}`:''),d:det_,eu:L.some(o=>o.m.user_id===u.id)}); };
+  const rk=G.ranking(det,'desafio','dias'); const por={}; rk.L.forEach(o=>por[o.m.user_id]=o);
+  if(d.meta&&d.periodo==='total') add('Fechou o desafio',pl.lista.filter(o=>o.pct!=null&&o.pct>=1),`${d.meta} ${UNID[d.tipo]||'dias ativos'}`);
+  if(d.meta&&d.periodo==='semana'){ add('Bateu a meta da semana',pl.lista.filter(o=>o.pct!=null&&o.pct>=1),`${d.meta} ${UNID[d.tipo]||'dias ativos'} nesta semana`);
+    // semanas seguidas na meta
+    const val=(uid,w)=>{ const X=det.dias.filter(x=>x.user_id===uid&&x.treinos>0&&G.semanaDe(x.data)===w&&x.data>=pl.ini&&x.data<=pl.fim); return d.tipo==='km'?X.reduce((a,x)=>a+Number(x.km),0):d.tipo==='treinos'?X.reduce((a,x)=>a+x.treinos,0):d.tipo==='min'?X.reduce((a,x)=>a+x.min,0):new Set(X.map(x=>x.data)).size; };
+    const w0=G.semanaDe(today()); const seqS=det.membros.map(m=>{ let w=w0, n=0; if(val(m.user_id,w)<d.meta) w=G.shift(w,-7); while(w>=G.semanaDe(pl.ini)&&val(m.user_id,w)>=d.meta){ n++; w=G.shift(w,-7); } return {m,n}; }).filter(o=>o.n>=2).sort((a,b)=>b.n-a.n);
+    if(seqS.length){ const top=seqS.filter(o=>o.n===seqS[0].n); out.push({t:'Semanas seguidas na meta',q:top.slice(0,3).map(nm).join(', '),d:`${seqS[0].n} semanas seguidas`,eu:top.some(o=>o.m.user_id===u.id)}); } }
+  // mais km da semana
+  const rkm=G.ranking(det,'semana','km'); const topKm=rkm.L.filter(o=>o.pos===1&&o.km>0); if(topKm.length&&rkm.L.some(o=>o.km>0)&&det.membros.length>1) add('Mais km da semana',topKm,`${String(topKm[0].km).replace('.',',')} km`);
+  // maior sequência do desafio
+  const sq=det.membros.map(m=>({m,n:por[m.user_id]?longest(por[m.user_id].datas,rk.ini,rk.fim):0})).filter(o=>o.n>=3); if(sq.length){ const mx=Math.max(...sq.map(o=>o.n)); add('Maior sequência do desafio',sq.filter(o=>o.n===mx),`${mx} dias seguidos`); }
+  // primeiro a chegar na meta (período total)
+  if(d.meta&&d.periodo==='total'&&['dias','treinos','km','min'].includes(d.tipo)){ const quando=det.membros.map(m=>{ const X=det.dias.filter(x=>x.user_id===m.user_id&&x.treinos>0&&x.data>=pl.ini&&x.data<=pl.fim).sort((a,b)=>a.data<b.data?-1:1); let acc=0; for(const x of X){ acc+=d.tipo==='km'?Number(x.km):d.tipo==='treinos'?x.treinos:d.tipo==='min'?x.min:1; if(acc>=d.meta) return {m,data:x.data}; } return null; }).filter(Boolean).sort((a,b)=>a.data<b.data?-1:1);
+    if(quando.length){ const q0=quando.filter(o=>o.data===quando[0].data); out.push({t:'Primeiro a chegar na meta',q:q0.slice(0,3).map(nm).join(', '),d:`em ${fmtD(quando[0].data)}`,eu:q0.some(o=>o.m.user_id===u.id)}); } }
+  return `<h3>Troféus</h3>${out.length?`<div class="gn-tr">${out.map((o,i)=>`<div class="gn-t ${o.eu?'eu':''}" style="--i:${i}"><span class="ic">${I('trophy',22)}</span><div><b>${esc(o.t)}</b><div class="small">${o.q}</div><div class="tiny">${esc(o.d)}</div></div></div>`).join('')}</div>`:`<div class="card sub small">Os troféus aparecem quando o primeiro cumprir. Ficam só dentro do grupo.</div>`}<p class="tiny">Cada troféu sai do placar do grupo. Não vai para o perfil público nem para ranking da cidade.</p>`; }
+window.gpTrofeus=trofeus;
 })();
 
 </script>
