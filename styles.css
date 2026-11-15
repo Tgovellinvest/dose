@@ -839,3 +839,6 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 .gn-col.ok .gn-colb i{background:var(--ember)}
 @keyframes gnCol{from{width:0}to{width:var(--p)}}
 @media (prefers-reduced-motion:reduce){.gn-colb i{animation:none}}
+
+/* v8.14 — pausa da sequência */
+.cm-pausa{margin-top:10px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
