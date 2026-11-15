@@ -67,4 +67,18 @@ window.gpEditarOk=async(id)=>{ const det=G.cache.detalhe[id]; if(!det) return; c
 // ---------- Criar grupo no começo da Comunidade ----------
 const topo=()=>`<div class="grid2 cm-topo"><button class="btn em" onclick="gpNovo()">${I('plus')} Criar grupo</button><button class="btn sec" onclick="gpEntrar('')">${I('link')} Tenho código</button></div>`;
 { const V=window.VIEWS; const _c=V.comunidade; if(_c) V.comunidade=(p)=>{ const h=_c(p); const i=h.indexOf('</h1>'); return i>=0?h.slice(0,i+5)+topo()+h.slice(i+5):topo()+h; }; }
+
+// ---------- o link do grupo basta: não perde o código em nenhum passo (15/11/2026, pedido do Tiago) ----------
+// Quem abre o link sem ter feito a introdução ou sem conta vai para a introdução/login; o código fica guardado e o convite abre sozinho depois.
+const PK='dose-gp-pend';
+const pend=c=>{ try{ if(c===undefined) return localStorage.getItem(PK); if(c) localStorage.setItem(PK,c); else localStorage.removeItem(PK); }catch(e){ return null; } };
+// retorna true se redirecionou para o convite guardado
+function visa(h){ h=h||''; const m=/^#grupos\?(.*)$/.exec(h); const c=m?(new URLSearchParams(m[1]).get('c')||'').toUpperCase():''; const ok=/^[A-Z0-9]{5,10}$/.test(c);
+  if(ok){ if(!S.onboarded||!U()) pend(c); return false; }
+  if(S.onboarded&&U()&&!/^#onboard/.test(h)&&!/^#grupos\?g=/.test(h)){ const k=pend(); if(k){ pend(''); location.hash='grupos?c='+k; return true; } }
+  return false; }
+{ const _r=window.route; window.route=function(){ if(visa(location.hash)) return; return _r.apply(this,arguments); };
+  window.addEventListener('hashchange',e=>{ try{ visa(new URL(e.newURL).hash); }catch(x){} },true); }
+{ const A=window.AFTER; const _a=A&&A.grupos; if(_a) A.grupos=function(p){ if(p&&p.c&&!p.g&&!U()&&window.gpEntrar) setTimeout(()=>gpEntrar(p.c),250); return _a.apply(this,arguments); }; }
+{ const _o=window.gpEntrarOk; if(_o) window.gpEntrarOk=async function(){ const r=await _o.apply(this,arguments); if(/g=/.test(location.hash||'')) pend(''); return r; }; }
 })();
