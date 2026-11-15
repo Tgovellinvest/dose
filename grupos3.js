@@ -81,4 +81,10 @@ function visa(h){ h=h||''; const m=/^#grupos\?(.*)$/.exec(h); const c=m?(new URL
   window.addEventListener('hashchange',e=>{ try{ visa(new URL(e.newURL).hash); }catch(x){} },true); }
 { const A=window.AFTER; const _a=A&&A.grupos; if(_a) A.grupos=function(p){ if(p&&p.c&&!p.g&&!U()&&window.gpEntrar) setTimeout(()=>gpEntrar(p.c),250); return _a.apply(this,arguments); }; }
 { const _o=window.gpEntrarOk; if(_o) window.gpEntrarOk=async function(){ const r=await _o.apply(this,arguments); if(/g=/.test(location.hash||'')) pend(''); return r; }; }
+
+// ---------- ponto de enquete nova em "Seus grupos" (v8.12.1): discreto, sem push, some depois de votar ----------
+async function marcaEnq(){ if(!U()) return; const it=[...document.querySelectorAll('#comGrupos .item[onclick], #gpLista .item[onclick]')]; const eu=U().id;
+  await Promise.all(it.map(async el=>{ const m=/g:'([^']+)'/.exec(el.getAttribute('onclick')||''); if(!m||el.querySelector('.eq-pt')) return;
+    try{ const l=await rpc('enquetes_grupo',{p_grupo:m[1]})||[]; if(l.some(e=>e.meu==null&&e.criador!==eu)){ const b=el.querySelector('.t b'); if(b) b.insertAdjacentHTML('beforeend','<i class="eq-pt" role="img" aria-label="Enquete nova" title="Enquete nova"></i>'); } }catch(e){} })); }
+{ const A=window.AFTER; ['comunidade','grupos'].forEach(k=>{ const a=A&&A[k]; if(a) A[k]=async function(){ const r=await a.apply(this,arguments); try{ await marcaEnq(); }catch(e){} return r; }; }); }
 })();

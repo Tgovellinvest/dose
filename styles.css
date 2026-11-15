@@ -828,3 +828,6 @@ body.cvt-on .tabbar,body.cvt-on #btnMais{display:none}
 .cm.cm-c .cm-nome{font-size:22px;margin-top:8px}
 .cm.cm-c .cm-desde{font-size:15px;margin-top:2px}
 .cm-tg{display:block;margin-top:10px}
+
+/* v8.12.1 — ponto de enquete nova */
+.eq-pt{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ember);margin-left:8px;vertical-align:middle}
