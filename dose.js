@@ -73,7 +73,7 @@ window.cartaoDose=async function(fmt,d,foto){ await fontes(); const W=1080,H=fmt
   y+=Math.ceil(ks.length/2)*(KH+gap);
   const bot=fmt==='story'?H-220:H-70; const fy=Math.min(Math.max(y+70,bot-150),bot-90); x.fillStyle=COR.bone; x.font="italic 56px 'Instrument Serif', Georgia, serif"; x.fillText(d.frase,M,fy);
   if(d.fonte){ x.fillStyle=COR.mute; x.font="500 22px Archivo, Arial"; x.fillText(d.fonte,M,fy+40); }
-  x.fillStyle=COR.mute; x.font="600 26px 'Archivo Narrow', Archivo, Arial"; x.fillText(SH.URL.toUpperCase(),M,bot); x.textAlign="right"; x.fillText("VIDA NA DOSE.",W-M,bot); x.textAlign="left";
+  x.fillStyle=COR.mute; x.font="600 26px 'Archivo Narrow', Archivo, Arial"; x.textAlign="right"; x.fillText("VIDA NA DOSE.",W-M,bot); x.textAlign="left";
   return c; };
 
 // ---------- folha "A dose do dia" ----------

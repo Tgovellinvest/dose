@@ -18,7 +18,7 @@ const rr=(x,X,Y,W,H,r)=>{ x.beginPath(); x.moveTo(X+r,Y); x.arcTo(X+W,Y,X+W,Y+H,
 function base(fmt){ const W=1080,H=fmt==='story'?1920:1350; const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d');
   x.fillStyle=COR.g; x.fillRect(0,0,W,H); const gr=x.createRadialGradient(W*0.85,0,0,W*0.85,0,W*0.9); gr.addColorStop(0,"rgba(228,87,46,.18)"); gr.addColorStop(1,"rgba(228,87,46,0)"); x.fillStyle=gr; x.fillRect(0,0,W,H);
   const top=fmt==='story'?250:84; x.fillStyle=COR.ink; x.font="900 56px Archivo, Arial"; x.textBaseline="alphabetic"; x.fillText("DOSE",84,top+50); x.fillStyle=COR.em; x.fillText(".",84+x.measureText("DOSE").width,top+50);
-  const bot=fmt==='story'?H-220:H-70; x.fillStyle=COR.mute; x.font="600 26px 'Archivo Narrow', Archivo, Arial"; x.fillText(SH.URL.toUpperCase(),84,bot); x.textAlign="right"; x.fillText("VIDA NA DOSE.",W-84,bot); x.textAlign="left";
+  const bot=fmt==='story'?H-220:H-70; x.fillStyle=COR.mute; x.font="600 26px 'Archivo Narrow', Archivo, Arial"; x.textAlign="right"; x.fillText("VIDA NA DOSE.",W-84,bot); x.textAlign="left";
   return {c,x,W,H,top:top+120,bot:bot-80}; }
 const eyebrow=(x,t,y)=>{ x.fillStyle=COR.em; x.font="700 28px 'Archivo Narrow', Archivo, Arial"; x.fillText(t.toUpperCase().split("").join(String.fromCharCode(8202)),84,y); };
 const big=(x,v,y,size=230)=>{ x.fillStyle=COR.ink; x.font=`700 ${size}px 'Archivo Narrow', Archivo, Arial`; x.fillText(String(v),78,y); return x.measureText(String(v)).width; };
@@ -85,7 +85,7 @@ SH.setDur=async v=>{ const n=Math.max(0,Math.min(600,Math.round(num(v)||0)))||nu
 SH.render=async()=>{ await fontsOk(); const c=await SH.draw[cur.tipo](cur.fmt,cur.arg); const el=document.getElementById('shPrev'); if(el){ el.innerHTML=""; const im=new Image(); im.style.cssText="width:100%;height:100%;object-fit:contain;display:block"; im.src=c.toDataURL("image/png"); el.appendChild(im); }
   cur.blob=await new Promise(r=>c.toBlob(r,"image/png")); return cur.blob; };
 const nome=()=>`dose-${cur.tipo}-${today()}.png`;
-SH.compartilhar=async()=>{ try{ const blob=cur.blob||await SH.render(); const file=new File([blob],nome(),{type:"image/png"}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:"DOSE",text:"A dose certa. "+SH.URL}); toast("Compartilhado"); } else { SH.baixar(); toast("Imagem baixada: poste de onde quiser"); } }catch(e){ if(e&&e.name!=="AbortError") toast("Não deu para compartilhar; baixe o PNG"); } };
+SH.compartilhar=async()=>{ try{ const blob=cur.blob||await SH.render(); const file=new File([blob],nome(),{type:"image/png"}); if(navigator.canShare&&navigator.canShare({files:[file]})){ await navigator.share({files:[file],title:"DOSE",text:"Vida na dose."}); toast("Compartilhado"); } else { SH.baixar(); toast("Imagem baixada: poste de onde quiser"); } }catch(e){ if(e&&e.name!=="AbortError") toast("Não deu para compartilhar; baixe o PNG"); } };
 SH.baixar=async()=>{ const blob=cur.blob||await SH.render(); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=nome(); document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000); };
 // Resumo em texto (sem dados sensíveis) para o feed do grupo
 SH.resumo=()=>{ const t=cur.tipo,a=cur.arg; const f1=n=>String(Math.round(n*10)/10).replace('.',',');

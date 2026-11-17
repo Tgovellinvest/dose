@@ -29,7 +29,7 @@ h1{font-weight:900;text-transform:uppercase;letter-spacing:-0.025em;line-height:
 .chip.on{background:var(--ink);color:var(--g);border-color:var(--ink)}
 `;
 const head=(cls='')=>`<!doctype html><html class="${cls}"><head><meta charset="utf-8"><style>${CSS}</style></head><body>`;
-const foot=(r='@dose.use')=>`<div class="foot"><span>${r}</span><span>tgovellinvest.github.io/dose</span></div>`;
+const foot=(r='@dose.use')=>`<div class="foot"><span>${r}</span></div>`;
 const card=n=>'data:image/png;base64,'+fs.readFileSync(`/home/claude/insta/cards/${n}.png`).toString('base64');
 const shot=n=>'data:image/png;base64,'+fs.readFileSync(`/home/claude/insta/shots/${n}.png`).toString('base64');
 
