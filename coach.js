@@ -32,7 +32,7 @@ window.leituraSemana=function(){
   // 7. sono
   if(last&&last.sono&&last.sono<6.5) out.push({n:"watch",t:"Sono curto",d:`${last.sono} h. Perda aguda de sono custa ~7,6% de desempenho (Craven 2022); força máxima resiste melhor que técnica e endurance. Regra: mantenha a carga, corte volume e não marque prova nesse dia.`});
   // 9. salto de carga semanal (Gabbett 2016; só aviso — Impellizzeri 2020)
-  const tonel=k=>S.logs.filter(l=>inSem(l.data,k)).reduce((a,l)=>a+l.sets.filter(x=>x.done).reduce((b,x)=>b+(x.peso||0)*(x.reps||0),0),0);
+  const tonel=k=>S.logs.filter(l=>inSem(l.data,k)).reduce((a,l)=>a+l.sets.filter(x=>x.done).reduce((b,x)=>b+cargaKg(x)*(x.reps||0),0),0);
   const t0=tonel(0), tPrev=[1,2,3,4].map(tonel).filter(x=>x>0); const tMed=tPrev.length>=2?tPrev.reduce((a,b)=>a+b,0)/tPrev.length:0;
   if(tMed>0&&t0>tMed*1.5&&new Date().getDay()>=3) out.push({n:"watch",t:"Semana subiu rápido",d:`Tonelagem ${Math.round(t0/tMed*100)}% da média das últimas ${tPrev.length} semanas. Picos acima de ~1,5× elevam risco de lesão (Gabbett 2016). Não é diagnóstico, é sinal: segure o aumento em 10–15% por semana.`});
   // 10. deload por calendário (Bell 2023, consenso Delphi)

@@ -31,7 +31,7 @@ function dados(tipo,a){ const e=esporteDe(tipo,a); const r=a.rel||{}; const min=
   const kc=()=>{ if(r.kcal) d.ks.push({v:r.kcal,l:"kcal do relógio"}); else if(min&&SH.kcal) d.ks.push({v:"≈"+SH.kcal(tipo==='sessao'?'musc':e==='bjj'?'BJJ':e==='hyrox'?'Hyrox':e==='tenis'?'Tênis':(a.tipo||'Cardio'),min,a.dist),l:"kcal (estimativa)"}); };
   const fcs=()=>{ if(fc) d.ks.push({v:fc,l:"FC média"}); if(r.fcMax) d.ks.push({v:r.fcMax,l:"FC máxima"}); };
   const tempo=()=>{ if(min) d.ks.push({v:min+" min",l:"tempo"}); };
-  if(e==='musc'){ const done=(a.sets||[]).filter(s=>s.done); const ton=done.reduce((x,s)=>x+(s.peso||0)*(s.reps||0),0); d.titulo=a.nome||"Treino de força";
+  if(e==='musc'){ const done=(a.sets||[]).filter(s=>s.done); const ton=done.reduce((x,s)=>x+cargaKg(s)*(s.reps||0),0); d.titulo=a.nome||"Treino de força";
     d.big=ton>0?(ton>=1000?{v:f1(ton/1000),u:"t movidas"}:{v:Math.round(ton),u:"kg movidos"}):{v:done.length,u:"séries"};
     if(ton>0) d.ks.push({v:done.length,l:"séries"}); d.ks.push({v:new Set(done.map(s=>s.ex)).size,l:"exercícios"}); tempo(); fcs(); kc(); }
   else if(e==='corrida'||e==='bike'||e==='cardio'){ d.titulo=a.titulo||(a.tipo!==NOME[e]?a.tipo:null);

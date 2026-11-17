@@ -31,10 +31,10 @@ const barra=(x,pct,y,W,cor)=>{ x.fillStyle=COR.s1; rr(x,84,y,W-168,22,11); x.fil
 
 // ---------- Tipos ----------
 SH.draw={};
-SH.draw.sessao=async(fmt,log)=>{ const b=base(fmt),x=b.x; const done=log.sets.filter(s=>s.done); const ton=done.reduce((a,s)=>a+(s.peso||0)*(s.reps||0),0); const exs=new Set(done.map(s=>s.ex)).size;
+SH.draw.sessao=async(fmt,log)=>{ const b=base(fmt),x=b.x; const done=log.sets.filter(s=>s.done); const ton=done.reduce((a,s)=>a+cargaKg(s)*(s.reps||0),0); const exs=new Set(done.map(s=>s.ex)).size;
   const semana=S.logs.filter(l=>l.data>=semanaIni()).length; const kcal=log.dur?SH.kcal("musc",log.dur):null;
   eyebrow(x,`Sessão · ${fmtData(log.data)}`,b.top); let y=h1(x,quebra(log.nome||"Treino",14),b.top+120,fmt==='story'?110:96);
-  const plc=done.reduce((a,s)=>a+(s.placas&&!s.peso?(s.placas||0)*(s.reps||0):0),0); y=kpis(x,[{v:done.length,l:"séries feitas"},{v:exs,l:"exercícios"},ton>0||!plc?{v:ton>=1000?(Math.round(ton/100)/10).toFixed(1).replace('.',',')+" t":Math.round(ton)+" kg",l:plc?"carga movida (kg)":"carga movida"}:{v:plc,l:"placas × reps"},{v:log.dur?log.dur+" min":"—",l:"duração"}],y+40,b.W);
+  y=kpis(x,[{v:done.length,l:"séries feitas"},{v:exs,l:"exercícios"},{v:ton>=1000?(Math.round(ton/100)/10).toFixed(1).replace('.',',')+" t":Math.round(ton)+" kg",l:"carga movida"},{v:log.dur?log.dur+" min":"—",l:"duração"}],y+40,b.W);
   if(kcal){ x.fillStyle=COR.mute; x.font="600 28px Archivo, Arial"; x.fillText(`≈ ${kcal} kcal (estimativa MET, Ainsworth 2011)`,84,y+30); }
   fecho(x,`${semana}ª sessão de força da semana. ${log.rpe>=8?"Pesada.":log.rpe<=5?"Leve, de propósito.":"Na dose."}`,y+(kcal?110:60),b); return b.c; };
 SH.draw.cardio=async(fmt,c)=>{ const b=base(fmt),x=b.x; const BG=fmt==='story'?260:220, KH=fmt==='story'?200:150; const pace=c.dist&&c.min?c.min/c.dist:null; const kcal=c.min?SH.kcal(c.tipo,c.min,c.dist):null;
@@ -43,7 +43,7 @@ SH.draw.cardio=async(fmt,c)=>{ const b=base(fmt),x=b.x; const BG=fmt==='story'?2
   y=kpis(x,ks.slice(0,4),y+60,b.W,KH);
   fecho(x,(c.notas?c.notas.charAt(0).toUpperCase()+c.notas.slice(1).replace(/\.?$/,'. '):'')+(c.fonte==='strava'?"Importado do Strava. Contado na semana.":"Registrado. Contado na semana."),y+70,b,40); return b.c; };
 function periodo(ini,fim){ const L=S.logs.filter(l=>l.data>=ini&&l.data<=fim), B=S.bjj.filter(l=>l.data>=ini&&l.data<=fim), C=S.cardio.filter(l=>l.data>=ini&&l.data<=fim);
-  const series=L.reduce((a,l)=>a+l.sets.filter(s=>s.done).length,0), ton=L.reduce((a,l)=>a+l.sets.filter(s=>s.done).reduce((b,s)=>b+(s.peso||0)*(s.reps||0),0),0), km=C.reduce((a,c)=>a+(c.dist||0),0), min=C.reduce((a,c)=>a+(c.min||0),0)+B.reduce((a,c)=>a+(c.min||0),0);
+  const series=L.reduce((a,l)=>a+l.sets.filter(s=>s.done).length,0), ton=L.reduce((a,l)=>a+l.sets.filter(s=>s.done).reduce((b,s)=>b+cargaKg(s)*(s.reps||0),0),0), km=C.reduce((a,c)=>a+(c.dist||0),0), min=C.reduce((a,c)=>a+(c.min||0),0)+B.reduce((a,c)=>a+(c.min||0),0);
   const kcal=L.reduce((a,l)=>a+(l.dur?SH.kcal("musc",l.dur):0),0)+C.reduce((a,c)=>a+(c.min?SH.kcal(c.tipo,c.min,c.dist):0),0)+B.reduce((a,c)=>a+(c.min?SH.kcal("BJJ",c.min):0),0);
   const dias=new Set([...L,...B,...C].map(z=>z.data)).size; return {L,B,C,series,ton,km,min,kcal,dias,sessoes:L.length+B.length+C.length}; }
 SH.draw.semana=async(fmt)=>{ const b=base(fmt),x=b.x; const ini=semanaIni(); const p=periodo(ini,"9999"); const d=new Date(ini+"T12:00:00"); const BG=fmt==='story'?260:220, KH=fmt==='story'?200:150;
@@ -89,7 +89,7 @@ SH.compartilhar=async()=>{ try{ const blob=cur.blob||await SH.render(); const fi
 SH.baixar=async()=>{ const blob=cur.blob||await SH.render(); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=nome(); document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000); };
 // Resumo em texto (sem dados sensíveis) para o feed do grupo
 SH.resumo=()=>{ const t=cur.tipo,a=cur.arg; const f1=n=>String(Math.round(n*10)/10).replace('.',',');
-  if(t==='sessao'){ const done=a.sets.filter(s=>s.done); const ton=done.reduce((x,s)=>x+(s.peso||0)*(s.reps||0),0); return {titulo:a.nome||"Treino de força",linhas:[`${done.length} séries`,ton>=1000?`${f1(ton/1000)} t`:`${Math.round(ton)} kg`,a.dur?`${a.dur} min`:null].filter(Boolean)}; }
+  if(t==='sessao'){ const done=a.sets.filter(s=>s.done); const ton=done.reduce((x,s)=>x+cargaKg(s)*(s.reps||0),0); return {titulo:a.nome||"Treino de força",linhas:[`${done.length} séries`,ton>=1000?`${f1(ton/1000)} t`:`${Math.round(ton)} kg`,a.dur?`${a.dur} min`:null].filter(Boolean)}; }
   if(t==='cardio'){ return {titulo:a.tipo,linhas:[a.dist?`${f1(a.dist)} km`:null,a.min?`${a.min} min`:null,a.dist&&a.min?`${Math.floor(a.min/a.dist)}:${String(Math.round((a.min/a.dist%1)*60)).padStart(2,'0')} /km`:null].filter(Boolean)}; }
   if(t==='medalha') return {titulo:`Medalha · ${a.nome}`,linhas:[TIER[a.tier],`${a.v} ${a.un}`]};
   if(t==='semana'){ const ini=semanaIni(); const L=S.logs.filter(l=>l.data>=ini).length+S.bjj.filter(l=>l.data>=ini).length+S.cardio.filter(l=>l.data>=ini).length; return {titulo:"Semana",linhas:[`${L} treinos`]}; }

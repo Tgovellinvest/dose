@@ -76,7 +76,7 @@ window.lerPosSessao=function(){ const v=id=>{ const el=document.getElementById(i
 // --- Card da semana (PNG, sem feed) ---
 window.cardSemana=async function(){
   const vol=volumeSemana(); const sess=S.logs.filter(l=>l.data>=semanaIni()); const bjj=S.bjj.filter(b=>b.data>=semanaIni()).length; const card=S.cardio.filter(c=>c.data>=semanaIni()).reduce((a,c)=>a+(c.min||0),0);
-  const series=Object.values(vol).reduce((a,b)=>a+b,0); const tonel=sess.reduce((a,l)=>a+l.sets.filter(x=>x.done).reduce((b,x)=>b+(x.peso||0)*(x.reps||0),0),0);
+  const series=Object.values(vol).reduce((a,b)=>a+b,0); const tonel=sess.reduce((a,l)=>a+l.sets.filter(x=>x.done).reduce((b,x)=>b+cargaKg(x)*(x.reps||0),0),0);
   let best=null; sess.forEach(l=>l.sets.filter(s=>s.done&&s.peso&&s.reps).forEach(s=>{ const e1=s.peso*(1+s.reps/30); if(!best||e1>best.e1) best={e1,ex:(EX[s.ex]||{}).nome||s.ex,peso:s.peso,reps:s.reps}; }));
   const c=document.createElement('canvas'); c.width=1080; c.height=1350; const x=c.getContext('2d');
   x.fillStyle="#0F1012"; x.fillRect(0,0,1080,1350);

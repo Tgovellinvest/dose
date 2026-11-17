@@ -67,7 +67,10 @@ function planoHoje(){
 }
 
 // ---------- Progressão (double progression) ----------
-// Unidade por exercício: kg ou placas (máquinas com placa sem peso marcado). Placas ficam em campo próprio (s.placas) e não entram em contas de kg.
+// Unidade por exercício: kg ou placas (máquinas com placa sem peso marcado). Placas ficam em campo próprio (s.placas); nos totais (carga movida) valem PLACA_KG kg cada.
+// Placa de aparelho (polia, máquinas) = 5 kg, padronização do Tiago em 17/11/2026 (fontes: pilhas comuns de 10 lb ≈ 4,5 kg a 5 kg; peso real varia por fabricante). A pessoa registra em placas; os totais contam kg.
+window.PLACA_KG=5;
+window.cargaKg=s=>s?((+s.peso)>0?+s.peso:((+s.placas)>0?s.placas*window.PLACA_KG:0)):0;
 window.unDe=exId=>((S.unEx||{})[exId])||((S.pesos[exId]||{}).un==='placa'?'placa':'kg');
 window.trocaUn=(exId,sess)=>{ if(sess) saveDraft(sess); S.unEx=S.unEx||{}; S.unEx[exId]=unDe(exId)==='placa'?'kg':'placa'; save(); route(); toast(S.unEx[exId]==='placa'?'Este exercício agora em placas':'Este exercício agora em kg'); };
 function sugestaoCarga(exId, repsFaixa){
