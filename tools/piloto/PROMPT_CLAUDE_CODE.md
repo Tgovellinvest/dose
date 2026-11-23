@@ -1,35 +1,22 @@
-# Prompt para colar no Claude Code
+# Prompt para colar no Claude Code (app desktop, aba Code)
 
-Modelo: Sonnet 5.5 (o script já está pronto; troque para Opus 5.5 só se travar em erro difícil).
-Pasta: a raiz do repositório DOSE no seu computador (Windows), por exemplo `C:\Users\Tiago\dose`.
-Repositório: https://github.com/Tgovellinvest/dose (público, branch `main`).
-
-Preparação (no terminal, antes de abrir o Claude Code):
-PowerShell:
-```
-cd $HOME
-git clone https://github.com/Tgovellinvest/dose.git   # se a pasta dose já existir: cd dose; git pull
-cd dose
-claude
-```
-Precisa de Node 20 ou mais novo (`node -v`). O seu computador tem Node 24, conferido.
+Pasta a selecionar no app: `C:\Users\Tiago\Downloads\dose-piloto` (cópia pronta do repositório, sem git). Modelo: Sonnet 5.5.
+Repositório de origem: https://github.com/Tgovellinvest/dose (público, branch `main`).
 
 Cole isto:
 
 ---
-Leia o CLAUDE.md da raiz e siga as regras (português do Brasil, resposta primeiro, custo zero, nada inventado, fato verificado ≠ hipótese, nada de segredo nem foto pessoal no repositório público, ler → propor → esperar meu ok → aplicar).
+Leia o CLAUDE.md da raiz e siga as regras (português do Brasil, resposta primeiro, custo zero, nada inventado, fato verificado ≠ hipótese, ler → propor → esperar meu ok → aplicar). Esta pasta é uma cópia sem git: não faça commit nem mexa em nada fora de `tools/piloto/`; não altere o app.
 
-Contexto: o DOSE ganhou a "Foto do prato" (v8.20 e v8.21). Hoje a foto é só referência na tela; a pessoa escolhe os alimentos. Quero saber se um modelo aberto, rodando no computador, consegue SUGERIR o alimento certo a partir da foto, entre os alimentos da base do DOSE. A pasta `tools/piloto/` já tem o script pronto (veja o README.md dela). Não mexa em nada fora de `tools/piloto/` e não altere o app.
+Contexto: o DOSE tem a "Foto do prato". Quero medir se um modelo aberto, rodando neste computador, SUGERE o alimento certo a partir da foto, entre os 45 alimentos de `tools/piloto/rotulos.json` (todos da base do DOSE). O script já está pronto (veja `tools/piloto/README.md`).
 
-Tarefa:
-1. `cd tools/piloto && npm install`, depois `npm test`. Se algo falhar, mostre o erro e conserte só dentro de `tools/piloto/`.
-2. Confirme a licença de cada modelo direto do Hugging Face (o script já imprime) e me diga qual é, sem supor. Se alguma for "other", pare e me mostre o texto dos termos em vez de seguir.
-3. Eu vou colocar de 20 a 30 fotos de pratos em `tools/piloto/fotos/` e preencher `tools/piloto/verdade.csv`. Antes de rodar, confira o CSV e me diga o que estiver errado. Se ainda não houver fotos, pare e me avise; não invente fotos, nomes nem resultados.
-4. Rode `npm run piloto -- --modelos Xenova/clip-vit-base-patch32,Xenova/clip-vit-base-patch16`.
-5. Me entregue uma tabela curta por modelo: licença, MB dos arquivos ONNX, MB de cache, tempo de carga, tempo mediano por foto, top-1, top-3, top-5 (um alimento) e recall top-5 (vários), mais os 5 alimentos que mais erraram. Diga quantas fotos foram usadas e marque como "indicativo" se forem menos de 20.
-6. Termine com: o que é fato medido, o que é hipótese, e o que eu preciso decidir. Critério que EU proponho (você não decide): vale integrar só como sugestão no app se o top-5 em fotos de um alimento for 80% ou mais com pelo menos 20 fotos, o modelo ficar abaixo de ~100 MB e a licença permitir uso comercial. Abaixo de 60% de top-5, não integrar.
-
-Não faça commit de fotos, de `verdade.csv` nem de `resultado/` (já estão no .gitignore). Se for commitar algo, só código de `tools/piloto/`, em português, com o que mudou.
+Faça nesta ordem:
+1. `cd tools/piloto`, `npm install`, `npm test`. Se falhar, mostre o erro e conserte só dentro de `tools/piloto/`. Se o download dos pacotes ou do modelo for bloqueado por rede (erro de conexão ou 403), PARE e me mostre o erro; não tente contornar.
+2. Veja as fotos em `tools/piloto/fotos/`. Se houver menos de 20, me avise quantas há e pare (não invente fotos nem resultados).
+3. Não existe `verdade.csv`. Olhe cada foto e PROPONHA o arquivo (formato `arquivo;alimentos`, alimentos separados por `|`, só com nomes exatos de `rotulos.json`). Mostre a tabela arquivo → alimentos e ESPERE eu confirmar ou corrigir. O gabarito é o que eu confirmar, não o seu palpite. Alimento que não está na lista fica de fora, e me diga qual faltou.
+4. Depois do meu ok, grave `verdade.csv` e rode `npm run piloto -- --modelos Xenova/clip-vit-base-patch32,Xenova/clip-vit-base-patch16`. Se alguma licença impressa for "other", pare e me mostre.
+5. Me entregue por modelo uma tabela curta: licença, MB dos arquivos ONNX, MB de cache, tempo de carga, tempo mediano por foto, top-1, top-3, top-5 (um alimento), recall top-5 (vários) e os 5 alimentos que mais erraram. Diga quantas fotos usou e marque "indicativo" se forem menos de 20.
+6. Termine com: o que é fato medido, o que é hipótese, e o que eu preciso decidir. Critério que EU proponho (você não decide): integrar só como sugestão no app se top-5 em fotos de um alimento for 80% ou mais, com pelo menos 20 fotos, modelo abaixo de ~100 MB e licença que permita uso comercial. Abaixo de 60% de top-5, não integrar.
 ---
 
-O que trazer de volta para o Claude do projeto: a tabela do passo 5 e o arquivo `tools/piloto/resultado/*.json`.
+Traga de volta para o Claude do projeto: a tabela do passo 5 e o arquivo `tools/piloto/resultado/*.json`.
