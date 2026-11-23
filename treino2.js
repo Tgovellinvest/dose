@@ -129,7 +129,7 @@ V._logAvulsa=(esp,k)=>{ const s=avDe(esp,k); if(!s) return ""; const a=s.alvo||{
   return `<h2>${esc(s.titulo)}</h2><p class="tiny">Sessão avulsa · ${esc(((window.SPORTS||[]).find(x=>x.id===esp)||{}).nome||esp)}</p><ul class="small">${s.passos.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
    ${playlistBtn()}
    <label>Data</label><input id="avData" type="date" value="${today()}">${campos}${window.intensHTML?intensHTML('av',esp,({baixa:4,media:6,alta:8})[s.intens]):''}
-   <label>Dor depois — toque para marcar</label><div id="avDores">${V._doresInputs?V._doresInputs('av'):''}</div><label>Notas</label><input id="avNotas">
+   <label>Dor depois. Toque para marcar</label><div id="avDores">${V._doresInputs?V._doresInputs('av'):''}</div><label>Notas</label><input id="avNotas">
    <button class="btn em" style="margin-top:10px" onclick="salvaAvulsa('${esp}','${k}')">Salvar sessão</button>`; };
 const segs=v=>{ if(!v) return null; v=String(v).trim(); if(/^\d+(\.\d+)?$/.test(v)) return parseFloat(v)*60; const p=v.split(':').map(Number); if(p.some(isNaN)) return null; return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]; };
 window.salvaAvulsa=(esp,k)=>{ const s=avDe(esp,k); const g=id=>document.getElementById(id); const val=id=>g(id)?g(id).value:""; const it=window.intLer?intLer('av'):{rpe:6,k:'media'}; const dores=window.lerDores?lerDores('av'):{};

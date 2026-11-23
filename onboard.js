@@ -31,7 +31,7 @@ const steps=[
   </div>${foot(2,"obSalvar2()")}</div>`; },
  // 3 — sua semana
  ()=>{ const ob=S.ob; ob.esportes=ob.esportes||Object.assign({musc:S.perfil.diasMusc||[]},S.perfil.esportes||{}); const sel=Object.keys(ob.esportes);
-  return `<div class="wiz">${bar(3)}<div class="body"><div class="eyebrow">3 · Sua semana</div><h1>O que você pratica</h1><p class="small muted">Toque no que faz e marque os dias. Musculação é um deles — o DOSE monta o treino nos dias que sobrarem para ela.</p>
+  return `<div class="wiz">${bar(3)}<div class="body"><div class="eyebrow">3 · Sua semana</div><h1>O que você pratica</h1><p class="small muted">Toque no que faz e marque os dias. Musculação é um deles, e o DOSE monta o treino nos dias que sobrarem para ela.</p>
   <div class="chips" style="margin-top:8px">${ESPORTES.map(([k,nm,ic])=>`<span class="chip ${sel.includes(k)?'on':''}" onclick="obToggleEsporte('${k}')">${I(ic)} ${nm}</span>`).join("")}</div>
   ${sel.map(k=>{ const e=ESPORTES.find(x=>x[0]===k)||[k,k,'star']; const dias=ob.esportes[k]||[]; return `<div class="card sub" style="padding:12px 14px"><div class="row"><b>${I(e[2])} ${e[1]}</b><span class="tiny">${dias.length} dia${dias.length===1?'':'s'}</span></div><div class="dayrow">${DS.map(([d,l])=>`<div class="d ${dias.includes(d)?'on':''}" onclick="obToggleDia('${k}','${d}')"><b>${l}</b>${dias.includes(d)?I('check',14):'<span style="height:14px"></span>'}</div>`).join("")}</div></div>`; }).join("")}
   </div>${foot(3,"obSalvar3()")}</div>`; },

@@ -103,7 +103,7 @@ V._logPlano=(esp,w,sid)=>{ const s=sessoes(esp,w).find(x=>x.sid===sid)||{titulo:
    :`<label>Duração (min)</label><input id="lpMin" type="number" inputmode="numeric" value="${a.min||60}">`;
   return `<h2>${esc(s.titulo)}</h2><p class="tiny">${esc(nm)} · semana ${w}${s.alvo&&s.alvo.zona?` · ${esc(s.alvo.zona)}`:""}</p><ul class="small">${s.passos.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>
    <label>Data</label><input id="lpData" type="date" value="${today()}">${campos}${window.intensHTML?intensHTML('lp',esp==='ciclismo'?'ciclismo':esp,({baixa:4,media:6,alta:8})[s.intens]):''}
-   <label>Dor depois — toque para marcar</label><div id="lpDores">${V._doresInputs?V._doresInputs('lp'):''}</div><label>Notas</label><input id="lpNotas">
+   <label>Dor depois. Toque para marcar</label><div id="lpDores">${V._doresInputs?V._doresInputs('lp'):''}</div><label>Notas</label><input id="lpNotas">
    <button class="btn em" style="margin-top:10px" onclick="salvaPlano('${esp}',${w},'${sid}')">Salvar sessão</button>`; };
 const segs=v=>{ if(!v) return null; v=String(v).trim(); if(/^\d+(\.\d+)?$/.test(v)) return parseFloat(v)*60; const p=v.split(':').map(Number); if(p.some(isNaN)) return null; return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]; };
 window.salvaPlano=(esp,w,sid)=>{ const g=id=>document.getElementById(id); const val=id=>g(id)?g(id).value:""; const it=window.intLer?intLer('lp'):{rpe:6,k:'media'}; const dores=window.lerDores?lerDores('lp'):{};
