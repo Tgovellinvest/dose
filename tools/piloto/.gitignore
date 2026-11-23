@@ -1,0 +1,5 @@
+node_modules/
+fotos/*
+!fotos/.gitkeep
+verdade.csv
+resultado/

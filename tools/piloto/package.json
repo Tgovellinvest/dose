@@ -1,0 +1,8 @@
+{
+  "name": "dose-piloto-clip",
+  "private": true,
+  "type": "module",
+  "description": "Piloto: o CLIP (MIT) sugere alimentos da base do DOSE a partir de uma foto, rodando no computador. Nada daqui vai para o app sem aprovação.",
+  "scripts": { "teste": "node teste_metricas.mjs", "piloto": "node piloto_clip.mjs" },
+  "dependencies": { "@huggingface/transformers": "^4.3.2" }
+}
