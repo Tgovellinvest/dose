@@ -1,14 +1,18 @@
 # Prompt para colar no Claude Code
 
 Modelo: Sonnet 5.5 (o script já está pronto; troque para Opus 5.5 só se travar em erro difícil).
-Pasta: a raiz do repositório DOSE no seu computador, por exemplo `~/dose`.
+Pasta: a raiz do repositório DOSE no seu computador (Windows), por exemplo `C:\Users\Tiago\dose`.
 Repositório: https://github.com/Tgovellinvest/dose (público, branch `main`).
 
 Preparação (no terminal, antes de abrir o Claude Code):
+PowerShell:
 ```
-git clone https://github.com/Tgovellinvest/dose.git ~/dose   # se já tiver, use: cd ~/dose && git pull
-cd ~/dose && claude
+cd $HOME
+git clone https://github.com/Tgovellinvest/dose.git   # se a pasta dose já existir: cd dose; git pull
+cd dose
+claude
 ```
+Precisa de Node 20 ou mais novo (`node -v`). O seu computador tem Node 24, conferido.
 
 Cole isto:
 
