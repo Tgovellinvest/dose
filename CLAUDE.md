@@ -52,3 +52,13 @@ Só então escreva a especificação curta e o código.
 
 ## Respostas
 Seja direto e curto. Mostre o que mudou, o que foi testado e o que não foi.
+
+## Política de aprovação (25/11/2026)
+
+Regra de quem decide cada mudança na DOSE, inspirada no Claude Approvals do Claude Ship, mas sem custo. Na dúvida, espera o ok.
+
+- Pode ir para o ar sem o ok do Tiago, desde que o teste e a revisão passem: correção de texto já aprovado, ajuste visual dentro do design system, bug pequeno com teste que prova a correção e atualização de versão.
+- Espera o ok do Tiago: funcionalidade nova, banco, Edge Function ou permissões, termos e privacidade, dado de usuário, dependência nova, qualquer custo, apagar dado e mudança de marca ou de voz.
+- **Revisão antes de publicar.** Revisar o diff inteiro antes do push (skill `engineering:code-review` ou um subagente que não viu a mudança), procurando bug, segredo, dado pessoal e quebra das regras deste arquivo. Achado importante se resolve antes de publicar.
+- **Como desfazer.** Toda publicação avisa o Tiago qual é a versão anterior e o comando para voltar (`git revert <commit>` e publicar de novo).
+
