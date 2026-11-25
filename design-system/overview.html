@@ -1189,7 +1189,7 @@ window.EXERCISES = [
 window.PROGRAMS = {
   // ---------- PPL 2.0 (vigente desde 2026-10-11) ----------
   ppl2: {
-    id:"ppl2", nome:"PPL 2.0 — Hipertrofia + força (6×)", origem:"Ficha clássica push/pull/legs em rotação contínua", rotacao:["push","pull","legs"],
+    id:"ppl2", nome:"PPL 2.0, hipertrofia + força (6×)", origem:"Ficha clássica push/pull/legs em rotação contínua", rotacao:["push","pull","legs"],
     principios:["Prioridade estética V-shape: deltoide lateral/posterior, latíssimo, peito superior, cintura.","Compostos RIR 1–3, isoladores RIR 0–2; falha técnica seletiva, não obrigatória.","Descanso: compostos 2–3 min, isoladores 90–150 s, isometrias 60–120 s.","Progredir primeiro em repetições dentro da faixa, depois em carga (double progression).","BJJ gera fadiga: cortar acessórios antes dos compostos quando a semana pesar.","Deload a cada 4–6 semanas: volume −40–50%, carga −10–15%, RIR 3–4."],
     sessoes:{
       push:{nome:"PUSH", cor:"#8a3b31", slots:[
@@ -1228,7 +1228,7 @@ window.PROGRAMS = {
     id:"predio", nome:"Academia de prédio A/B (6×)", origem:"Ficha para Smith + polia, duas variações por padrão", rotacao:["pushA","pullA","legsA","pushB","pullB","legsB"],
     principios:["Barra do Smith pesa 22 kg.","Feeder sets nos compostos; 2 working sets.","Só uma polia: tudo unilateral.","Halteres até 12 kg: priorizar Smith e polia."],
     sessoes:{
-      pushA:{nome:"PUSH A — tensão", cor:"#8a3b31", slots:[
+      pushA:{nome:"PUSH A, tensão", cor:"#8a3b31", slots:[
         {ex:"supino_inclinado_smith", sets:2, reps:"6–10", rir:"1", rest:"2,5 min", nota:"Feeder 1 e 2."},
         {ex:"supino_reto_smith", sets:2, reps:"6–10", rir:"1", rest:"2,5 min"},
         {ex:"desenvolvimento_smith", sets:2, reps:"6–10", rir:"1–2", rest:"2 min"},
@@ -1236,14 +1236,14 @@ window.PROGRAMS = {
         {ex:"elevacao_lateral_polia", sets:4, reps:"10–15/lado", rir:"0", rest:"90 s"},
         {ex:"crucifixo_inverso_polia", sets:3, reps:"8–12/lado", rir:"0–1", rest:"90 s"},
         {ex:"pressdown", sets:3, reps:"10–15", rir:"0", rest:"90 s"}], cardio:"15–20 min Z2"},
-      pullA:{nome:"PULL A — largura", cor:"#315E8A", slots:[
+      pullA:{nome:"PULL A, largura", cor:"#315E8A", slots:[
         {ex:"puxada_unilateral", sets:3, reps:"8–12/lado", rir:"1", rest:"2 min"},
         {ex:"remada_unilateral_polia", sets:3, reps:"8–12/lado", rir:"1", rest:"2 min"},
         {ex:"pullover_polia", sets:3, reps:"8–15", rir:"0–1", rest:"90 s"},
         {ex:"remada_smith", sets:2, reps:"8–10", rir:"1", rest:"2 min"},
         {ex:"rosca_direta_smith", sets:3, reps:"8–12", rir:"0–1", rest:"90 s"},
         {ex:"reverse_crunch", sets:3, reps:"12–20", rir:"0–1", rest:"60 s"}], cardio:"15–20 min Z2"},
-      legsA:{nome:"LEGS A — tensão", cor:"#4f6b3a", slots:[
+      legsA:{nome:"LEGS A, tensão", cor:"#4f6b3a", slots:[
         {ex:"agachamento_smith", sets:2, reps:"6–8", rir:"1", rest:"3 min", nota:"Feeder 1 e 2."},
         {ex:"bulgarian_smith", sets:2, reps:"6–10/lado", rir:"1–2", rest:"2 min"},
         {ex:"extensora", sets:3, reps:"12–15", rir:"0–1", rest:"90 s"},
@@ -1251,20 +1251,20 @@ window.PROGRAMS = {
         {ex:"flexora", sets:3, reps:"10–12", rir:"0–1", rest:"90 s"},
         {ex:"hip_thrust_smith", sets:3, reps:"8–12", rir:"1", rest:"2 min"},
         {ex:"panturrilha_smith", sets:4, reps:"12–20", rir:"0–1", rest:"60 s"}], cardio:"15–20 min Z2 antes"},
-      pushB:{nome:"PUSH B — metabólico", cor:"#8a3b31", slots:[
+      pushB:{nome:"PUSH B, metabólico", cor:"#8a3b31", slots:[
         {ex:"elevacao_lateral_polia", sets:4, reps:"15–20/lado", rir:"0", rest:"60 s"},
         {ex:"desenvolvimento_smith", sets:2, reps:"10–12", rir:"2", rest:"90 s"},
         {ex:"supino_inclinado_smith", sets:2, reps:"8–10", rir:"1", rest:"2 min"},
         {ex:"crossover", sets:2, reps:"12–15/lado", rir:"0–1", rest:"60 s"},
         {ex:"triceps_overhead_polia", sets:2, reps:"12–15", rir:"0–1", rest:"60 s"},
         {ex:"pressdown", sets:2, reps:"12–15", rir:"0–1", rest:"60 s"}], cardio:"25–35 min Z2"},
-      pullB:{nome:"PULL B — espessura", cor:"#315E8A", slots:[
+      pullB:{nome:"PULL B, espessura", cor:"#315E8A", slots:[
         {ex:"puxada_unilateral", sets:3, reps:"8–12/lado", rir:"1", rest:"2 min", nota:"Pegada supinada/semipronada."},
         {ex:"remada_unilateral_polia", sets:3, reps:"10–12/lado", rir:"1", rest:"90 s"},
         {ex:"crucifixo_inverso_polia", sets:2, reps:"12–15/lado", rir:"0–1", rest:"60 s"},
         {ex:"rosca_inclinada", sets:3, reps:"8–12", rir:"0–1", rest:"90 s"},
         {ex:"crunch_polia", sets:3, reps:"10–15", rir:"0–1", rest:"60 s"}], cardio:"15–30 min Z2"},
-      legsB:{nome:"LEGS B — metabólico", cor:"#4f6b3a", slots:[
+      legsB:{nome:"LEGS B, metabólico", cor:"#4f6b3a", slots:[
         {ex:"hip_thrust_smith", sets:3, reps:"10–12", rir:"1", rest:"2 min"},
         {ex:"agachamento_smith", sets:2, reps:"8–10", rir:"1", rest:"2,5 min"},
         {ex:"agachamento_smith", sets:2, reps:"10–12", rir:"1", rest:"2 min", nota:"Pés mais à frente, mais sentado."},
@@ -1298,7 +1298,7 @@ window.SPORTS = [
   demandas:[{q:"Força máxima",onde:"queda, body lock, pressão, sair de posição ruim",treino:"Compostos pesados do PPL 2.0 (supino, agachamento, puxada, remada)"},{q:"Força isométrica",onde:"pegada, underhook, over-under, 100 kg, montada",treino:"Bloco de isometrias (remada isométrica, Pallof, adução, split-squat hold)"},{q:"Anti-rotação",onde:"impedir raspagem, manter base, body lock",treino:"Pallof press hold"},{q:"Adução de quadril",onde:"guarda, meia, controle de pernas, ashi",treino:"Adução isométrica, adutor magno no agachamento"},{q:"Resistência muscular",onde:"manter pressão sem morrer em 40 s",treino:"Séries de 12–20 em isoladores, bloco Hyrox leve"},{q:"Capacidade de repetir esforços",onde:"rola de 6 min, torneio com várias lutas",treino:"Intervalado 1–2 min + Z2 base"}],
   semana:"Perna pesada longe das sessões mais duras de queda (≥24 h). Com 5–6 treinos de tatame na semana, reduzir acessórios antes de mexer nos compostos.",
   regras:["Academia não pode roubar o jiu-jitsu: musculação é ferramenta, não outro campeonato.","Cotovelo sintomático: sem pegada em toalha, sem rosca martelo, sem dead hang, sem farmer carry pesado; kimura e guilhotina forçadas fora do rola.","Antes de BJJ duro: não caçar falha na musculação.","Dor bilateral recorrente no cotovelo merece ortopedista do esporte ou fisioterapeuta."],
-  blocos:[{nome:"Isometrias para performance (2 por sessão, 30–50% da força, sem prender a respiração)", itens:["Remada isométrica 2×15–30 s (cotovelo 70–100°)","Split-squat hold 2×20–30 s por perna","Pallof press hold 2×20–30 s por lado","Adução isométrica 2×20–30 s","Pegada em toalha/Gi 2×20–30 s — suspensa enquanto o cotovelo doer"], progressao:"1) tolerância à posição → 2) duração → 3) resistência."}],
+  blocos:[{nome:"Isometrias para performance (2 por sessão, 30–50% da força, sem prender a respiração)", itens:["Remada isométrica 2×15–30 s (cotovelo 70–100°)","Split-squat hold 2×20–30 s por perna","Pallof press hold 2×20–30 s por lado","Adução isométrica 2×20–30 s","Pegada em toalha/Gi 2×20–30 s, suspensa enquanto o cotovelo doer"], progressao:"1) tolerância à posição → 2) duração → 3) resistência."}],
   aquecimento:["5 min de corrida leve ou pular corda","Mobilidade de quadril (90/90, cossack) 2 min","Ponte de glúteo e rotação externa de ombro com elástico 2×12","Rolamentos, quedas e shrimp 3 min"], prevencao:["Pescoço: isometria 4 direções 2×10 s","Cotovelo: evitar pegadas máximas com tendão sintomático; descarregar após campeonatos","Joelho: adução e abdução com elástico 2×15","Dedos: abrir e fechar com elástico 2×20"],
   link:"O jogo técnico (guardas, passagens, finalizações) é com o seu professor; aqui fica a preparação física."},
  {id:"hyrox", nome:"Hyrox", emoji:"hyrox", status:"prova híbrida",
@@ -1306,7 +1306,7 @@ window.SPORTS = [
   fonte:"Formato oficial Hyrox (hyrox.com); Brandt et al. 2025 (primeiro estudo revisado por pares, mediana 86,5 min em prova simulada)",
   estacoes:[{n:1,nome:"SkiErg",dose:"1.000 m",open:"—"},{n:2,nome:"Sled push",dose:"50 m",open:"152 kg (M Open, inclui sled)"},{n:3,nome:"Sled pull",dose:"50 m",open:"103 kg (M Open)"},{n:4,nome:"Burpee broad jump",dose:"80 m",open:"—"},{n:5,nome:"Remo",dose:"1.000 m",open:"—"},{n:6,nome:"Farmer carry",dose:"200 m",open:"2 × 24 kg"},{n:7,nome:"Sandbag lunges",dose:"100 m",open:"20 kg"},{n:8,nome:"Wall balls",dose:"100 reps",open:"6 kg, alvo 3 m"}],
   demandas:[{q:"Base aeróbica (Z2)",onde:"os 8 km",treino:"2–3 sessões Z2 de 30–45 min"},{q:"Limiar / ritmo de 1 km",onde:"cada corrida sob fadiga",treino:"Intervalados de 400–1.000 m em Z3–Z4"},{q:"Resistência de força",onde:"sled, lunges, wall balls",treino:"Séries de 15–25 e circuitos"},{q:"Transição corrida→estação",onde:"'pernas pesadas'",treino:"Simulações: corrida + estação + corrida"}],
-  programa:{nome:"HYROX 1.0 — prédio (Smith, 1 polia, banco, esteira sem inclinação)", fases:[
+  programa:{nome:"HYROX 1.0, prédio (Smith, 1 polia, banco, esteira sem inclinação)", fases:[
    {fase:"Fase 1 · Base (sem 1–4)", obj:"Tolerância e volume. 1 bloco leve por semana (pós-Pull ou sessão própria) + 1 Z2.", sessao:["Aquecimento 5–7 min caminhando 4,5–5,5 km/h","3 voltas: esteira 500 m a 6,5–7,5 · step-up 10/perna · goblet squat 12 · esteira 400 m a 6–7 · afundo reverso 8/perna · Pallof hold 20 s/lado","Descanso 60–90 s entre voltas · RPE 6/10"], progressao:"Sem 3–4: 500 + 300 m → 4 voltas"},
    {fase:"Fase 2 · Capacidade (sem 5–8)", obj:"2 blocos por semana. Entram estações adaptadas.", sessao:["3–4 voltas: esteira 600 m Z3 · wall ball adaptado (goblet + press) 15 · esteira 400 m · afundo com halteres 20 m · pullover cíclico (SkiErg adaptado) 40 reps · step-up 12/perna","Descanso 60 s · RPE 7/10"], progressao:"Adicionar farmer carry moderado 20–30 m quando o cotovelo permitir."},
    {fase:"Fase 3 · Específica (sem 9–12)", obj:"Meia-simulação quinzenal: 4 × (1 km + estação).", sessao:["4 × 1 km a ritmo-alvo + estação adaptada (step-up 20 / goblet 20 / afundo 40 m / wall ball adaptado 25)","Semana alternada: só Z2 longo 45–60 min"], progressao:"Em academia completa, substituir pelas estações reais (ver biblioteca, grupo Hyrox)."}
@@ -1349,7 +1349,7 @@ window.SPORTS = [
  {id:"natacao", nome:"Natação", emoji:"swim", status:"preparação física",
   resumo:"A força em terra transfere pouco e indiretamente para a água. O que a revisão sistemática sustenta: força máxima em terra (2–4 sessões/sem por 6–12 semanas) e pliometria melhoram saídas e viradas; para o nado, treino específico com resistência na água (elásticos, paraquedas) transfere melhor. Baixo impacto: ótimo cardio para quem carrega mais peso ou tem joelho sensível.",
   fonte:"Amaro et al. 2018/2019, Science & Sports (revisão sistemática); Fone & van den Tillaar 2022, Sports Med Open (27 estudos); Crowley 2017",
-  demandas:[{q:"Puxada (latíssimo, tríceps)",onde:"braçada",treino:"Puxada, pullover, tríceps — já no PPL"},{q:"Força de pernas e pliometria",onde:"saída e virada",treino:"Agachamento + saltos 3×5"},{q:"Core",onde:"posição do corpo",treino:"Pallof, prancha lateral"},{q:"Aeróbico",onde:"distância",treino:"Séries de 50–100 m com pausas curtas; nado contínuo Z2"}],
+  demandas:[{q:"Puxada (latíssimo, tríceps)",onde:"braçada",treino:"Puxada, pullover, tríceps, já no PPL"},{q:"Força de pernas e pliometria",onde:"saída e virada",treino:"Agachamento + saltos 3×5"},{q:"Core",onde:"posição do corpo",treino:"Pallof, prancha lateral"},{q:"Aeróbico",onde:"distância",treino:"Séries de 50–100 m com pausas curtas; nado contínuo Z2"}],
   programa:{nome:"Modo natação (2–3 sessões/sem na piscina + PPL)", fases:[
    {fase:"Piscina A · técnica + Z2", obj:"", sessao:["200 m aquecimento","8×50 m com 20 s de pausa, foco em braçada longa","400–800 m contínuo Z2","100 m soltura"]},
    {fase:"Piscina B · intervalado", obj:"", sessao:["200 m aquecimento","10×100 m com 30 s de pausa em Z3–Z4","4×25 m forte","100 m soltura"]},
@@ -1370,7 +1370,7 @@ window.FEMININO = {
    {t:"Progressão", d:"Mesma double progression: bateu o teto de reps em todas as séries com técnica → sobe carga."}
   ],
   programas:[
-   {id:"stef_ul", nome:"Upper/Lower A-B (4×/semana) — ênfase glúteo", origem:"Ficha de referência, desenhado pelo Tiago com o coach virtual", semana:"Seg Upper A · Ter Lower A · Qui Upper B · Sex Lower B",
+   {id:"stef_ul", nome:"Upper/Lower A-B (4×/semana), ênfase glúteo", origem:"Ficha de referência, desenhado pelo Tiago com o coach virtual", semana:"Seg Upper A · Ter Lower A · Qui Upper B · Sex Lower B",
     sessoes:[
      {nome:"UPPER A", normal:[["Supino máquina ou halteres","3×8–10"],["Puxada na frente","3×8–12"],["Remada baixa","3×8–12"],["Desenvolvimento máquina","2×8–10"],["Elevação lateral","2×12–15"],["Tríceps corda","2×10–15"],["Rosca direta","2×10–12"]], rapida:[["Supino máquina","3×8–10"],["Puxada na frente","3×8–12"],["Remada baixa","2×10–12"],["Elevação lateral","2×12–15"],["Tríceps corda + rosca","2×10–12 cada"]]},
      {nome:"LOWER A", normal:[["Leg press","3×10–12"],["Stiff com halteres","3×8–10"],["Cadeira extensora","2×12–15"],["Mesa/cadeira flexora","3×10–12"],["Afundo ou passada","2×10/perna"],["Panturrilha","3×12–15"],["Abdômen máquina ou crunch","2×12–15"]], rapida:[["Leg press","3×10–12"],["Stiff","3×8–10"],["Flexora","2×10–12"],["Extensora","2×12–15"],["Panturrilha","2×12–15"]]},
@@ -1378,7 +1378,7 @@ window.FEMININO = {
      {nome:"LOWER B", normal:[["Agachamento Smith, hack ou goblet","3×8–10"],["Cadeira flexora","3×10–12"],["Hip thrust","3×8–12"],["Cadeira abdutora","2×12–20"],["Búlgaro","2×8–10/perna"],["Panturrilha","3×12–15"],["Prancha ou abdominal infra","2–3 séries"]], rapida:[["Agachamento Smith/hack","3×8–10"],["Hip thrust","3×8–12"],["Flexora","2×10–12"],["Abdutora","2×15–20"],["Panturrilha","2×12–15"]]}
     ],
     regras:["RIR 1–3 na maioria das séries (nota 8–9 numa escala em que 10 é impossível fazer mais).","Descanso: grandes 90–150 s, pequenos 45–75 s.","Academia cheia: tirar acessório tudo bem, tirar o básico não."]},
-   {id:"lower_gluteo_predio", nome:"Lower ênfase glúteo — prédio (1–2×/semana)", origem:"Ficha de referência para academia de prédio", semana:"Encaixa com funcional/musculação da academia",
+   {id:"lower_gluteo_predio", nome:"Lower ênfase glúteo, prédio (1–2×/semana)", origem:"Ficha de referência para academia de prédio", semana:"Encaixa com funcional/musculação da academia",
     sessoes:[{nome:"LOWER GLÚTEO", normal:[["Hip thrust no Smith","3×10–12"],["Agachamento no Smith (pés à frente)","2×8–10"],["Cadeira flexora","2–3×10–12"],["Kickback na polia","2×15–20"],["Abdução na polia","3×15–20"],["Cadeira extensora","2–3×12–15"],["Panturrilha em pé no Smith","3×12–15"]], rapida:[["Hip thrust","3×10–12"],["Agachamento Smith","2×8–10"],["Flexora","2×10–12"],["Abdução polia","2×15–20"]]}],
     regras:["Grandes: termina sentindo que faria mais 1–2 reps. Isoladores: até quase falha com técnica limpa.","Vídeos de execução: biblioteca (hip thrust, agachamento Smith, flexora, kickback, abdução, extensora, panturrilha)."]}
   ]
@@ -1423,7 +1423,7 @@ window.SCIENCE = [
  {cat:"Treino", t:"Força antes do aeróbio na mesma sessão", oque:"Força de membros inferiores melhora mais quando vem antes do aeróbio; VO2máx não depende da ordem.", regra:"Na mesma sessão, musculação primeiro; cardio depois ou em outro horário.", ref:"Murlasits, Kneffel & Thalib, J Sports Sci 2018;36(11):1212–19", url:"https://pubmed.ncbi.nlm.nih.gov/28783467/", status:"verificado"},
  {cat:"Treino", t:"Autorregular por RIR funciona", oque:"Autorregulação por RPE/RIR ou velocidade foi igual ou superior à progressão fixa para força máxima.", regra:"RIR observado abaixo do alvo → +2,5–5% de carga; acima → manter ou −5%.", ref:"Larsen, Kristiansen & van den Tillaar, PeerJ 2021;9:e10663", url:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7810043/", status:"verificado"},
  {cat:"Recuperação", t:"Noite ruim de sono: −7,6% de desempenho", oque:"Perda aguda de sono reduz desempenho físico em média 7,6%, mais à tarde/noite; força máxima resiste melhor que endurance e técnica.", regra:"Com <6 h de sono, o coach mantém a carga, corta volume e não marca prova.", ref:"Craven, McCartney, Desbrow et al., Sports Medicine 2022;52:2669–90", url:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9584849/", status:"verificado"},
- {cat:"Recuperação", t:"Subir carga rápido demais lesiona", oque:"Carga crônica alta protege; picos agudos elevam risco; subtreinar também lesiona. O ACWR não é preditor validado (Impellizzeri 2020), então vale como sinal, não como diagnóstico.", regra:"Aumento semanal limitado a ~10–15%; aviso quando a semana passa de ~1,3–1,5× a média das 4 anteriores — só aviso, nunca bloqueio.", ref:"Gabbett, Br J Sports Med 2016;50(5):273–80", url:"https://pmc.ncbi.nlm.nih.gov/articles/PMC4789704", status:"verificado"},
+ {cat:"Recuperação", t:"Subir carga rápido demais lesiona", oque:"Carga crônica alta protege; picos agudos elevam risco; subtreinar também lesiona. O ACWR não é preditor validado (Impellizzeri 2020), então vale como sinal, não como diagnóstico.", regra:"Aumento semanal limitado a ~10–15%; aviso quando a semana passa de ~1,3–1,5× a média das 4 anteriores. É só aviso, nunca bloqueio.", ref:"Gabbett, Br J Sports Med 2016;50(5):273–80", url:"https://pmc.ncbi.nlm.nih.gov/articles/PMC4789704", status:"verificado"},
  {cat:"Feminino", t:"Ciclo menstrual: efeito trivial no desempenho", oque:"Meta-análise encontrou efeito trivial da fase do ciclo, com alta variabilidade individual e evidência de baixa qualidade; revisão de 2023 não achou efeito sobre força aguda nem sobre adaptação.", regra:"Mesma prescrição de força para mulheres; registro opcional de fase e sintomas para autorregular, sem periodizar pelo ciclo por padrão.", ref:"McNulty et al., Sports Medicine 2020;50:1813–27; Colenso-Semple et al., Front Sports Act Living 2023", url:"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7497427/", status:"verificado"},
  {cat:"40+", t:"Força é o tratamento da sarcopenia", oque:"Treino de força foi a intervenção mais eficaz para massa, força e desempenho em idosos; força baixa (preensão <27 kg H / <16 kg M, 5× sentar-levantar >15 s) é o critério primário do EWGSOP2.", regra:"Perfil 50+: preensão e sentar-levantar como provas, com os cortes do EWGSOP2 como alerta; força obrigatória, aeróbio complementa.", ref:"Shen et al., J Cachexia Sarcopenia Muscle 2023; Cruz-Jentoft et al. (EWGSOP2), Age Ageing 2019;48:16–31", url:"https://pubmed.ncbi.nlm.nih.gov/37057640/", status:"verificado"},
  {cat:"Nutrição", t:"Toda dieta funciona pelo déficit", oque:"Com calorias e proteína iguais, nenhuma distribuição de carbo/gordura é superior; adesão decide.", regra:"O app fixa calorias e proteína e deixa você escolher a divisão que consegue manter.", ref:"Aragon et al., ISSN position stand: diets and body composition, JISSN 2017;14:16", url:"https://jissn.biomedcentral.com/articles/10.1186/s12970-017-0174-y", status:"verificado"},
@@ -1443,7 +1443,7 @@ window.SCIENCE = [
 // ---------- Nutrição (regras da calculadora) ----------
 window.NUTRI = {
   atividade:[{k:"sed",n:"Quase não me mexo (trabalho sentado, sem treino)",f:1.2,fc:1.15},{k:"leve",n:"Treino 1–2 vezes por semana",f:1.375,fc:1.3},{k:"mod",n:"Treino 3–4 vezes por semana",f:1.55,fc:1.45},{k:"alto",n:"Treino 5–7 vezes por semana",f:1.725,fc:1.6},{k:"muito",n:"Treino 2 vezes por dia ou trabalho físico pesado",f:1.9,fc:1.7}],
-  nota:"Conservador = menor TMB entre as equações × fator de atividade reduzido, calculado com 1,5 dia de treino a menos do informado, saturando em 6 dias (fator máximo 1,45 — ninguém é calculado como 'muito ativo'). Alvo arredondado para baixo de 25 em 25 kcal. Relógios inflam gasto de treino de força em 20–35%; por isso o app não soma 'calorias ativas' do relógio.",
+  nota:"Conservador = menor TMB entre as equações × fator de atividade reduzido, calculado com 1,5 dia de treino a menos do informado, saturando em 6 dias (fator máximo 1,45, e ninguém é calculado como 'muito ativo'). Alvo arredondado para baixo de 25 em 25 kcal. Relógios inflam gasto de treino de força em 20–35%; por isso o app não soma 'calorias ativas' do relógio.",
   objetivos:[{k:"cut",n:"Perder gordura mais rápido (−20%)",d:-0.2},{k:"cutLeve",n:"Perder gordura com calma (−12%)",d:-0.12},{k:"recomp",n:"Trocar gordura por músculo (−6%, proteína alta)",d:-0.06},{k:"manter",n:"Manter como estou",d:0},{k:"bulkLeve",n:"Ganhar músculo com calma (+5%)",d:0.05},{k:"bulk",n:"Ganhar músculo mais rápido (+10%)",d:0.10},{k:"performance",n:"Render no esporte (manutenção, mais carbo no treino)",d:0.02}],
   regras:["Déficit de 10–25% (nunca abaixo da TMB); meta de 0,5–1% do peso por semana (Helms 2014).","Proteína: 1,6–2,2 g/kg de peso; em déficit, 2,3–3,1 g/kg de massa magra quando % de gordura for conhecido (ISSN 2017; Helms 2014).","Gordura: 0,6–1,0 g/kg, no mínimo 20% das calorias.","Carboidrato: o que sobrar, concentrado em torno de treino e BJJ.","Água: ~35 ml/kg/dia + 500 ml por hora de treino (referência prática).","Fibra 25–38 g/dia.","Uma refeição fora não vira três dias fora; próxima refeição normal."],
   precedencia:"Se existe um protocolo formal de coach/nutricionista vigente, ele prevalece sobre esta calculadora. Use a calculadora para entender a lógica e conferir se o protocolo está dentro das faixas de consenso."
@@ -1550,7 +1550,7 @@ window.SPORTS_PREP = {
 // Regras transversais (treino concorrente e carga) com fonte
 window.SPORTS_CROSS={
  concorrente:[["Interferência","Força máxima e hipertrofia não sofrem de forma relevante com aeróbio concorrente; potência é a mais sensível","Schumann 2022"],["Intervalo","≥6 h entre força e esporte no mesmo dia preserva força; 24 h é melhor para potência; costas-com-costas é o pior","Robineau 2016"],["Ordem","Força antes quando a semana é de força; esporte antes quando é técnica ou competição; nunca esporte duro → pernas pesadas em <2 h","Robineau 2016"],["Dose","2×/sem na base; 1×/sem mantém força 6–12 sem na temporada com cargas ≥80% e poucas séries","Rønnestad & Mujika 2014"],["Deload","A cada 4–6 sem ou por sinais; −30–50% volume por 5–7 dias; também antes de competir","Bell 2023"]],
- carga:"Carga interna = RPE (0–10, 30 min depois) × minutos, mesma unidade para esporte e academia (Foster 2001). Evitar saltos >10–15% na semana; a razão aguda/crônica é heurística, não limiar validado (Gabbett 2016). Sinais de overreaching: queda de desempenho ≥2 sem, fadiga, humor e sono piores, FC de repouso maior — o app sinaliza e sugere reduzir e procurar profissional (Meeusen 2013).",
+ carga:"Carga interna = RPE (0–10, 30 min depois) × minutos, mesma unidade para esporte e academia (Foster 2001). Evitar saltos >10–15% na semana; a razão aguda/crônica é heurística, não limiar validado (Gabbett 2016). Sinais de overreaching: queda de desempenho ≥2 sem, fadiga, humor e sono piores, FC de repouso maior. O app sinaliza e sugere reduzir e procurar profissional (Meeusen 2013).",
  refs:[["Schumann et al.","Compatibility of concurrent aerobic and strength training: updated meta-analysis","Sports Med 2022;52(3)","https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8891239/","verificado"],["Robineau et al.","Concurrent aerobic and strength exercises depend on recovery duration","J Strength Cond Res 2016;30(3)","https://pubmed.ncbi.nlm.nih.gov/25546450/","verificado"],["Foster et al.","A new approach to monitoring exercise training","J Strength Cond Res 2001;15(1)","","verificado"],["Meeusen et al.","Overtraining syndrome: joint consensus ECSS/ACSM","Med Sci Sports Exerc 2013;45(1)","https://pubmed.ncbi.nlm.nih.gov/23247672/","verificado"],["Thomas, Erdman & Burke","Nutrition and athletic performance (position stand)","Med Sci Sports Exerc 2016;48(3)","","verificado"],["Reale, Slater & Burke","Individualised dietary strategies for Olympic combat sports","Eur J Sport Sci 2017;17(6)","https://pubmed.ncbi.nlm.nih.gov/28316263/","verificado"]]
 };
 // Esportes novos entram no catálogo com ficha mínima; os seis antigos ganham a preparação física.
@@ -2675,7 +2675,7 @@ const steps=[
   </div>${foot(2,"obSalvar2()")}</div>`; },
  // 3 — sua semana
  ()=>{ const ob=S.ob; ob.esportes=ob.esportes||Object.assign({musc:S.perfil.diasMusc||[]},S.perfil.esportes||{}); const sel=Object.keys(ob.esportes);
-  return `<div class="wiz">${bar(3)}<div class="body"><div class="eyebrow">3 · Sua semana</div><h1>O que você pratica</h1><p class="small muted">Toque no que faz e marque os dias. Musculação é um deles, e o DOSE monta o treino nos dias que sobrarem para ela.</p>
+  return `<div class="wiz">${bar(3)}<div class="body"><div class="eyebrow">3 · Sua semana</div><h1>O que você pratica</h1><p class="small muted">Toque no que faz e marque os dias. Musculação é um deles. O DOSE monta o treino nos dias que sobrarem para ela.</p>
   <div class="chips" style="margin-top:8px">${ESPORTES.map(([k,nm,ic])=>`<span class="chip ${sel.includes(k)?'on':''}" onclick="obToggleEsporte('${k}')">${I(ic)} ${nm}</span>`).join("")}</div>
   ${sel.map(k=>{ const e=ESPORTES.find(x=>x[0]===k)||[k,k,'star']; const dias=ob.esportes[k]||[]; return `<div class="card sub" style="padding:12px 14px"><div class="row"><b>${I(e[2])} ${e[1]}</b><span class="tiny">${dias.length} dia${dias.length===1?'':'s'}</span></div><div class="dayrow">${DS.map(([d,l])=>`<div class="d ${dias.includes(d)?'on':''}" onclick="obToggleDia('${k}','${d}')"><b>${l}</b>${dias.includes(d)?I('check',14):'<span style="height:14px"></span>'}</div>`).join("")}</div></div>`; }).join("")}
   </div>${foot(3,"obSalvar3()")}</div>`; },
